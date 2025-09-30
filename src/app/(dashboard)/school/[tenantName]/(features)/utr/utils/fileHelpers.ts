@@ -36,7 +36,7 @@ reader.onloadend = () => {console.log("hi") }
 
 
 
-    
+   reader.readAsArrayBuffer(file); 
    
 const dummyDt = [
   {
