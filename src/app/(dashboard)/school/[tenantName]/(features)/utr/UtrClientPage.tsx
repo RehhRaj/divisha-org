@@ -50,12 +50,13 @@ const [fileDataResult, setFileDataResult] = useState<RowData[]>([]); // any[]  v
 
 try {
     // ✅ Await the fileHelpers function
-    const result = await fileHelpers(selectedFile, isTwoRowFormatData);
+    // const result = await fileHelpers(selectedFile, isTwoRowFormatData);
+    const result = await fileHelpers(selectedFile);
     console.log('fileHelpers returned:', result); // will log 9
 
     // Optionally: you can use this result in your UI if needed
 
-    setFileDataResult(result)
+    // setFileDataResult(result)
 
     setSubmitted(true);
   } catch (error) {
