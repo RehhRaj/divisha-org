@@ -15,7 +15,7 @@ export default function fileHelpers(file: File, isTwoRowFormat: boolean): Promis
  return new Promise((resolve, reject) => {
 // reader    object
 
-
+console.log("hi")
  const reader = new FileReader();
 
  // Fired as the file starts to load
