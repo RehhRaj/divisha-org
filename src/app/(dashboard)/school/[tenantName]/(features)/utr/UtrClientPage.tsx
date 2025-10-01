@@ -1,3 +1,5 @@
+// file UtrClientPage.tsx    :frontend/src/app/(dashboard)/school/[tenantName]/(features)/utr/UtrClientPage.tsx
+
 'use client';
 
 import React, { useState } from 'react';
@@ -11,14 +13,34 @@ function UtrClientPage() {
   // 📦 STATE SETUP
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // uploaded file
   const [fileUploaded, setFileUploaded] = useState<boolean>(false);     // to disable input
-  const [isTwoRowFormatData, setIsTwoRowFormatData] = useState<boolean | null>(null); // format choice: true/false/null
+ 
   const [submitted, setSubmitted] = useState(false); // to show confirmation after export
 
-  type RowData = {
-  [key: string]: string | number | null; // or more specific
-};
 
-const [fileDataResult, setFileDataResult] = useState<RowData[]>([]); // any[]  vs typeDeclred[] lose autocompletion and error checking.
+
+
+  const [fileDataResult, setFileDataResult] = useState<(string | number | boolean | Date | null)[][]>([]); // [ { name: "Alice", age: 30 },   ....    ]    Each item is a RowData object.
+
+/* 
+✅ Array of objects (most readable, scalable):
+const [fileDataResult, setFileDataResult] = useState<RowData[]>([]);
+type RowData = {
+  [key: string]: string | number | null;
+};
+[  { name: "Alice", age: 30 },     { name: "Bob", age: 25 },  { id: 1, value: "hello", balance: 2000 }   ]
+Type safety — if you try to use a field that doesn’t exist, TypeScript will warn you.
+
+
+✅ 2D array, only if structure is fixed (like a CSV file):
+const [data, setData] = useState<(string | number | null)[][]>([]);
+
+
+❌ Avoid any[][][] unless you're intentionally working with deeply nested data.
+*/  // const [fileDataResult, setFileDataResult] = useState< any[][][] >([]); // 3-dimensional array  [ [ [1, 2, 3],[s, b, g]  ] ],
+
+
+
+  
 
   // 📁 HANDLE FILE UPLOAD
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +50,7 @@ const [fileDataResult, setFileDataResult] = useState<RowData[]>([]); // any[]  v
     // ⏱️ Set new file and reset related state
     setSelectedFile(file);
     setFileUploaded(true);
-    setIsTwoRowFormatData(null);  // reset format choice
+    
     setSubmitted(false);          // clear submission status
   };
 
@@ -40,23 +62,21 @@ const [fileDataResult, setFileDataResult] = useState<RowData[]>([]); // any[]  v
       return;
     }
 
-    if (isTwoRowFormatData === null) {
-      alert('Please select whether the file is in single row or two row format.');
-      return;
-    }
+   
 
     // ✅ Call fileHelpers only after valid input
-    // fileHelpers(selectedFile, isTwoRowFormatData);
-
+   
 try {
     // ✅ Await the fileHelpers function
-    // const result = await fileHelpers(selectedFile, isTwoRowFormatData);
+    // const result = await fileHelpers(selectedFile);
+
     const result = await fileHelpers(selectedFile);
+
     console.log('fileHelpers returned:', result); // will log 9
 
     // Optionally: you can use this result in your UI if needed
 
-    // setFileDataResult(result)
+    setFileDataResult(result)
 
     setSubmitted(true);
   } catch (error) {
@@ -85,36 +105,7 @@ try {
         }`}
       />
 
-      {/* ✅ SHOW FORMAT OPTIONS AFTER FILE UPLOAD */}
-      {fileUploaded && (
-        <div className="mb-6">
-          <p className="font-medium">Is the file result format in a single row format?</p>
-
-          {/* ☑️ RADIO FOR SINGLE ROW (false) */}
-          <label className="mr-4">
-            <input
-              type="radio"
-              name="format"
-              value="false"
-              checked={isTwoRowFormatData === false}
-              onChange={() => setIsTwoRowFormatData(false)}
-            />{' '}
-            Yes (Single Row)
-          </label>
-
-          {/* ☑️ RADIO FOR TWO ROW (true) */}
-          <label>
-            <input
-              type="radio"
-              name="format"
-              value="true"
-              checked={isTwoRowFormatData === true}
-              onChange={() => setIsTwoRowFormatData(true)}
-            />{' '}
-            No (Two Row Format   commit 14)
-          </label>
-        </div>
-      )}
+    
 
       {/* 📤 EXPORT BUTTON */}
       <button
@@ -123,6 +114,7 @@ try {
       >
         Export Report
       </button>
+       
 
       {/* 📋 FILE NAME DISPLAY */}
       {selectedFile && (
@@ -136,7 +128,7 @@ try {
         <div className="mt-4 p-4 bg-green-100 rounded">
           <p className="text-green-800">
             ✅ File and format submitted! You selected{' '}
-            <strong>{isTwoRowFormatData ? 'Two Row' : 'Single Row'}</strong> format.
+            format.
           </p>
         </div>
       )}
@@ -144,11 +136,16 @@ try {
       {/* 🔍 PLACEHOLDER FOR REPORT DATA */}
       <div className="mt-6">
         <h2 className="text-md font-semibold">Report file data</h2>
-        {/* You can show extracted data here if fileHelpers returns any */}
+        {/* You can show extracted data here if fileHelpers returns any 
+        */}
+  
         {fileDataResult.length > 0 && (
   <pre className="mt-4 bg-gray-100 p-4 rounded text-sm overflow-x-auto">
     {JSON.stringify(fileDataResult, null, 2)}
+   
   </pre>
+
+
 )}
 
         
