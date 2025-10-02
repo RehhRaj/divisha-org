@@ -12,14 +12,9 @@ function UtrClientPage() {
 
   // 📦 STATE SETUP
   const [selectedFile, setSelectedFile] = useState<File | null>(null); // uploaded file
-  const [fileUploaded, setFileUploaded] = useState<boolean>(false);     // to disable input
- 
+  const [fileUploaded, setFileUploaded] = useState<boolean>(false);     // to disable input 
   const [submitted, setSubmitted] = useState(false); // to show confirmation after export
-
-
-
-
-  const [fileDataResult, setFileDataResult] = useState<(string | number | boolean | Date | null)[][]>([]); // [ { name: "Alice", age: 30 },   ....    ]    Each item is a RowData object.
+  const [fileDataResult, setFileDataResult] = useState<(string | number | boolean | Date | null)[][]>([]); 
 
 /* 
 ✅ Array of objects (most readable, scalable):
@@ -49,8 +44,7 @@ const [data, setData] = useState<(string | number | null)[][]>([]);
 
     // ⏱️ Set new file and reset related state
     setSelectedFile(file);
-    setFileUploaded(true);
-    
+    setFileUploaded(true);    
     setSubmitted(false);          // clear submission status
   };
 
@@ -67,23 +61,20 @@ const [data, setData] = useState<(string | number | null)[][]>([]);
     // ✅ Call fileHelpers only after valid input
    
 try {
-    // ✅ Await the fileHelpers function
-    // const result = await fileHelpers(selectedFile);
+    
+  const result = await fileHelpers(selectedFile);
 
-    const result = await fileHelpers(selectedFile);
-
-    console.log('fileHelpers returned:', result); // will log 9
-
-    // Optionally: you can use this result in your UI if needed
+   // Optionally: you can use this result in your UI if needed
 
     setFileDataResult(result)
+   
 
-    setSubmitted(true);
   } catch (error) {
     console.error('Error processing file:', error);
     alert('An error occurred while processing the file.');
   }
 
+  // activate 2nd file upload btn
 
 
     setSubmitted(true);
@@ -94,33 +85,49 @@ try {
       <h1 className="text-lg font-semibold mb-4">Client Component (CSR) - UTR Input</h1>
 
       {/* 📁 FILE INPUT FIELD */}
+    
+        <div>
+      {/* Hidden native input */}
       <input
         id="fileUpload"
         type="file"
         accept=".xls,.xlsx"
         onChange={handleFileChange}
-        disabled={fileUploaded} // disable after upload
-        className={`mb-6 block ${
-          fileUploaded ? 'bg-green-500 text-black' : 'bg-yellow-500 text-white'
-        }`}
+        className="hidden"
       />
+
+      {/* Custom label acts as the button */}
+      <label
+        htmlFor="fileUpload"
+        className="cursor-pointer px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600"
+      >
+       Choose & upload  compact  file
+      </label>
+
+      {/* Show custom message or file name */}
+      <span className="ml-3 text-gray-700">{selectedFile?.name}</span>
+    </div>
 
     
 
-      {/* 📤 EXPORT BUTTON */}
+     
+       
+
+
+      {selectedFile && (
+        <>
+        <p className="mt-4 text-red-600">
+          Uploaded File: <strong>{selectedFile.name}</strong>
+        </p>
+         
       <button
         onClick={handleExportReport}
+        
         className="bg-blue-600 text-white px-4 py-2 rounded"
       >
         Export Report
       </button>
-       
-
-      {/* 📋 FILE NAME DISPLAY */}
-      {selectedFile && (
-        <p className="mt-4 text-red-600">
-          Uploaded File: <strong>{selectedFile.name}</strong>
-        </p>
+      </>
       )}
 
       {/* ✅ SUCCESS MESSAGE AFTER EXPORT */}
@@ -130,6 +137,15 @@ try {
             ✅ File and format submitted! You selected{' '}
             format.
           </p>
+<input
+        id="fileUpload"
+        type="file"
+        accept=".xls,.xlsx"
+        onChange={handleFileChange}
+       
+        
+      />
+
         </div>
       )}
 
