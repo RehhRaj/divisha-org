@@ -1,33 +1,12 @@
-// frontend/src/app/(dashboard)/school/[tenantName]/(features)/utr/page.tsx
 
-import React from 'react';
-import FileUploadFlow from   './file-process.client';
+// file :- frontend/src/app/(dashboard)/school/[tenantName]/(features)/utr3/page.tsx
+import ClientWrapper from './ClientWrapper';
 
-
-
-
-
-export default function UtrSsrPage() {
-  
-
+export default function Page() {
   return (
-    <div className="p-6">
-
-
-  
-<div>
-      <h1>rekh rj server file utr2  folder    use client  here  Inputime for   utr pge  ky hi confusion</h1>
-      
+    <div>
+      <h1>UTR3 File Upload</h1>
+      <ClientWrapper />
     </div>
-
-<FileUploadFlow/>
-
- </div>
-
-
-
-   
-    
   );
 }
-

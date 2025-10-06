@@ -1,0 +1,139 @@
+page.tsx                        ✅ Entry page
+file-process.client.tsx        ✅ Main upload & processing logic
+ClientWrapper.tsx              ✅ Possibly layout/client-side config
+fileHandlers.ts                ✅ Handles file selection and parsing
+extractData.ts                 ✅ Mock or real data extraction
+detectHeaderRows.ts            ✅ (Future?) logic to guess header rows
+detectFileType.ts              ✅ Detects extension/type from filename
+types.ts                       ✅ Shared type definitions (e.g. ParsedFileData)
+
+
+```
+└── 📁utr3
+    └── 📁components
+        └── 📁utils
+            ├── detectFileType.ts
+            ├── detectHeaderRows.ts
+            ├── extractData.ts
+            ├── fileHandlers.ts
+            ├── parseFile.ts
+            ├── types.ts
+        ├── export-buttons.tsx
+        ├── file-export.tsx
+        ├── file-preview.tsx
+        ├── file-selector .tsx
+        ├── report-viewer.tsx
+    ├── ClientWrapper.tsx
+    ├── file-process.client.tsx
+    ├── note.text
+    └── page.tsx
+```
+
+out of these we just creted these files
+
+page.tsx
+file-process.client.tsx
+ClientWrapper.tsx
+fileHandlers.ts
+extractData.ts   : dummy records
+detectHeaderRows.ts
+detectFileType.ts
+types.ts
+
+
+
+├── 📁components
+│   ├── 📁utils
+│   │   ├── fileHandlers.ts            ← Only high-level coordination logic
+│   │   ├── detectFileType.ts          ← Determines type: csv, xlsx, txt
+│   │   ├── parseFile.ts               ← Contains parsing logic for different types
+│   │   ├── detectHeaderRows.ts        ← Logic to detect how many header rows
+│   │   ├── extractData.ts             ← Extracts final data array
+│   │   └── types.ts                   ← Shared types/interfaces
+│   ├── 📄file-selector.tsx            ← Handles file selection UI
+│   └── 📄file-preview.tsx             ← Optional: to show file summary or preview
+├── 📄file-process.client.tsx          ← Calls `handleFile`, shows output
+└── 📄page.tsx
+
+
+utr3/
+├── 📁components/
+│   ├── 📄file-selector.tsx             ← Upload UI
+│   ├── 📄report-viewer.tsx             ← Shows generated report
+│   ├── 📄export-buttons.tsx            ← For exporting report (CSV, Excel, etc.)
+│   └── 📁utils/
+│       ├── fileHandlers.ts             ← handleFile(file): Parses and extracts
+│       ├── detectFileType.ts
+│       ├── parseCsv.ts / parseXlsx.ts  ← per file type
+│       ├── detectHeaders.ts
+│       ├── types.ts                    ← Shared types
+├── 📄file-process.client.tsx           ← Stores 2 parsed files + report state
+└── 📄page.tsx                           ← Renders <FileUploadFlow />
+
+
+✅ Component Flow
+
+Here’s the component tree:
+<page.tsx>
+  └── <FileUploadFlow />     // file-process.client.tsx
+       ├── <FileSelector />  // 2x for two files
+       ├── <ReportViewer />
+       └── <ExportButtons />
+
+
+****************
+✅ Key Concepts for You
+1. Global or Local State (client-side)
+
+You need to store:
+
+Parsed file 1 (let’s call it dataA)
+
+Parsed file 2 (dataB)
+
+Generated reportData
+
+Use useState or a global store like Zustand.
+
+
+const [dataA, setDataA] = useState<ParsedFileData | null>(null);
+const [dataB, setDataB] = useState<ParsedFileData | null>(null);
+const [report, setReport] = useState<ReportData | null>(null);
+
+
+***************
+
+2. handleFile should RETURN data
+
+Because you're storing the parsed file in local state (not just logging), your function should return the parsed object:
+
+
+export const handleFile = async (file: File): Promise<ParsedFileData | null> => {
+  if (!file) return null;
+
+  const fileType = detectFileType(file.name);
+  const content = await parseFile(file, fileType);
+  const headers = detectHeaders(content);
+  const data = extractData(content, headers);
+
+  return {
+    fileName: file.name,
+    headers,
+    data,
+    type: fileType
+  };
+};
+
+
+
+src/app/(dashboard)/school/[tenantName]/(features)/utr3/
+├── page.tsx
+├── file-process.client.tsx         ← Main logic component
+├── components/
+│   ├── file-selector.tsx           ← File upload input
+│   ├── report-viewer.tsx           ← Shows generated report
+│   ├── export-buttons.tsx          ← Export buttons placeholder
+│   └── utils/
+│       ├── fileHandlers.ts         ← Parses file
+│       ├── detectFileType.ts       ← Returns 'csv', 'xlsx', etc.
+│       ├── types.ts                ← Shared types

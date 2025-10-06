@@ -1,0 +1,122 @@
+as i am sole developer and start building project i would like to work on this considering future proff not just to complete a single task, 
+my work flow is something like this 
+if there is error let me know too nd help me to code
+
+1. user uplad a file
+
+check if file selectedFiles   : display second file selector 
+detect file type whether this file is csv, excel, text, etc 
+based on file type proced to read file , extract data , store data in array in array format
+detect headers lines started in file or in array
+detect actual data started    in file or in array
+
+all should done using webworker
+
+
+user upload second file
+
+same logic and flow as firle 1
+
+// ******
+my folder structure is like this 
+
+```
+└── 📁utr5
+    └── 📁components
+        ├── files-selector.tsx
+    └── 📁hooks
+    └── 📁logic
+    └── 📁services
+    └── 📁utils
+    ├── ClientWrapper.tsx
+    ├── fileProcess.tsx
+    ├── notesheet.txt
+    └── page.tsx
+```
+```
+utr3/
+├── 📁components/
+│   └── files-selector.tsx
+├── 📁hooks/
+│   └── useFileProcessor.ts   ✅ new hook
+├── 📁logic/
+│   └── fileProcessor.worker.ts
+├── types.ts
+└── file-process.client.tsx   ✅ UI component
+```
+
+and suggest modification in my code if require 
+my code is
+"// file :- frontend/src/app/(dashboard)/school/[tenantName]/(features)/utr5/page.tsx
+import ClientWrapper from './ClientWrapper';
+
+export default function Page() {
+  return (
+    <div>
+      <h1>UTR3 File Upload</h1>
+      <ClientWrapper />
+    </div>
+  );
+}
+"
+other file code
+"// ClientWrapper.tsx
+'use client';
+
+import dynamic from 'next/dynamic';
+
+export default function ClientWrapper() {
+
+
+const ClientWrapper= dynamic(() => import('./fileProcess'), {
+  ssr: false,
+});
+
+  return <ClientWrapper />;
+}
+"
+other file code is 
+"
+// ClientWrapper.tsx
+'use client';
+
+import dynamic from 'next/dynamic';
+
+export default function ClientWrapper() {
+
+
+const ClientWrapper= dynamic(() => import('./fileProcess'), {
+  ssr: false,
+});
+
+  return <ClientWrapper />;
+}
+"
+file selector code is 
+"
+// frontend/src/app/(dashboard)/school/[tenantName]/(features)/utr5/components/files-selector.tsx
+"use client";
+
+type FileSelectorProps = {
+  label: string;
+  onFileSelect: (file: File) => void;
+};
+
+export default function FileSelector({ label, onFileSelect }: FileSelectorProps) {
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const file = e.target.files?.[0];
+    if (file) {
+      onFileSelect(file);
+    }
+  };
+
+  return (
+    <div className="mb-4">
+      <label >{label}</label>
+      <input type="file" onChange={handleChange} className="border p-2" />
+    </div>
+  );
+}
+"

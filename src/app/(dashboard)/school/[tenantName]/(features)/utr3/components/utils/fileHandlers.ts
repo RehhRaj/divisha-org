@@ -1,11 +1,44 @@
-// File '/home/papa/Documents/2025-26/divish.org/frontend/src/app/(dashboard)/school/[tenantName]/(features)/utr3/components/utils/fileHandlers.ts' is not a module.ts(2306)
+import { detectFileType } from './detectFileType';
+import { ParsedFileData } from './types';
 
 
-//  module    just    add export  const handleFile  = a ......
-export const handleFile  = async (file: File): Promise<void> => {
-   // ye functions  utr3/components/file-selector .tsx   se related hi
-    
-if (file){
-  console.log(file.name)
-}
+
+import { extractData } from './extractData';
+
+
+
+
+export const FileHandlers = async (file: File): Promise<ParsedFileData | null> => {
+  // if (!file) return null;
+
+
+
+  const type = detectFileType(file.name);
+
+
+  if (!["xlsx", "xls"].includes(type)) return null; // if (type !== "xlsx" && type !== "xls")   return null; 
+
+
+
+
+
+
+
+
+  /*  await file.text()
+  const text = await file.text();//✅ file.text() is a built-in method provided by the File API in the browser. It's used to read the contents of a file as plain text — for example, when you upload a .csv, .txt, or even .json file using an <input type="file" />
+*/
+  const fileName = file.name;
+  console.log(fileName)
+  const { headers, data } = extractData(fileName); // ← Using mock
+
+  console.log(headers, data)
+  return {
+    fileName,
+    type: 'mock',
+    headers,
+    data,
   };
+
+  // it returns proper dt 
+};

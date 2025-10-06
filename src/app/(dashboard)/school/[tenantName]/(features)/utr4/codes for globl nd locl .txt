@@ -1,0 +1,223 @@
+
+
+✅ 1. Global Button Component (UI-Only)
+📁 src/components/Button.tsx
+
+
+type ButtonProps = {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  variant?: 'primary' | 'secondary';
+};
+
+export default function Button({ label, onClick, disabled = false, variant = 'primary' }: ButtonProps) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`px-4 py-2 rounded 
+        ${variant === 'primary' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-black'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+    >
+      {label}
+    </button>
+  );
+}
+
+
+✅ Now you can use this on any page like:
+
+<Button label="Upload Now" onClick={handleUpload} variant="primary" />
+<Button label="Cancel" onClick={cancelUpload} variant="secondary" />
+
+
+*******************************
+
+✅ 2. Global FileUploader Component (UI-only)
+
+📁 src/components/FileUploader.tsx
+
+import { ChangeEvent } from 'react';
+
+type FileUploaderProps = {
+  label?: string;
+  accept?: string; // Accept specific file types like ".csv,.txt,.pdf"
+  onFileSelect: (file: File) => void;
+  helperText?: string;
+};
+
+export default function FileUploader({ label = "Select File", accept, onFileSelect, helperText }: FileUploaderProps) {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      onFileSelect(file);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-medium">{label}</label>
+      <input type="file" accept={accept} onChange={handleChange} />
+      {helperText && <p className="text-xs text-gray-500">{helperText}</p>}
+    </div>
+  );
+}
+
+************
+✅ 3. Using it in a Specific Feature (like utr3/)
+
+📁 src/app/utr3/FileUpload.tsx
+
+'use client';
+
+import FileUploader from '@/components/FileUploader';
+import Button from '@/components/Button';
+
+export default function FileUpload() {
+  const handleFileSelect = (file: File) => {
+    console.log("UTR3 File selected:", file);
+    // run utr3-specific validation
+    // parse contents or upload to server
+  };
+
+  const uploadFile = () => {
+    console.log("Uploading...");
+  };
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold">Upload UTR3 File</h2>
+
+      <FileUploader
+        label="Choose your UTR3 file"
+        accept=".txt,.utr3"
+        onFileSelect={handleFileSelect}
+        helperText="Only .utr3 or .txt files are supported"
+      />
+
+      <Button label="Upload" onClick={uploadFile} />
+    </div>
+  );
+}
+
+****************
+🧠 Why This Works
+Component	Role
+FileUploader	Handles file input UI only, passes file back to parent
+Button	Handles button UI only, uses props for label/action
+FileUpload in utr3	Handles all business logic, file processing, upload calls*************
+**************
+
+✅ Reuse Example: In Another Page (e.g. reports/)
+
+📁 src/app/download-reports/ReportUpload.tsx
+
+---------------
+<FileUploader
+  label="Upload CSV Report"
+  accept=".csv"
+  onFileSelect={handleCsvFile}
+  helperText="Only .csv files allowed. Max size: 2MB"
+/>
+
+<Button label="Submit Report" onClick={submitCsv} />
+
+
+***************
+💡 Optional Enhancements Later
+
+Add file preview
+
+Add drag & drop support (react-dropzone)
+
+Add loading indicator or progress bar
+
+Add error message prop
+
+Use tailwind variants or shadcn/ui for better styling
+
+********************
+
+ utr3/                     # Feature root
+        ├── page.tsx              # Route entry
+        ├── ClientWrapper.tsx     # Dynamic client wrapper
+        ├── UtrFileProcessor.tsx  # Main logic UI
+        ├── components/           # UI elements (local only)
+        │   └── FilesSelector.tsx
+        ├── logic/                # Business logic (file parsing, etc.)
+        │   ├── processUtrFile.ts
+        │   └── validateFileType.ts
+        ├── utils/                # Helper functions (date formatting, etc.)
+        │   └── formatDate.ts
+        ├── services/             # API calls specific to this feature
+        │   └── fileService.ts
+        └── hooks/                # Feature-specific custom hooks
+            └── useFileUploader.ts
+
+*****************************
+✅ UI Flow
+1. User visits /utr3 (entry: page.tsx)
+2. ClientWrapper.tsx ensures hydration & client-side setup
+3. UtrFileProcessor.tsx is the main container:
+   - Renders <FilesSelector />
+   - Triggers file processing
+   - Displays preview
+   - Enables drag/drop for report generation
+
+   *******************
+
+UI Components Breakdown
+
+FilesSelector.tsx: UI to select or drag & drop files (max 2 files). Triggers useFileUploader.
+
+UtrFileProcessor.tsx: Manages state for:
+
+Selected files
+
+Parsed data
+
+Report config
+
+Drag-and-drop layout for customizable columns
+
+Drag-and-drop: Could use a lib like dnd-kit
+****************************
+
+Logic Flow
+
+1. User selects files → useFileUploader handles validation
+2. Files are passed to a Web Worker → processUtrFile.ts
+3. Worker parses large files (e.g., XLSX, CSV) → returns data
+4. Main thread stores data in array-of-arrays format
+5. User selects columns for reporting (drag/drop UI)
+6. Generate report from filtered/selected headers
+
+*********************
+
+📁 Folder Responsibilities (Expanded)
+Folder/File	Responsibility
+
+
+| Folder/File                    | Responsibility                                                |
+| ------------------------------ | ------------------------------------------------------------- |
+| `page.tsx`                     | Route entry, renders `<ClientWrapper>`                        |
+| `ClientWrapper.tsx`            | Ensures components run on client (like `useEffect` hydration) |
+| `UtrFileProcessor.tsx`         | Main logic and UI manager                                     |
+| `components/FilesSelector.tsx` | Handles file input and drag-drop UI                           |
+| `logic/processUtrFile.ts`      | Web Worker logic (parsing large file)                         |
+| `logic/validateFileType.ts`    | Validates MIME types/extensions                               |
+| `utils/formatDate.ts`          | Formats dates for report                                      |
+| `services/fileService.ts`      | If any remote API is involved                                 |
+| `hooks/useFileUploader.ts`     | Handles validation and invokes worker                         |
+
+
+****************************
+
+⚖️ Summary
+| ❓ Use Case               | ✅ Preferred Approach                     |
+| ------------------------ | ---------------------------------------- |
+| File parsing in worker   | ✅ Web Worker                             |
+| FileReader is async      | ❗ Must use callback or Promise           |
+| You want **no Promises** | ✅ Use callback + counter (shown above)   |
+| Want cleaner code        | ✅ Promises make it cleaner, but optional |
