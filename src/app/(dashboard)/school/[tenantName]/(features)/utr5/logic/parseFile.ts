@@ -43,8 +43,8 @@ export async function parseFile(file: File): Promise<ParsedFile> {
     const rows: ParsedFile = XLSX.utils.sheet_to_json(sheet, {
       header: 1, // 1 = returns array of arrays
       // raw: tells  “Don’t give me the raw data (e.g. 45901 or 1315.05), give me what the user sees in Excel.”
-    //   raw: false, // returns formatted values as string/number  number in  mount in form 1,10,915.00 string
-      raw: true, // returns formatted values as string/number   DTE IN number issue
+      raw: false, // returns formatted values as string/number  number in  mount in form 1,10,915.00 string
+      // raw: true, // returns formatted values as string/number   DTE IN number issue
     }) as ParsedFile;
 
     console.log("type of rows  :---", typeof(rows))
