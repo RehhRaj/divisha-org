@@ -4,7 +4,7 @@ export default function Page() {
   // Output dekhne ke liye in values ko change karein.
 
   const site = {
-    level: "platform",
+    level: "tenant",
     template: "school",
   };
 
@@ -15,7 +15,7 @@ export default function Page() {
   }
 
   if (site.level === "tenant" && site.template === "school") {
-    return <h1>School Website</h1>;
+    return <h1>tenant   School Website</h1>;
   }
 
   if (site.level === "tenant" && site.template === "society") {
