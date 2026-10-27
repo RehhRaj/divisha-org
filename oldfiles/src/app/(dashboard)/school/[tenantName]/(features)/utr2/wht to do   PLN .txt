@@ -1,0 +1,200 @@
+✅ Operation Flow
+
+User lands on page
+
+Prompt shown to choose a file
+
+On file selection:
+
+Show "file selected" message
+
+Hide upload button
+
+Start progress bar (%)
+
+Show completion message
+
+Prompt for next file
+
+Loop steps 3–5
+
+Render parsed data in a table
+
+Enable Export Report button
+
+✅ Flow Stage to Component Mapping
+Stage	Component Name
+Landing / Upload Prompt	FileSelector.tsx
+File chosen & hide button	FileSelector.tsx (internal state)
+Start processing + progress	UploadProgressBar.tsx
+Completion message	UploadCompleteMessage.tsx
+Render table of results	DataTable.tsx
+Export result	ExportButton.tsx
+
+/app
+  /report
+    page.tsx                          ← SSR-safe route entry
+    FileUploadFlow.client.tsx         ← Main client-side controller
+
+    /components
+      FileSelector.tsx
+      UploadProgressBar.tsx
+      UploadCompleteMessage.tsx
+      DataTable.tsx
+      ExportButton.tsx
+
+    /utils
+      excelParser.ts                  ← SheetJS parser
+      progressSimulator.ts            ← Optional UX progress sim
+      exportToExcel.ts                ← Export helper
+
+    /workers (optional)
+      xlsxWorker.ts                   ← Web Worker for large files
+
+
+| Layer     | File                                  | Role                            |
+| --------- | ------------------------------------- | ------------------------------- |
+| SSR       | `page.tsx`                            | Entry point, renders client     |
+| CSR       | `FileUploadFlow.client.tsx`           | Handles upload flow, uses hooks |
+| UI        | `/components/*.tsx`                   | Stateless render components     |
+| Utilities | `/utils/*.ts`                         | Parsing, progress, export logic |
+| Workers   | `/workers/xlsxWorker.ts` *(optional)* | Offload large file parsing      |
+
+
+| Purpose                      | File Name                   | Notes                                 |
+| ---------------------------- | --------------------------- | ------------------------------------- |
+| Route entry                  | `page.tsx`                  | SSR-safe wrapper only                 |
+| Upload controller            | `FileUploadFlow.client.tsx` | Main logic, uses all subcomponents    |
+| UI Components                | `FileSelector.tsx`, etc.    | Pure, reusable components             |
+| Excel parser (SheetJS)       | `excelParser.ts`            | FileReader + xlsx logic               |
+| Export helper                | `exportToExcel.ts`          | Downloads XLSX or CSV                 |
+| Simulate progress (UX)       | `progressSimulator.ts`      | Optional UX nicety                    |
+| Background worker (optional) | `xlsxWorker.ts`             | Parses huge files without UI blocking |
+
+
+
+| File                        | Type              | Responsibility                       |
+| --------------------------- | ----------------- | ------------------------------------ |
+| `page.tsx`                  | Server Component  | Loads route, renders client logic    |
+| `FileUploadFlow.client.tsx` | Client Component  | Full browser logic + SheetJS parsing |
+| `components/*.tsx`          | Client Components | UI-only, reusable pieces             |
+| `utils/*.ts`                | Pure Functions    | Logic-only, no DOM or hooks          |
+| `workers/*.ts` *(optional)* | Web Worker        | Handle heavy lifting outside main UI |
+
+
+| Feature             | File                               | Benefit                             |
+| ------------------- | ---------------------------------- | ----------------------------------- |
+| 🧵 Web Worker       | `/workers/xlsxWorker.ts`           | Non-blocking large file parsing     |
+| 🧪 Unit Tests       | `/tests/utils/excelParser.test.ts` | Confident logic validation          |
+| 📦 Shared Utilities | `/lib/` or global `utils/`         | Centralized if reused across routes |
+
+
+✅ TL;DR Summary
+
+SSR: Use page.tsx only to render the main client component.
+
+CSR: Handle all logic in FileUploadFlow.client.tsx.
+
+Components: Stateless UI pieces live in /components.
+
+Utils: All logic like parsing, progress, export in /utils.
+
+Optionally: Add Web Worker for very large files.
+
+🎯 You're ready for scalable, performant, large-file Excel processing with a clean, maintainable architecture.
+
+✅ Why This Architecture?
+
+⚡ Optimized for large files: everything runs in the browser, no backend memory use
+
+💡 SSR is minimal, just bootstraps the route
+
+🧱 Modular structure: easy to maintain, test, and extend
+
+🔁 Supports repeated uploads: state can reset cleanly
+
+🧪 Testable logic: all parsing and export utilities can be tested separately
+
+
+/app/report/components/FileSelector.tsx
+/app/report/components/UploadProgressBar.tsx
+/app/report/components/UploadCompleteMessage.tsx
+/app/report/components/DataTable.tsx
+/app/report/components/ExportButton.tsx
+
+🔹 Step 2: Scaffold Main Flow Controller (Client-side)
+/app/report/FileUploadFlow.client.tsx
+/app/report/page.tsx
+
+
+Step 3: SSR Entry Point
+/app/report/page.tsx
+
+
+🔁 What to Do After Structure is Ready
+
+Once this structure is in place, you can follow these steps:
+
+| Step | Task                                                                          |
+| ---- | ----------------------------------------------------------------------------- |
+| ✅    | Layout done (above)                                                           |
+| 🔄   | Add internal state to `FileUploadFlow.client.tsx` (step-by-step flow control) |
+| 🔄   | Hook up `FileSelector` with `onChange` handler                                |
+| 🔄   | Trigger progress simulation (optional via `progressSimulator.ts`)             |
+| 🔄   | Use `excelParser.ts` to parse selected file                                   |
+| 🔄   | Pass parsed data to `DataTable`                                               |
+| 🔄   | Enable `ExportButton` once data is ready                                      |
+
+⚠️ Tip: Use State Machine or Flow Staging
+
+Since aapka flow multi-stage hai, consider using:
+
+useReducer() or
+
+A tiny state machine like xstate or manual enum-based stage state.
+
+Example:
+
+type Stage =
+  | 'idle'
+  | 'fileSelected'
+  | 'uploading'
+  | 'completed'
+  | 'rendered';
+
+const [stage, setStage] = useState<Stage>('idle');
+
+Then show components conditionally:
+{stage === 'idle' && <FileSelector />}
+{stage === 'uploading' && <UploadProgressBar />}
+{stage === 'completed' && <UploadCompleteMessage />}
+{stage === 'rendered' && (
+  <>
+    <DataTable />
+    <ExportButton />
+  </>
+)}
+
+
+✅ Final Thoughts
+
+Yes — structure first is 100% the right call here, especially since:
+
+Aapka flow defined hai.
+
+Architecture modular hai.
+
+Har component clearly scoped hai.
+
+Functionality baad me smoothly plug-in ho sakti hai.
+
+useState with useReducer or even plug in xstate if the flow gets mor
+
+
+| Component Name          | ✅ Good Filename (`app/` folder) |
+| ----------------------- | ------------------------------- |
+| `FileSelector`          | `file-selector.tsx`             |
+| `UploadProgressBar`     | `upload-progress-bar.tsx`       |
+| `UploadCompleteMessage` | `upload-complete-message.tsx`   |
+| `DataTable`             | `data-table.tsx`                |
+| `ExportButton`          | `export-button.tsx`             |

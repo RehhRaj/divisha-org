@@ -1,0 +1,49 @@
+User
+  |
+  v
+[page.tsx] -------------------- renders --------------------> [ClientWrapper.tsx]
+                                                              |
+                                                              v
+                                                dynamic import -> [UtrFileProcessor.tsx]
+                                                              |
+                                                              | renders
+                                                              v
+                                                   [FileSelector.tsx]  --(user picks file)--> onChange
+                                                              |
+                                                              v
+                                       onChange calls -> onFileSelect(file)  (handler returned by useFileUploader)
+                                                              |
+                                                              v
+                                useFileUploader(handler)  => handler(file)  -> setSelectedFiles([file])
+                                                              |
+                                                              v
+                                React state: selectedFiles updated (triggers)
+                                                              |
+                                                              v
+                           useEffect(() => { ... }, [selectedFiles])  // creates worker
+                                                              |
+                                                              v
+       const worker = new Worker(new URL('./logic/processUtrFile.worker.ts', import.meta.url))
+                                                              |
+                                                              v
+                      worker.postMessage({ files: selectedFiles })  // send File[] (File objects)
+                                                              |
+                                                              v
+                       ┌──────────────────────── Worker Thread ─────────────────────────┐
+                       │  processUtrFile.worker.ts receives message                       │
+                       │  reads file: await file.text()                                  │
+                       │  parse rows: rows = text.split("\n").map(r => r.split(","))     │
+                       │  postMessage(rows)  // rows is string[][]                        │
+                       └────────────────────────────────────────────────────────────────────┘
+                                                              |
+                                                              v
+                       main thread: worker.onmessage = (event) => setParsedData(event.data)
+                                                              |
+                                                              v
+                          React state: parsedData = string[][]  -> UI re-renders
+                                                              |
+                                                              v
+                          UtrFileProcessor shows preview: parsedData.slice(0,5)
+                                                              |
+                                                              v
+                     worker.terminate()  // after completion OR in cleanup (component unmount)
