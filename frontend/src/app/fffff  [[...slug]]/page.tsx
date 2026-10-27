@@ -6,7 +6,7 @@ import MessageView from "@/templates/MessageView";
 import TemplateView from "@/templates/TemplateView";
 
 // Always render per request: tenant pages depend on the hostname.
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const h = await headers();
