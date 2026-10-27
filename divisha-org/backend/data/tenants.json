@@ -1,8 +1,0 @@
-{
-  "tenants": [
-    {"slug": "abc",       "name": "abc",       "business_type": "school",   "template": "school-template-a", "custom_domain": "abc.com",  "contact": "123456789",    "status": "active"},
-    {"slug": "hsbc",      "name": "hsbc",      "business_type": "hospital", "template": "hos-template-b",    "custom_domain": "hscb.com", "contact": "hb123456789",  "status": "pending"},
-    {"slug": "ss-school", "name": "ss school", "business_type": "school",   "template": "school-template-b", "custom_domain": "ss.com",   "contact": "sss123456789", "status": "active"},
-    {"slug": "norw",      "name": "norw",      "business_type": "hospital", "template": "hos-template-a",    "custom_domain": "norw.com", "contact": "nor895hh",     "status": "active"}
-  ]
-}
