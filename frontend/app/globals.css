@@ -1,26 +1,194 @@
-@import "tailwindcss";
+/* globals.css
+   Basic styling for the Business OS homepage.
+   Change the colours in :root to update the overall look. */
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ink: #142c3d;
+  --muted: #60717d;
+  --teal: #0a9d91;
+  --teal-dark: #087e77;
+  --paper: #fbfaf7;
+  --line: #e6e9e5;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body {
-  background: var(--background);
-  color: var(--foreground);
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
   font-family: Arial, Helvetica, sans-serif;
+}
+a { color: inherit; text-decoration: none; }
+.site-shell { overflow: hidden; }
+
+.topbar {
+  max-width: 1200px;
+  min-height: 76px;
+  padding: 16px 28px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; }
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--teal);
+  color: white;
+  font-size: 17px;
+}
+.brand-light { margin-left: 3px; color: var(--muted); font-weight: 500; }
+.nav-links { display: flex; gap: 28px; color: var(--muted); font-size: 14px; }
+.nav-cta { padding: 11px 14px; border: 1px solid var(--line); border-radius: 8px; background: white; font-size: 13px; font-weight: 700; }
+
+.hero {
+  max-width: 1200px;
+  min-height: 490px;
+  padding: 45px 28px 65px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 38px;
+}
+.eyebrow { color: var(--teal-dark); font-size: 11px; font-weight: 800; letter-spacing: 1.4px; }
+.hero h1, .section-heading h2, .how-inner h2 {
+  margin: 20px 0;
+  font-size: clamp(38px, 4.5vw, 58px);
+  line-height: 1.1;
+  letter-spacing: -2px;
+}
+.hero h1 span, .section-heading h2 span, .how-inner h2 span { color: var(--teal); }
+.hero-description { max-width: 480px; color: var(--muted); line-height: 1.8; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 25px; }
+.button-primary {
+  display: inline-block;
+  padding: 14px 17px;
+  border-radius: 8px;
+  background: var(--teal);
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+}
+.button-primary:hover { background: var(--teal-dark); }
+.button-text { color: var(--muted); font-size: 13px; font-weight: 700; }
+.hero-note { margin-top: 32px; font-size: 13px; line-height: 1.8; }
+.hero-note span { color: var(--muted); font-size: 12px; }
+
+.hero-visual {
+  position: relative;
+  min-height: 330px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  background: #e6f5ef;
+  padding: 30px;
+}
+.browser-window {
+  width: 85%;
+  min-height: 245px;
+  overflow: hidden;
+  border: 7px solid #fff;
+  border-radius: 13px;
+  background: white;
+  box-shadow: 0 20px 45px #173c3518;
+  transform: rotate(-3deg);
+}
+.browser-bar { display: flex; align-items: center; gap: 5px; height: 27px; padding: 0 10px; background: #f0f4f2; }
+.browser-bar i { width: 6px; height: 6px; border-radius: 50%; background: #9bbab0; }
+.browser-bar span { margin-left: 10px; color: #84918f; font-size: 8px; }
+.browser-content { padding: 20px; }
+.mock-logo { width: 32px; height: 7px; border-radius: 4px; background: var(--teal); }
+.mock-title { width: 70%; height: 17px; margin-top: 18px; border-radius: 4px; background: #dce8e3; }
+.mock-line { width: 90%; height: 6px; margin-top: 9px; border-radius: 4px; background: #edf1ef; }
+.mock-line.short { width: 60%; }
+.mock-button { width: 65px; height: 18px; margin-top: 14px; border-radius: 4px; background: var(--teal); }
+.mock-cards { display: flex; gap: 9px; margin-top: 20px; }
+.mock-cards i { flex: 1; height: 43px; border-radius: 5px; background: #e9f4ef; }
+.phone-window {
+  position: absolute;
+  right: 6%;
+  bottom: 15px;
+  width: 82px;
+  height: 150px;
+  padding: 14px 8px;
+  border: 4px solid #fff;
+  border-radius: 15px;
+  background: #f8fbf9;
+  box-shadow: 0 12px 25px #173c3520;
+}
+.phone-speaker { width: 22px; height: 3px; margin: -7px auto 16px; border-radius: 4px; background: #b6c8c1; }
+.phone-block { height: 24px; border-radius: 4px; background: #dcece5; }
+.phone-line { height: 5px; margin-top: 8px; border-radius: 4px; background: #e2eae6; }
+.phone-line.short { width: 65%; }
+.phone-button { width: 40px; height: 12px; margin-top: 13px; border-radius: 4px; background: var(--teal); }
+.floating-note { position: absolute; bottom: 10px; left: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 9px; background: white; font-size: 11px; font-weight: 700; }
+
+.trust-strip {
+  max-width: 1144px;
+  margin: 0 auto 75px;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.trust-strip div { text-align: center; }
+.trust-strip b, .trust-strip span { display: block; }
+.trust-strip b { font-size: 13px; }
+.trust-strip span { margin-top: 6px; color: var(--muted); font-size: 11px; }
+
+.section-wrap { max-width: 1144px; margin: auto; padding: 0 0 90px; }
+.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 30px; margin-bottom: 28px; }
+.section-heading h2, .how-inner h2 { font-size: 38px; }
+.section-heading > p { max-width: 360px; color: var(--muted); font-size: 13px; line-height: 1.8; }
+.solution-grid, .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.solution-card { padding: 23px; border: 1px solid var(--line); border-radius: 13px; background: white; }
+.solution-card-top { display: flex; justify-content: space-between; align-items: center; }
+.solution-icon { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: #e6f5ef; color: var(--teal-dark); font-size: 22px; }
+.solution-tag { color: #84918f; font-size: 9px; font-weight: 800; letter-spacing: 1px; }
+.solution-card h3, .step h3 { margin: 20px 0 8px; font-size: 17px; }
+.solution-card p, .step p { color: var(--muted); font-size: 12px; line-height: 1.8; }
+.solution-card a { display: inline-block; margin-top: 10px; color: var(--teal-dark); font-size: 12px; font-weight: 700; }
+
+.how-section { padding: 70px 28px; background: #f0f6f3; }
+.how-inner { max-width: 1144px; margin: auto; text-align: center; }
+.steps-grid { margin: 35px 0; text-align: left; }
+.step { padding-top: 18px; border-top: 1px solid #d5e4de; }
+.step-number { color: var(--teal); font-size: 12px; font-weight: 800; }
+.footer { max-width: 1144px; margin: auto; padding: 26px 0; display: flex; align-items: center; gap: 18px; }
+.footer-brand .brand-mark { width: 30px; height: 30px; }
+.footer p, .copyright { color: #84918f; font-size: 11px; }
+.copyright { margin-left: auto; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-copy { max-width: 650px; }
+  .hero-visual { min-height: 300px; }
+  .section-wrap, .trust-strip, .footer { margin-left: 28px; margin-right: 28px; }
+  .section-heading { align-items: start; flex-direction: column; gap: 8px; }
+}
+@media (max-width: 600px) {
+  .topbar { padding: 14px 18px; }
+  .nav-links { display: none; }
+  .nav-cta { font-size: 11px; }
+  .hero { padding: 30px 20px 42px; gap: 25px; }
+  .hero h1 { font-size: 42px; }
+  .hero-visual { min-height: 260px; padding: 20px; }
+  .browser-window { width: 95%; }
+  .trust-strip { grid-template-columns: 1fr; margin: 0 20px 55px; text-align: left; }
+  .trust-strip div { text-align: left; }
+  .section-wrap { margin: 0 20px; padding-bottom: 60px; }
+  .section-heading h2, .how-inner h2 { font-size: 30px; }
+  .solution-grid, .steps-grid { grid-template-columns: 1fr; }
+  .how-section { padding: 55px 20px; }
+  .footer { margin: 0 20px; flex-wrap: wrap; }
+  .footer p { order: 3; width: 100%; margin: 0; }
 }
