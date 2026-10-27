@@ -1,40 +1,26 @@
-// app/[[...slug]]/page.tsx
-//
-// This page decides what to show based on the website's hostname.
-// Example: businessos.example shows the platform homepage;
-// a customer's domain can show that customer's website.
 
-import { connection, headers } from "next/server";
-import { getContext } from "@/lib/context";
-import HomePage from "@/app/HomePage";
-import MessageView from "@/templates/MessageView";
-import TemplateView from "@/templates/TemplateView";
+export default function Page() {
+  // STEP 1: API se aane wala data abhi hard-coded hai.
+  // Output dekhne ke liye in values ko change karein.
 
-export default async function Page() {
-  // Wait for the real request because the hostname decides which tenant to show.
-  // This is the modern alternative to `export const dynamic = "force-dynamic"`
-  // when using Next.js Cache Components.
-  await connection();
+  const site = {
+    level: "platform",
+    template: "school",
+  };
 
-  const requestHeaders = await headers();
-  const hostname =
-    requestHeaders.get("x-forwarded-host") ??
-    requestHeaders.get("host") ??
-    "";
+  // STEP 2: Data ke base par page select karein.
 
-  // getContext looks up which website belongs to this hostname.
-  const site = await getContext(hostname);
-
-  // 1. Main Business OS marketing website.
   if (site.level === "platform") {
-    return <HomePage />;
+    return <h1>Business OS Home Page</h1>;
   }
 
-  // 2. A customer website, if a template is configured for it.
-  if (site.level === "tenant" && site.template) {
-    return <TemplateView data={site} template={site.template} />;
+  if (site.level === "tenant" && site.template === "school") {
+    return <h1>School Website</h1>;
   }
 
-  // 3. A fallback page if the host is unknown or not configured.
-  return <MessageView data={site} />;
+  if (site.level === "tenant" && site.template === "society") {
+    return <h1>Housing Society Website</h1>;
+  }
+
+  return <h1>Website Not Configured</h1>;
 }
