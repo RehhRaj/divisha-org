@@ -1,4 +1,8 @@
 
+
+import HomePage from "@/app/HomePage";
+
+
 export default function Page() {
   // STEP 1: API se aane wala data abhi hard-coded hai.
   // Output dekhne ke liye in values ko change karein.
@@ -16,7 +20,7 @@ export default function Page() {
   }
 
   if (site.level === "tenant" && site.template === "society") {
-    return <h1>Housing Society Website</h1>;
+    return <HomePage />;
   }
 
    if (site.level === "platform") {
