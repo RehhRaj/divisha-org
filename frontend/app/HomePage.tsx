@@ -150,7 +150,13 @@ export default function HomePage() {
           <span>Business<span className="brand-light">OS</span></span>
         </a>
         <p>A flexible foundation for business websites.</p>
-        <span className="copyright">© {new Date().getFullYear()} Business OS</span>
+
+  
+
+     
+        {/* <span className="copyright">© {new Date().getFullYear()} Business OS</span> */}
+      
+      
       </footer>
     </main>
   );
