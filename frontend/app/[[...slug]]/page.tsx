@@ -48,6 +48,9 @@
 import { connection } from "next/server";
 import { headers } from "next/headers";
 
+
+
+
 type PageData = {
   page_type: "platform" | "tenant";
   title: string;
