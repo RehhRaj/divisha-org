@@ -34,88 +34,90 @@
 
 
 
-import { connection } from "next/server";
-import { headers } from "next/headers";
 
-type PageData = {
-  page_type: "platform" | "tenant";
-  title: string;
-  message: string;
-  tenant: string | null;
-};
 
-async function getPageData(host: string): Promise<PageData | null> {
-  const apiUrl =
-    process.env.DJANGO_API_URL ??
-    "https://gtbtax.pythonanywhere.com/api/page/";
+// import { connection } from "next/server";
+// import { headers } from "next/headers";
 
-  const url = new URL(apiUrl);
-  url.searchParams.set("host", host);
+// type PageData = {
+//   page_type: "platform" | "tenant";
+//   title: string;
+//   message: string;
+//   tenant: string | null;
+// };
 
-  const response = await fetch(url, {
-    cache: "no-store",
-  });
+// async function getPageData(host: string): Promise<PageData | null> {
+//   const apiUrl =
+//     process.env.DJANGO_API_URL ??
+//     "https://gtbtax.pythonanywhere.com/api/page/";
 
-  if (!response.ok) {
-    return null;
-  }
+//   const url = new URL(apiUrl);
+//   url.searchParams.set("host", host);
 
-  return response.json();
-}
+//   const response = await fetch(url, {
+//     cache: "no-store",
+//   });
 
-export default async function Page() {
-  // Read the request at runtime, not during the build.
-  await connection();
+//   if (!response.ok) {
+//     return null;
+//   }
 
-  const requestHeaders = await headers();
+//   return response.json();
+// }
 
-  const host = (
-    requestHeaders.get("x-forwarded-host") ??
-    requestHeaders.get("host") ??
-    ""
-  )
-    .split(",")[0]
-    .trim()
-    .toLowerCase()
-    .replace(/\.$/, "");
+// export default async function Page() {
+//   // Read the request at runtime, not during the build.
+//   await connection();
 
-  let data: PageData | null = null;
+//   const requestHeaders = await headers();
 
-  try {
-    data = await getPageData(host);
-  } catch {
-    data = null;
-  }
+//   const host = (
+//     requestHeaders.get("x-forwarded-host") ??
+//     requestHeaders.get("host") ??
+//     ""
+//   )
+//     .split(",")[0]
+//     .trim()
+//     .toLowerCase()
+//     .replace(/\.$/, "");
 
-  if (!data) {
-    return (
-      <main style={{ padding: 40, fontFamily: "Arial" }}>
-        <h1>Page unavailable</h1>
-        <p>Could not load page data from Django.</p>
-        <p>Requested host: {host || "unknown"}</p>
-      </main>
-    );
-  }
+//   let data: PageData | null = null;
 
-  return (
-    <main style={{ padding: 40, fontFamily: "Arial" }}>
-      <h1>{data.title}</h1>
+//   try {
+//     data = await getPageData(host);
+//   } catch {
+//     data = null;
+//   }
 
-      <p>{data.message}</p>
+//   if (!data) {
+//     return (
+//       <main style={{ padding: 40, fontFamily: "Arial" }}>
+//         <h1>Page unavailable</h1>
+//         <p>Could not load page data from Django.</p>
+//         <p>Requested host: {host || "unknown"}</p>
+//       </main>
+//     );
+//   }
 
-      <hr />
+//   return (
+//     <main style={{ padding: 40, fontFamily: "Arial" }}>
+//       <h1>{data.title}</h1>
 
-      <p>
-        <strong>Page type:</strong> {data.page_type}
-      </p>
+//       <p>{data.message}</p>
 
-      <p>
-        <strong>Requested host:</strong> {host}
-      </p>
+//       <hr />
 
-      <p>
-        <strong>Tenant:</strong> {data.tenant ?? "None"}
-      </p>
-    </main>
-  );
-}
+//       <p>
+//         <strong>Page type:</strong> {data.page_type}
+//       </p>
+
+//       <p>
+//         <strong>Requested host:</strong> {host}
+//       </p>
+
+//       <p>
+//         <strong>Tenant:</strong> {data.tenant ?? "None"}
+//       </p>
+//     </main>
+//   );
+// }
