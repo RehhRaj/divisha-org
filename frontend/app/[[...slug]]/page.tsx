@@ -1,9 +1,10 @@
 
- export default function Page() { 
-  return <h1>Welcome to the Page</h1>
- }
+//  export default function Page() { 
+//   return <h1>Welcome to the Page</h1>
+//  }
 
-
+// *****************************************************
+// *****************************************************
 
 // import HomePage from "@/app/HomePage";
 
@@ -40,89 +41,92 @@
 
 
 
+// *****************************************************
+// *****************************************************
 
-// import { connection } from "next/server";
-// import { headers } from "next/headers";
 
-// type PageData = {
-//   page_type: "platform" | "tenant";
-//   title: string;
-//   message: string;
-//   tenant: string | null;
-// };
+import { connection } from "next/server";
+import { headers } from "next/headers";
 
-// async function getPageData(host: string): Promise<PageData | null> {
-//   const apiUrl =
-//     process.env.DJANGO_API_URL ??
-//     "https://gtbtax.pythonanywhere.com/api/page/";
+type PageData = {
+  page_type: "platform" | "tenant";
+  title: string;
+  message: string;
+  tenant: string | null;
+};
 
-//   const url = new URL(apiUrl);
-//   url.searchParams.set("host", host);
+async function getPageData(host: string): Promise<PageData | null> {
+  const apiUrl =
+    process.env.DJANGO_API_URL ??
+    "https://gtbtax.pythonanywhere.com/api/page/";
 
-//   const response = await fetch(url, {
-//     cache: "no-store",
-//   });
+  const url = new URL(apiUrl);
+  url.searchParams.set("host", host);
 
-//   if (!response.ok) {
-//     return null;
-//   }
+  const response = await fetch(url, {
+    cache: "no-store",
+  });
 
-//   return response.json();
-// }
+  if (!response.ok) {
+    return null;
+  }
 
-// export default async function Page() {
-//   // Read the request at runtime, not during the build.
-//   await connection();
+  return response.json();
+}
 
-//   const requestHeaders = await headers();
+export default async function Page() {
+  // Read the request at runtime, not during the build.
+  await connection();
 
-//   const host = (
-//     requestHeaders.get("x-forwarded-host") ??
-//     requestHeaders.get("host") ??
-//     ""
-//   )
-//     .split(",")[0]
-//     .trim()
-//     .toLowerCase()
-//     .replace(/\.$/, "");
+  const requestHeaders = await headers();
 
-//   let data: PageData | null = null;
+  const host = (
+    requestHeaders.get("x-forwarded-host") ??
+    requestHeaders.get("host") ??
+    ""
+  )
+    .split(",")[0]
+    .trim()
+    .toLowerCase()
+    .replace(/\.$/, "");
 
-//   try {
-//     data = await getPageData(host);
-//   } catch {
-//     data = null;
-//   }
+  let data: PageData | null = null;
 
-//   if (!data) {
-//     return (
-//       <main style={{ padding: 40, fontFamily: "Arial" }}>
-//         <h1>Page unavailable</h1>
-//         <p>Could not load page data from Django.</p>
-//         <p>Requested host: {host || "unknown"}</p>
-//       </main>
-//     );
-//   }
+  try {
+    data = await getPageData(host);
+  } catch {
+    data = null;
+  }
 
-//   return (
-//     <main style={{ padding: 40, fontFamily: "Arial" }}>
-//       <h1>{data.title}</h1>
+  if (!data) {
+    return (
+      <main style={{ padding: 40, fontFamily: "Arial" }}>
+        <h1>Page unavailable</h1>
+        <p>Could not load page data from Django.</p>
+        <p>Requested host: {host || "unknown"}</p>
+      </main>
+    );
+  }
 
-//       <p>{data.message}</p>
+  return (
+    <main style={{ padding: 40, fontFamily: "Arial" }}>
+      <h1>{data.title}</h1>
 
-//       <hr />
+      <p>{data.message}</p>
 
-//       <p>
-//         <strong>Page type:</strong> {data.page_type}
-//       </p>
+      <hr />
 
-//       <p>
-//         <strong>Requested host:</strong> {host}
-//       </p>
+      <p>
+        <strong>Page type:</strong> {data.page_type}
+      </p>
 
-//       <p>
-//         <strong>Tenant:</strong> {data.tenant ?? "None"}
-//       </p>
-//     </main>
-//   );
-// }
+      <p>
+        <strong>Requested host:</strong> {host}
+      </p>
+
+      <p>
+        <strong>Tenant:</strong> {data.tenant ?? "None"}
+      </p>
+    </main>
+  );
+}
