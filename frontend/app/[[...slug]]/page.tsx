@@ -1,4 +1,9 @@
 
+ export default function Page() { 
+  return <h1>Welcome to the Page</h1>
+ }
+
+
 
 // import HomePage from "@/app/HomePage";
 
