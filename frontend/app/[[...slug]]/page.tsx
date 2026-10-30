@@ -233,9 +233,9 @@ export default async function Page() {
     if (data.tenant === "jeetu") {
       return (
         <main style={{ padding: 40, fontFamily: "Arial" }}>
-          <h1>School Website Template</h1>
+          <h1>Jeetu website not Website Template</h1>
           <p>Welcome to {data.title} Sub-site!</p>
-          <p>{data.message}</p>
+          <p>{message hai --data.message}</p>
         </main>
       );
     }
