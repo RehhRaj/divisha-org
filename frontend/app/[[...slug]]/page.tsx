@@ -238,7 +238,7 @@ export default async function Page() {
         <main style={{ padding: 40, fontFamily: "Arial" }}>
           <h1>Jeetu website not Website Template</h1>
           <p>Welcome to {data.title} Sub-site!</p>
-          <p>{message hai --data.message}</p>
+          <p>{data.message}</p>
         </main>
       );
     }
