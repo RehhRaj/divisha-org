@@ -1,13 +1,15 @@
-// HomePage.tsx
-// This is the public Business OS homepage.
-// The two arrays below contain the page's sample content.
-// To change the words or add a business type, edit these arrays.
+
+import Link from "next/link";
+
+// ============================================================
+// 1. HOW IT WORKS
+// ============================================================
 
 const steps = [
   {
     number: "01",
     title: "Choose a business",
-    text: "Start with a website that fits your school, housing society, or travel business.",
+    text: "Select a website designed for your business type.",
   },
   {
     number: "02",
@@ -17,147 +19,420 @@ const steps = [
   {
     number: "03",
     title: "Publish your website",
-    text: "Give visitors a website that works on phones, tablets, and computers.",
+    text: "Create a responsive website for mobile, tablet, and desktop.",
   },
 ];
 
+// ============================================================
+// 2. BUSINESS TYPES
+// These match Django BUSINESS_TYPES keys.
+// ============================================================
+
 const businessTypes = [
   {
-    icon: "▤",
-    title: "Schools & education",
+    icon: "🎓",
+    title: "Schools & Education",
     tag: "EDUCATION",
     text: "Admissions, notices, facilities, and school information.",
+    href: "https://edu.divisha.org",
   },
   {
-    icon: "⌂",
-    title: "Housing societies",
+    icon: "🏢",
+    title: "Housing Societies",
     tag: "COMMUNITY",
     text: "Community information, amenities, updates, and contacts.",
+    href: "https://society.divisha.org",
   },
   {
     icon: "✈",
-    title: "Tours & travel",
+    title: "Tours & Travel",
     tag: "TRAVEL",
     text: "Destinations, tour packages, itineraries, and enquiries.",
+    href: "https://tour.divisha.org",
+  },
+  {
+    icon: "🍽",
+    title: "Restaurants",
+    tag: "RESTAURANT",
+    text: "Menus, dining experiences, restaurant details, and enquiries.",
+    href: "https://restau.divisha.org",
+  },
+  {
+    icon: "✂",
+    title: "Beauty & Salon",
+    tag: "SALON",
+    text: "Beauty services, styling, appointments, and salon information.",
+    href: "https://salon.divisha.org",
   },
 ];
+
+// ============================================================
+// 3. HOMEPAGE
+// ============================================================
 
 export default function HomePage() {
   return (
     <main className="site-shell">
-      <header className="topbar">
-        <a className="brand" href="/" aria-label="Business OS home">
-          <span className="brand-mark">bo</span>
-          <span>Business<span className="brand-light">OS</span></span>
-        </a>
 
-        <nav className="nav-links" aria-label="Main navigation">
+      {/* =====================================================
+          NAVIGATION
+      ===================================================== */}
+
+      <header className="topbar">
+
+        <Link
+          className="brand"
+          href="/"
+          aria-label="Divisha Business OS home"
+        >
+          <span className="brand-mark">D</span>
+
+          <span>
+            Divisha
+            <span className="brand-light">
+              Business OS
+            </span>
+          </span>
+        </Link>
+
+        <nav
+          className="nav-links"
+          aria-label="Main navigation"
+        >
           <a href="#platform">Platform</a>
           <a href="#solutions">Solutions</a>
           <a href="#how-it-works">How it works</a>
         </nav>
 
-        <a className="nav-cta" href="#solutions">Explore solutions ↗</a>
+        <a
+          className="nav-cta"
+          href="#solutions"
+        >
+          Explore solutions ↗
+        </a>
+
       </header>
 
-      <section className="hero" id="platform">
+      {/* =====================================================
+          HERO SECTION
+      ===================================================== */}
+
+      <section
+        className="hero"
+        id="platform"
+      >
+
         <div className="hero-copy">
-          <p className="eyebrow">● A SIMPLER WAY TO GO DIGITAL</p>
-          <h1>Your business.<br /><span>Your website.</span><br />One smart platform.</h1>
+
+          <p className="eyebrow">
+            ● DIVISHA BUSINESS OS
+          </p>
+
+          <h1>
+            Your business.
+            <br />
+            <span>Your website.</span>
+            <br />
+            One smart platform.
+          </h1>
+
           <p className="hero-description">
-            Business OS helps different kinds of businesses create a clear,
-            modern website. Start with the basics and add more when needed.
+            Divisha Business OS helps different
+            kinds of businesses create clear,
+            modern websites.
+
+            Start with the basics and expand
+            your digital business when needed.
           </p>
 
           <div className="hero-actions">
-            <a className="button-primary" href="#solutions">Explore solutions ↗</a>
-            <a className="button-text" href="#how-it-works">See how it works ↓</a>
+
+            <a
+              className="button-primary"
+              href="#solutions"
+            >
+              Explore solutions ↗
+            </a>
+
+            <a
+              className="button-text"
+              href="#how-it-works"
+            >
+              See how it works ↓
+            </a>
+
           </div>
 
-          <p className="hero-note"><strong>One platform, many possibilities</strong><br />
-            <span>Designed for different kinds of businesses</span>
+          <p className="hero-note">
+
+            <strong>
+              One platform, many possibilities
+            </strong>
+
+            <br />
+
+            <span>
+              Designed for different kinds
+              of businesses
+            </span>
+
           </p>
+
         </div>
 
-        {/* Simple CSS illustration instead of a missing image file. */}
-        <div className="hero-visual" aria-label="Illustration of a business website on a computer">
+        {/* =================================================
+            CSS WEBSITE ILLUSTRATION
+        ================================================= */}
+
+        <div
+          className="hero-visual"
+          role="img"
+          aria-label="Illustration of a responsive business website on desktop and mobile"
+        >
+
           <div className="browser-window">
-            <div className="browser-bar"><i /><i /><i /><span>yourbusiness.example</span></div>
+
+            <div className="browser-bar">
+              <i />
+              <i />
+              <i />
+              <span>
+                yourbusiness.example
+              </span>
+            </div>
+
             <div className="browser-content">
+
               <div className="mock-logo" />
               <div className="mock-title" />
               <div className="mock-line" />
               <div className="mock-line short" />
               <div className="mock-button" />
-              <div className="mock-cards"><i /><i /><i /></div>
+
+              <div className="mock-cards">
+                <i />
+                <i />
+                <i />
+              </div>
+
             </div>
+
           </div>
-          <div className="phone-window"><div className="phone-speaker" /><div className="phone-block" /><div className="phone-line" /><div className="phone-line short" /><div className="phone-button" /></div>
-          <div className="floating-note">✓ Works on mobile and desktop</div>
+
+          <div className="phone-window">
+            <div className="phone-speaker" />
+            <div className="phone-block" />
+            <div className="phone-line" />
+            <div className="phone-line short" />
+            <div className="phone-button" />
+          </div>
+
+          <div className="floating-note">
+            ✓ Works on mobile and desktop
+          </div>
+
         </div>
+
       </section>
 
-      <section className="trust-strip" aria-label="Platform highlights">
-        <div><b>Flexible by design</b><span>Adapt to your business</span></div>
-        <div><b>Responsive websites</b><span>Look good on every screen</span></div>
-        <div><b>Built to grow</b><span>Start simple, expand later</span></div>
+      {/* =====================================================
+          PLATFORM HIGHLIGHTS
+      ===================================================== */}
+
+      <section
+        className="trust-strip"
+        aria-label="Platform highlights"
+      >
+
+        <div>
+          <b>Flexible by design</b>
+          <span>Adapt to your business</span>
+        </div>
+
+        <div>
+          <b>Responsive websites</b>
+          <span>Look good on every screen</span>
+        </div>
+
+        <div>
+          <b>Built to grow</b>
+          <span>Start simple, expand later</span>
+        </div>
+
       </section>
 
-      <section className="solutions section-wrap" id="solutions">
+      {/* =====================================================
+          BUSINESS SOLUTIONS
+      ===================================================== */}
+
+      <section
+        className="solutions section-wrap"
+        id="solutions"
+      >
+
         <div className="section-heading">
+
           <div>
-            <p className="eyebrow">START WITH YOUR INDUSTRY</p>
-            <h2>A strong online start<br /><span>for your business.</span></h2>
+
+            <p className="eyebrow">
+              START WITH YOUR INDUSTRY
+            </p>
+
+            <h2>
+              A strong online start
+              <br />
+              <span>
+                for your business.
+              </span>
+            </h2>
+
           </div>
-          <p>Choose a starting point. You can shape the website around the information your customers need.</p>
+
+          <p>
+            Choose a starting point.
+            Build your website around the
+            information your customers need.
+          </p>
+
         </div>
 
         <div className="solution-grid">
+
           {businessTypes.map((business) => (
-            <article className="solution-card" key={business.title}>
+
+            <article
+              className="solution-card"
+              key={business.href}
+            >
+
               <div className="solution-card-top">
-                <span className="solution-icon">{business.icon}</span>
-                <span className="solution-tag">{business.tag}</span>
+
+                <span className="solution-icon">
+                  {business.icon}
+                </span>
+
+                <span className="solution-tag">
+                  {business.tag}
+                </span>
+
               </div>
-              <h3>{business.title}</h3>
-              <p>{business.text}</p>
-              <a href="#how-it-works">Explore solution ↗</a>
+
+              <h3>
+                {business.title}
+              </h3>
+
+              <p>
+                {business.text}
+              </p>
+
+              <a href={business.href}>
+                View live demo ↗
+              </a>
+
             </article>
+
           ))}
+
         </div>
+
       </section>
 
-      <section className="how-section" id="how-it-works">
+      {/* =====================================================
+          HOW IT WORKS
+      ===================================================== */}
+
+      <section
+        className="how-section"
+        id="how-it-works"
+      >
+
         <div className="how-inner">
-          <p className="eyebrow">CLEAR FROM DAY ONE</p>
-          <h2>From idea to online.<br /><span>One step at a time.</span></h2>
+
+          <p className="eyebrow">
+            CLEAR FROM DAY ONE
+          </p>
+
+          <h2>
+            From idea to online.
+            <br />
+            <span>
+              One step at a time.
+            </span>
+          </h2>
+
           <div className="steps-grid">
+
             {steps.map((step) => (
-              <article className="step" key={step.number}>
-                <span className="step-number">{step.number}</span>
-                <h3>{step.title}</h3>
-                <p>{step.text}</p>
+
+              <article
+                className="step"
+                key={step.number}
+              >
+
+                <span className="step-number">
+                  {step.number}
+                </span>
+
+                <h3>
+                  {step.title}
+                </h3>
+
+                <p>
+                  {step.text}
+                </p>
+
               </article>
+
             ))}
+
           </div>
-          <a className="button-primary" href="#solutions">Find your starting point ↗</a>
+
+          <a
+            className="button-primary"
+            href="#solutions"
+          >
+            Find your starting point ↗
+          </a>
+
         </div>
+
       </section>
+
+      {/* =====================================================
+          FOOTER
+      ===================================================== */}
 
       <footer className="footer">
-        <a className="brand footer-brand" href="/">
-          <span className="brand-mark">bo</span>
-          <span>Business<span className="brand-light">OS</span></span>
-        </a>
-        <p>A flexible foundation for business websites.</p>
 
-  
+        <Link
+          className="brand footer-brand"
+          href="/"
+        >
 
-     
-        {/* <span className="copyright">© {new Date().getFullYear()} Business OS</span> */}
-      
-      
+          <span className="brand-mark">
+            D
+          </span>
+
+          <span>
+            Divisha
+            <span className="brand-light">
+              Business OS
+            </span>
+          </span>
+
+        </Link>
+
+        <p>
+          A flexible foundation for
+          business websites and management systems.
+        </p>
+
+        <span className="copyright">
+          © 2026 Divisha Business OS
+        </span>
+
       </footer>
+
     </main>
   );
 }

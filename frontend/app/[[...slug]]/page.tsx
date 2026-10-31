@@ -1,46 +1,30 @@
+
 import { connection } from "next/server";
 import { headers } from "next/headers";
 
 import HomePage from "@/app/HomePage";
-import TenantPage from "@/app/TenantPage";
 import DemoPage from "@/app/DemoPage";
+import TenantPage from "@/app/TenantPage";
 
+import type { PageData } from "@/types/page";
 
-// ---------------------------------------
-// 1. API RESPONSE TYPE
-// ---------------------------------------
-
-type PageData = {
-  page_type: "platform" | "demo" | "tenant";
-
-  business_type: string | null;
-
-  tenant: string | null;
-
-  parent_tenant: string | null;
-
-  title: string;
-
-  message: string;
-
-  template: string;
-};
-
-
-// ---------------------------------------
-// 2. FETCH DATA FROM DJANGO
-// ---------------------------------------
+function normalizeHost(rawHost: string): string {
+  return rawHost
+    .split(",")[0]
+    .trim()
+    .toLowerCase()
+    .replace(/:\d+$/, "")
+    .replace(/\.$/, "");
+}
 
 async function getPageData(
   host: string
 ): Promise<PageData | null> {
-
   const apiUrl =
     process.env.DJANGO_API_URL ??
     "https://gtbtax.pythonanywhere.com/api/page/";
 
   const url = new URL(apiUrl);
-
   url.searchParams.set("host", host);
 
   const response = await fetch(url.toString(), {
@@ -53,26 +37,35 @@ async function getPageData(
       response.status,
       host
     );
-
     return null;
   }
 
-  const data: PageData = await response.json();
-
-  return data;
+  return (await response.json()) as PageData;
 }
 
-
-// ---------------------------------------
-// 3. MAIN PAGE
-// ---------------------------------------
+function ErrorPage({
+  host,
+  message,
+}: {
+  host: string;
+  message: string;
+}) {
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
+      <h1 className="text-3xl font-bold">
+        Website Unavailable
+      </h1>
+      <p>{message}</p>
+      <p className="text-sm text-gray-500">
+        Requested host: {host}
+      </p>
+    </main>
+  );
+}
 
 export default async function Page() {
-
-  // Ensure request-time rendering
   await connection();
 
-  // Read incoming request headers
   const requestHeaders = await headers();
 
   const rawHost =
@@ -80,89 +73,52 @@ export default async function Page() {
     requestHeaders.get("host") ??
     "";
 
-  const host = rawHost
-    .split(",")[0]
-    .trim()
-    .toLowerCase()
-    .replace(/:\d+$/, "")
-    .replace(/\.$/, "");
+  // Preserve localhost ports; Django handles them.
+  const host = normalizeHost(rawHost);
 
-
-  // -------------------------------------
-  // 4. GET DJANGO DATA
-  // -------------------------------------
+  if (!host) {
+    return (
+      <ErrorPage
+        host="unknown"
+        message="Invalid hostname."
+      />
+    );
+  }
 
   let data: PageData | null = null;
 
   try {
-
     data = await getPageData(host);
-
   } catch (error) {
-
     console.error("Django API Error:", error);
-
-    data = null;
   }
 
-
-  // -------------------------------------
-  // 5. ERROR PAGE
-  // -------------------------------------
-
   if (!data) {
-
     return (
-      <main style={{ padding: 40 }}>
-        <h1>Website Not Found</h1>
-
-        <p>
-          Website configuration could not be loaded.
-        </p>
-
-        <p>Host: {host}</p>
-      </main>
+      <ErrorPage
+        host={host}
+        message="Could not load page data from Django."
+      />
     );
   }
 
+  switch (data.page_type) {
+    case "platform":
+      return <HomePage />;
 
-  // -------------------------------------
-  // 6. PLATFORM
-  // -------------------------------------
+    case "demo":
+      return <DemoPage data={data} />;
 
-  if (data.page_type === "platform") {
+    case "tenant":
+    case "nested_tenant":
+      return <TenantPage data={data} />;
 
-    return <HomePage />;
+    default:
+      return (
+        <ErrorPage
+          host={host}
+          message="Unknown page type."
+        />
+      );
   }
-
-
-  // -------------------------------------
-  // 7. BUSINESS DEMO
-  // -------------------------------------
-
-  if (data.page_type === "demo") {
-
-    return <DemoPage data={data} />;
-  }
-
-
-  // -------------------------------------
-  // 8. TENANT WEBSITE
-  // -------------------------------------
-
-  if (data.page_type === "tenant") {
-
-    return <TenantPage data={data} />;
-  }
-
-
-  // -------------------------------------
-  // 9. FALLBACK
-  // -------------------------------------
-
-  return (
-    <main style={{ padding: 40 }}>
-      <h1>Website Not Configured</h1>
-    </main>
-  );
 }

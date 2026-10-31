@@ -1,27 +1,11 @@
-type Props = {
-  data: {
-    business_type: string | null;
-    title: string;
-    message: string;
-    template: string;
-  };
-};
 
-export default function DemoPage({ data }: Props) {
+import type { PageData } from "@/types/page";
+import TemplateRenderer from "@/templates/TemplateRenderer";
 
-  return (
-    <main style={{ padding: 40 }}>
-
-      <h1>{data.title}</h1>
-
-      <p>{data.message}</p>
-
-      <h2>Business Type Demo</h2>
-
-      <p>Business Type: {data.business_type}</p>
-
-      <p>Template: {data.template}</p>
-
-    </main>
-  );
+export default function DemoPage({
+  data,
+}: {
+  data: PageData;
+}) {
+  return <TemplateRenderer data={data} />;
 }
