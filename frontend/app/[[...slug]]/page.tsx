@@ -6,12 +6,18 @@ import TenantPage from "@/app/TenantPage";
 import DemoPage from "@/app/DemoPage";
 
 
+// ---------------------------------------
+// 1. API RESPONSE TYPE
+// ---------------------------------------
+
 type PageData = {
   page_type: "platform" | "demo" | "tenant";
 
   business_type: string | null;
 
   tenant: string | null;
+
+  parent_tenant: string | null;
 
   title: string;
 
@@ -20,6 +26,10 @@ type PageData = {
   template: string;
 };
 
+
+// ---------------------------------------
+// 2. FETCH DATA FROM DJANGO
+// ---------------------------------------
 
 async function getPageData(
   host: string
@@ -33,120 +43,56 @@ async function getPageData(
 
   url.searchParams.set("host", host);
 
-  const response = await fetch(url, {
+  const response = await fetch(url.toString(), {
     cache: "no-store",
   });
 
   if (!response.ok) {
+    console.error(
+      "Django API failed:",
+      response.status,
+      host
+    );
+
     return null;
   }
 
-  return response.json();
+  const data: PageData = await response.json();
+
+  return data;
 }
 
 
-// export default async function Page() {
-
-//   await connection();
-
-//   const requestHeaders = await headers();
-
-//   const host = (
-//     requestHeaders.get("x-forwarded-host") ??
-//     requestHeaders.get("host") ??
-//     ""
-//   )
-//     .split(",")[0]
-//     .trim()
-//     .toLowerCase()
-//     .replace(/\.$/, "");
-
-
-//   let data: PageData | null = null;
-
-//   try {
-
-//     data = await getPageData(host);
-
-//   } catch {
-
-//     data = null;
-
-//   }
-
-
-//   // CASE 1: Invalid domain or API error
-
-//   if (!data) {
-
-//     return (
-//       <main style={{ padding: 40 }}>
-//         <h1>Website Not Found</h1>
-//         <p>Website configuration could not be loaded.</p>
-//       </main>
-//     );
-
-//   }
-
-
-//   // CASE 2: Main SaaS website
-
-//   if (data.page_type === "platform") {
-
-//     return <HomePage />;
-
-//   }
-
-
-//   // CASE 3: Business type demo website
-
-//   if (data.page_type === "demo") {
-
-//     return <DemoPage data={data} />;
-
-//   }
-
-
-//   // CASE 4: Actual tenant website
-
-//   if (data.page_type === "tenant") {
-
-//     return <TenantPage data={data} />;
-
-//   }
-
-
-//   // CASE 5: Fallback
-
-//   return (
-//     <main>
-//       <h1>Website Not Configured</h1>
-//     </main>
-//   );
-
-// }
-
-
-
+// ---------------------------------------
+// 3. MAIN PAGE
+// ---------------------------------------
 
 export default async function Page() {
 
+  // Ensure request-time rendering
   await connection();
 
+  // Read incoming request headers
   const requestHeaders = await headers();
 
-  const host = (
+  const rawHost =
     requestHeaders.get("x-forwarded-host") ??
     requestHeaders.get("host") ??
-    ""
-  )
+    "";
+
+  const host = rawHost
     .split(",")[0]
     .trim()
     .toLowerCase()
+    .replace(/:\d+$/, "")
     .replace(/\.$/, "");
 
+
+  // -------------------------------------
+  // 4. GET DJANGO DATA
+  // -------------------------------------
+
   let data: PageData | null = null;
-  let errorMessage = "";
 
   try {
 
@@ -154,42 +100,69 @@ export default async function Page() {
 
   } catch (error) {
 
-    errorMessage =
-      error instanceof Error
-        ? error.message
-        : "Unknown API error";
+    console.error("Django API Error:", error);
 
+    data = null;
   }
 
-  console.log("========== DOMAIN DEBUG ==========");
-  console.log("HOST:", host);
-  console.log("API DATA:", data);
-  console.log("API ERROR:", errorMessage);
-  console.log("==================================");
+
+  // -------------------------------------
+  // 5. ERROR PAGE
+  // -------------------------------------
+
+  if (!data) {
+
+    return (
+      <main style={{ padding: 40 }}>
+        <h1>Website Not Found</h1>
+
+        <p>
+          Website configuration could not be loaded.
+        </p>
+
+        <p>Host: {host}</p>
+      </main>
+    );
+  }
+
+
+  // -------------------------------------
+  // 6. PLATFORM
+  // -------------------------------------
+
+  if (data.page_type === "platform") {
+
+    return <HomePage />;
+  }
+
+
+  // -------------------------------------
+  // 7. BUSINESS DEMO
+  // -------------------------------------
+
+  if (data.page_type === "demo") {
+
+    return <DemoPage data={data} />;
+  }
+
+
+  // -------------------------------------
+  // 8. TENANT WEBSITE
+  // -------------------------------------
+
+  if (data.page_type === "tenant") {
+
+    return <TenantPage data={data} />;
+  }
+
+
+  // -------------------------------------
+  // 9. FALLBACK
+  // -------------------------------------
 
   return (
     <main style={{ padding: 40 }}>
-
-      <h1>Next.js Domain Routing Test</h1>
-
-      <p><strong>Host:</strong> {host}</p>
-
-      <p><strong>Page Type:</strong> {data?.page_type ?? "NULL"}</p>
-
-      <p><strong>Tenant:</strong> {data?.tenant ?? "NULL"}</p>
-
-      <p><strong>API Error:</strong> {errorMessage || "None"}</p>
-
-      <hr />
-
-      {data?.page_type === "platform" && <HomePage />}
-
-      {data?.page_type === "demo" && <DemoPage data={data} />}
-
-      {data?.page_type === "tenant" && <TenantPage data={data} />}
-
-      {!data && <h2>Website Not Found</h2>}
-
+      <h1>Website Not Configured</h1>
     </main>
   );
 }

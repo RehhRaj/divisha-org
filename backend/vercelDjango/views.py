@@ -2,11 +2,13 @@ from django.http import JsonResponse
 from urllib.parse import urlsplit
 
 
-# Main domain
 BASE_DOMAIN = "divisha.org"
 
 
-# Available business types
+# ---------------------------------------
+# 1. BUSINESS TYPES
+# ---------------------------------------
+
 BUSINESS_TYPES = {
     "tour": {
         "title": "Tour Business Demo",
@@ -28,23 +30,27 @@ BUSINESS_TYPES = {
 }
 
 
-# Registered tenants
-# Key = (tenant_name, business_type)
+# ---------------------------------------
+# 2. REGISTERED TENANTS
+# ---------------------------------------
 
 TENANTS = {
-    ("jeetu", "tour"): {
+    "jeetu": {
+        "business_type": "tour",
         "title": "Jeetu Tour Business",
         "message": "Welcome to Jeetu Tour Website",
         "template": "tour",
     },
 
-    ("teal", "restau"): {
+    "teal": {
+        "business_type": "restau",
         "title": "Teal Restaurant",
         "message": "Welcome to Teal Restaurant",
         "template": "restaurant",
     },
 
-    ("abc", "society"): {
+    "abc": {
+        "business_type": "society",
         "title": "ABC Society",
         "message": "Welcome to ABC Society",
         "template": "society",
@@ -52,118 +58,179 @@ TENANTS = {
 }
 
 
+# ---------------------------------------
+# 3. REGISTERED NESTED WEBSITES
+# ---------------------------------------
+
+NESTED_SITES = {
+    ("abc", "tour"): {
+        "business_type": "tour",
+        "title": "ABC Tour Business",
+        "message": "Welcome to ABC Tour Website",
+        "template": "tour",
+    },
+
+    ("abc", "jeetu"): {
+        "business_type": "tour",
+        "title": "ABC - Jeetu Tours",
+        "message": "Welcome to ABC under Jeetu",
+        "template": "tour",
+    },
+}
+
+
+# ---------------------------------------
+# 4. STANDARD RESPONSE
+# ---------------------------------------
+
+def make_page(
+    page_type,
+    business_type,
+    tenant,
+    title,
+    message,
+    template,
+    parent_tenant=None,
+):
+    return JsonResponse({
+        "page_type": page_type,
+        "business_type": business_type,
+        "tenant": tenant,
+        "parent_tenant": parent_tenant,
+        "title": title,
+        "message": message,
+        "template": template,
+    })
+
+
+def page_error(message, status=404):
+    return JsonResponse({
+        "error": message,
+    }, status=status)
+
+
+# ---------------------------------------
+# 5. MAIN API
+# ---------------------------------------
+
 def page_data(request):
 
-    # Host received from Next.js
-    raw_host = request.GET.get("host", "")
+    raw_host = request.GET.get("host", "").strip()
 
     try:
-        host = urlsplit("//" + raw_host.strip()).hostname
+        host = urlsplit("//" + raw_host).hostname
     except ValueError:
         host = None
 
     if not host:
-        return JsonResponse(
-            {"error": "Invalid hostname"},
-            status=400,
-        )
+        return page_error("Invalid hostname", 400)
 
     host = host.lower().rstrip(".")
 
-    # CASE 1: Main SaaS website
+
+    # -----------------------------------
+    # CASE 1: MAIN PLATFORM
+    # divisha.org
+    # -----------------------------------
+
     if host == BASE_DOMAIN:
 
-        return JsonResponse({
-            "page_type": "platform",
-            "business_type": None,
-            "tenant": None,
-            "title": "Welcome to My SaaS",
-            "message": "Main SaaS Platform",
-            "template": "platform",
-        })
+        return make_page(
+            page_type="platform",
+            business_type=None,
+            tenant=None,
+            title="Welcome to Divisha",
+            message="Divisha Business OS Platform",
+            template="platform",
+        )
 
 
-    # CASE 2: Check domain suffix
+    # -----------------------------------
+    # CHECK BASE DOMAIN
+    # -----------------------------------
+
     suffix = "." + BASE_DOMAIN
 
     if not host.endswith(suffix):
-        return JsonResponse(
-            {"error": "Unknown domain"},
-            status=404,
-        )
+        return page_error("Unknown domain")
 
-    # Remove main domain
+
     subdomain = host[:-len(suffix)]
 
     parts = subdomain.split(".")
 
+    if any(not part for part in parts):
+        return page_error("Invalid domain structure")
 
-    # CASE 3: Business type demo
-    # Example: tour.divisha.org
+
+    # -----------------------------------
+    # CASE 2: ONE SUBDOMAIN
+    # -----------------------------------
 
     if len(parts) == 1:
 
-        business_type = parts[0]
+        name = parts[0]
 
-        business = BUSINESS_TYPES.get(business_type)
+        # Business demo
+        business = BUSINESS_TYPES.get(name)
 
-        if not business:
-            return JsonResponse(
-                {"error": "Business type not registered"},
-                status=404,
+        if business:
+
+            return make_page(
+                page_type="demo",
+                business_type=name,
+                tenant=None,
+                title=business["title"],
+                message=business["message"],
+                template=business["template"],
             )
 
-        return JsonResponse({
-            "page_type": "demo",
-            "business_type": business_type,
-            "tenant": None,
-            "title": business["title"],
-            "message": business["message"],
-            "template": business["template"],
-        })
+        # Registered tenant
+        tenant = TENANTS.get(name)
+
+        if tenant:
+
+            return make_page(
+                page_type="tenant",
+                business_type=tenant["business_type"],
+                tenant=name,
+                title=tenant["title"],
+                message=tenant["message"],
+                template=tenant["template"],
+            )
+
+        return page_error("Website Not Found")
 
 
-    # CASE 4: Tenant website
-    # Example: jeetu.tour.divisha.org
+    # -----------------------------------
+    # CASE 3: NESTED SUBDOMAIN
+    # -----------------------------------
 
     if len(parts) == 2:
 
-        tenant_name = parts[0]
-        business_type = parts[1]
+        child_name = parts[0]
+        parent_name = parts[1]
 
-        # First check business type
-        business = BUSINESS_TYPES.get(business_type)
-
-        if not business:
-            return JsonResponse(
-                {"error": "Business type not registered"},
-                status=404,
-            )
-
-        # Then check tenant
-        tenant_data = TENANTS.get(
-            (tenant_name, business_type)
+        nested = NESTED_SITES.get(
+            (child_name, parent_name)
         )
 
-        if not tenant_data:
-            return JsonResponse(
-                {"error": "Tenant not registered"},
-                status=404,
-            )
+        if not nested:
+            return page_error("Nested website not found")
 
-        return JsonResponse({
-            "page_type": "tenant",
-            "business_type": business_type,
-            "tenant": tenant_name,
-            "title": tenant_data["title"],
-            "message": tenant_data["message"],
-            "template": tenant_data["template"],
-        })
+        return make_page(
+            page_type="tenant",
+            business_type=nested["business_type"],
+            tenant=child_name,
+            parent_tenant=parent_name,
+            title=nested["title"],
+            message=nested["message"],
+            template=nested["template"],
+        )
 
 
-    # CASE 5: Invalid nested subdomain
+    # -----------------------------------
+    # CASE 4: INVALID STRUCTURE
+    # -----------------------------------
 
-    return JsonResponse(
-        {"error": "Invalid domain structure"},
-        status=404,
-    )
+    return page_error("Invalid domain structure")

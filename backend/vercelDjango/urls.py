@@ -23,3 +23,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/page/", page_data, name="page_data"),
 ]
+
+
+
+

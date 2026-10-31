@@ -1,7 +1,9 @@
 type Props = {
   data: {
-    tenant: string | null;
+    page_type: string;
     business_type: string | null;
+    tenant: string | null;
+    parent_tenant: string | null;
     title: string;
     message: string;
     template: string;
@@ -9,7 +11,6 @@ type Props = {
 };
 
 export default function TenantPage({ data }: Props) {
-
   return (
     <main style={{ padding: 40 }}>
 
@@ -17,15 +18,24 @@ export default function TenantPage({ data }: Props) {
 
       <p>{data.message}</p>
 
-      <hr />
-
       <h2>Tenant Website</h2>
 
-      <p>Tenant: {data.tenant}</p>
+      <p>
+        <strong>Tenant:</strong> {data.tenant}
+      </p>
 
-      <p>Business Type: {data.business_type}</p>
+      <p>
+        <strong>Business Type:</strong> {data.business_type}
+      </p>
 
-      <p>Template: {data.template}</p>
+      <p>
+        <strong>Parent Tenant:</strong>{" "}
+        {data.parent_tenant ?? "None"}
+      </p>
+
+      <p>
+        <strong>Template:</strong> {data.template}
+      </p>
 
     </main>
   );
