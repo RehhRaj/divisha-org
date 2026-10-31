@@ -176,18 +176,21 @@ def page_error(message, status=404):
 # 6. HOSTNAME NORMALIZATION
 # ============================================================
 
+
 def normalize_host(raw_host):
     """
-    Examples:
+    Supports:
 
-    divisha.org              -> divisha.org
-    www.divisha.org          -> www.divisha.org
-    jeetu.divisha.org        -> jeetu.divisha.org
-    jeetu.localhost:3000     -> jeetu.divisha.org
-    abc.tour.localhost:3000  -> abc.tour.divisha.org
-    localhost:3000           -> divisha.org
+    divisha.org
+    www.divisha.org
+    jeetu.divisha.org
+    abc-tour.divisha.org
+    apex-academy-tour.divisha.org
 
-    Returns None for invalid hostnames.
+    Localhost:
+    localhost:3000
+    jeetu.localhost:3000
+    abc-tour.localhost:3000
     """
 
     raw_host = raw_host.strip().lower()
@@ -214,15 +217,13 @@ def normalize_host(raw_host):
 
     host = host.rstrip(".")
 
-    # Localhost / loopback support
-    if host in LOCAL_DOMAINS:
+    if host in ("localhost", "127.0.0.1"):
         return BASE_DOMAIN
 
     if host.endswith(".localhost"):
         prefix = host[:-len(".localhost")]
         host = prefix + "." + BASE_DOMAIN
 
-    # Validate DNS hostname labels
     labels = host.split(".")
 
     for label in labels:
@@ -292,23 +293,20 @@ validate_business_data()
 # 8. MAIN PAGE API
 # ============================================================
 
+
 def page_data(request):
 
     raw_host = request.GET.get("host", "")
-
     host = normalize_host(raw_host)
 
     if not host:
         return page_error("Invalid hostname", 400)
 
-    # --------------------------------------------------------
-    # CASE 1: PLATFORM WEBSITE
-    # --------------------------------------------------------
+    # ========================================================
+    # CASE 1: PLATFORM
+    # ========================================================
 
-    if host in (
-        BASE_DOMAIN,
-        "www." + BASE_DOMAIN,
-    ):
+    if host in (BASE_DOMAIN, "www." + BASE_DOMAIN):
         return make_page(
             page_type="platform",
             title="Welcome to Divisha",
@@ -316,9 +314,9 @@ def page_data(request):
             template="platform",
         )
 
-    # --------------------------------------------------------
+    # ========================================================
     # CHECK BASE DOMAIN
-    # --------------------------------------------------------
+    # ========================================================
 
     suffix = "." + BASE_DOMAIN
 
@@ -327,92 +325,85 @@ def page_data(request):
 
     subdomain = host[:-len(suffix)]
 
-    parts = subdomain.split(".")
-
-    if any(not part for part in parts):
+    # Only one subdomain level is supported
+    if "." in subdomain or not subdomain:
         return page_error("Invalid domain structure")
 
-    # --------------------------------------------------------
-    # CASE 2: SINGLE SUBDOMAIN
-    # --------------------------------------------------------
+    # ========================================================
+    # CASE 2: BUSINESS DEMO
+    # tour.divisha.org
+    # ========================================================
 
-    if len(parts) == 1:
+    business = BUSINESS_TYPES.get(subdomain)
 
-        name = parts[0]
-
-        # Business demo
-        business = BUSINESS_TYPES.get(name)
-
-        if business:
-            return make_page(
-                page_type="demo",
-                business_type=name,
-                title=business["title"],
-                message=business["message"],
-                template=business["template"],
-            )
-
-        # Registered tenant
-        tenant_data = TENANTS.get(name)
-
-        if tenant_data:
-            return make_page(
-                page_type="tenant",
-                business_type=tenant_data["business_type"],
-                tenant=name,
-                title=tenant_data["title"],
-                message=tenant_data["message"],
-                template=tenant_data["template"],
-            )
-
-        return page_error("Website Not Found")
-
-    # --------------------------------------------------------
-    # CASE 3: NESTED WEBSITE
-    # URL: tenant.business_type.divisha.org
-    # --------------------------------------------------------
-
-    if len(parts) == 2:
-
-        tenant_name = parts[0]
-        business_type_name = parts[1]
-
-        # Parent tenant must exist
-        if tenant_name not in TENANTS:
-            return page_error("Parent tenant not registered")
-
-        # Business type must exist
-        if business_type_name not in BUSINESS_TYPES:
-            return page_error("Unknown business type")
-
-        # Composite unique key
-        unique_key = (
-            tenant_name,
-            business_type_name,
+    if business:
+        return make_page(
+            page_type="demo",
+            business_type=subdomain,
+            title=business["title"],
+            message=business["message"],
+            template=business["template"],
         )
+
+    # ========================================================
+    # CASE 3: PRIMARY TENANT
+    # jeetu.divisha.org
+    # ========================================================
+
+    tenant_data = TENANTS.get(subdomain)
+
+    if tenant_data:
+        return make_page(
+            page_type="tenant",
+            business_type=tenant_data["business_type"],
+            tenant=subdomain,
+            title=tenant_data["title"],
+            message=tenant_data["message"],
+            template=tenant_data["template"],
+        )
+
+    # ========================================================
+    # CASE 4: TENANT-BUSINESS WEBSITE
+    # abc-tour.divisha.org
+    # ========================================================
+
+    for business_type in BUSINESS_TYPES:
+
+        ending = "-" + business_type
+
+        if not subdomain.endswith(ending):
+            continue
+
+        tenant_name = subdomain[:-len(ending)]
+
+        if not tenant_name:
+            continue
+
+        if tenant_name not in TENANTS:
+            continue
+
+        unique_key = (tenant_name, business_type)
 
         nested = NESTED_SITES.get(unique_key)
 
         if not nested:
-            return page_error("Nested website not found")
-
-        business = BUSINESS_TYPES[business_type_name]
+            continue
 
         return make_page(
             page_type="nested_tenant",
-            business_type=business_type_name,
+            business_type=business_type,
             tenant=tenant_name,
             parent_tenant=tenant_name,
             title=nested["title"],
             message=nested["message"],
             template=nested.get(
                 "template",
-                business["template"],
+                BUSINESS_TYPES[business_type]["template"],
             ),
         )
 
-    # --------------------------------------------------------
-    # CASE 4: INVALID DOMAIN STRUCTURE
-    # --------------------------------------------------------
+    # ========================================================
+    # CASE 5: UNKNOWN WEBSITE
+    # ========================================================
 
-    return page_error("Invalid domain structure")
+    return page_error("Website Not Found")
