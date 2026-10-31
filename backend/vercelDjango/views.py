@@ -133,15 +133,15 @@ def page_data(request):
     # divisha.org
     # -----------------------------------
 
-    if host == BASE_DOMAIN or host == "www." + BASE_DOMAIN:
-        return make_page(
-            page_type="platform",
-            business_type=None,
-            tenant=None,
-            title="Welcome to Divisha",
-            message="Divisha Business OS Platform",
-            template="platform",
-        )
+    # if host == BASE_DOMAIN or host == "www." + BASE_DOMAIN:
+    #     return make_page(
+    #         page_type="platform",
+    #         business_type=None,
+    #         tenant=None,
+    #         title="Welcome to Divisha",
+    #         message="Divisha Business OS Platform",
+    #         template="platform",
+    #     )
 
 
     # -----------------------------------
