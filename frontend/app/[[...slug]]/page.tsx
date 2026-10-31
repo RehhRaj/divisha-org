@@ -45,6 +45,90 @@ async function getPageData(
 }
 
 
+// export default async function Page() {
+
+//   await connection();
+
+//   const requestHeaders = await headers();
+
+//   const host = (
+//     requestHeaders.get("x-forwarded-host") ??
+//     requestHeaders.get("host") ??
+//     ""
+//   )
+//     .split(",")[0]
+//     .trim()
+//     .toLowerCase()
+//     .replace(/\.$/, "");
+
+
+//   let data: PageData | null = null;
+
+//   try {
+
+//     data = await getPageData(host);
+
+//   } catch {
+
+//     data = null;
+
+//   }
+
+
+//   // CASE 1: Invalid domain or API error
+
+//   if (!data) {
+
+//     return (
+//       <main style={{ padding: 40 }}>
+//         <h1>Website Not Found</h1>
+//         <p>Website configuration could not be loaded.</p>
+//       </main>
+//     );
+
+//   }
+
+
+//   // CASE 2: Main SaaS website
+
+//   if (data.page_type === "platform") {
+
+//     return <HomePage />;
+
+//   }
+
+
+//   // CASE 3: Business type demo website
+
+//   if (data.page_type === "demo") {
+
+//     return <DemoPage data={data} />;
+
+//   }
+
+
+//   // CASE 4: Actual tenant website
+
+//   if (data.page_type === "tenant") {
+
+//     return <TenantPage data={data} />;
+
+//   }
+
+
+//   // CASE 5: Fallback
+
+//   return (
+//     <main>
+//       <h1>Website Not Configured</h1>
+//     </main>
+//   );
+
+// }
+
+
+
+
 export default async function Page() {
 
   await connection();
@@ -61,67 +145,51 @@ export default async function Page() {
     .toLowerCase()
     .replace(/\.$/, "");
 
-
   let data: PageData | null = null;
+  let errorMessage = "";
 
   try {
 
     data = await getPageData(host);
 
-  } catch {
+  } catch (error) {
 
-    data = null;
-
-  }
-
-
-  // CASE 1: Invalid domain or API error
-
-  if (!data) {
-
-    return (
-      <main style={{ padding: 40 }}>
-        <h1>Website Not Found</h1>
-        <p>Website configuration could not be loaded.</p>
-      </main>
-    );
+    errorMessage =
+      error instanceof Error
+        ? error.message
+        : "Unknown API error";
 
   }
 
-
-  // CASE 2: Main SaaS website
-
-  if (data.page_type === "platform") {
-
-    return <HomePage />;
-
-  }
-
-
-  // CASE 3: Business type demo website
-
-  if (data.page_type === "demo") {
-
-    return <DemoPage data={data} />;
-
-  }
-
-
-  // CASE 4: Actual tenant website
-
-  if (data.page_type === "tenant") {
-
-    return <TenantPage data={data} />;
-
-  }
-
-
-  // CASE 5: Fallback
+  console.log("========== DOMAIN DEBUG ==========");
+  console.log("HOST:", host);
+  console.log("API DATA:", data);
+  console.log("API ERROR:", errorMessage);
+  console.log("==================================");
 
   return (
-    <main>
-      <h1>Website Not Configured</h1>
+    <main style={{ padding: 40 }}>
+
+      <h1>Next.js Domain Routing Test</h1>
+
+      <p><strong>Host:</strong> {host}</p>
+
+      <p><strong>Page Type:</strong> {data?.page_type ?? "NULL"}</p>
+
+      <p><strong>Tenant:</strong> {data?.tenant ?? "NULL"}</p>
+
+      <p><strong>API Error:</strong> {errorMessage || "None"}</p>
+
+      <hr />
+
+      {data?.page_type === "platform" && <HomePage />}
+
+      {data?.page_type === "demo" && <DemoPage data={data} />}
+
+      {data?.page_type === "tenant" && <TenantPage data={data} />}
+
+      {!data && <h2>Website Not Found</h2>}
+
     </main>
   );
-
 }
