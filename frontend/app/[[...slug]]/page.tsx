@@ -246,6 +246,8 @@ export default async function Page() {
     // Default tenant view agar koi specific condition match na ho
     return (
       <main style={{ padding: 40, fontFamily: "Arial" }}>
+        <h1>{data.tenant} <span style={{ color: 'tomato', fontSize: '24px' }}>No Tenant Default Page</span></h1>
+
         <h1>Tenant Dashboard ({data.tenant})</h1>
         <h2>{data.title}</h2>
         <p>{data.message}</p>
