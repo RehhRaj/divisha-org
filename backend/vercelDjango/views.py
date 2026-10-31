@@ -3,7 +3,7 @@ from urllib.parse import urlsplit
 
 
 # Main domain
-BASE_DOMAIN = "mysite.com"
+BASE_DOMAIN = "divisha.org"
 
 
 # Available business types
@@ -99,7 +99,7 @@ def page_data(request):
 
 
     # CASE 3: Business type demo
-    # Example: tour.mysite.com
+    # Example: tour.divisha.org
 
     if len(parts) == 1:
 
@@ -124,7 +124,7 @@ def page_data(request):
 
 
     # CASE 4: Tenant website
-    # Example: jeetu.tour.mysite.com
+    # Example: jeetu.tour.divisha.org
 
     if len(parts) == 2:
 
