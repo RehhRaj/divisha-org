@@ -1,5 +1,7 @@
 
 import type { PageData } from "@/types/page";
+import TourTemplate from "./TourTemplate";
+
 
 type Props = {
   data: PageData;
@@ -46,6 +48,11 @@ export default function TemplateRenderer({
   const template = data.template ?? "";
 
   const config = templateStyles[template];
+
+  // TemplateRenderer function के अंदर:
+if (data.template === "tour") {
+  return <TourTemplate data={data} />;
+}
 
   if (!config) {
     return (
