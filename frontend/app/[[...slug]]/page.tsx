@@ -213,6 +213,9 @@ export default async function Page() {
          <h1>{data.title} ptyhone naywhere se ayi hai</h1>
           <h1>{data.message} ptyhone naywhere se ayi hai</h1>
            <h1>{data.tenant} ptyhone naywhere se ayi hai</h1>
+           <h1>{data.tenant} New Lintr added </h1>
+           <h1>{data.tenant} <span style={{ color: 'tomato', fontSize: '24px' }}>New Line added</span></h1>
+
         <HomePage />
         
         {/* Ya agar aapko sirf text ya temporary layout dikhana ho to ise uncomment kar sakte hain:
