@@ -2,6 +2,7 @@
 import type { PageData } from "@/types/page";
 import TourTemplate from "./TourTemplate";
 
+import SocietyTemplate from "./SocietyTemplate";
 
 type Props = {
   data: PageData;
@@ -52,6 +53,10 @@ export default function TemplateRenderer({
   // TemplateRenderer function के अंदर:
 if (data.template === "tour") {
   return <TourTemplate data={data} />;
+}
+
+if (data.template === "society") {
+  return <SocietyTemplate data={data} />;
 }
 
   if (!config) {
