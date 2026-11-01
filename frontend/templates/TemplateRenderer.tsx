@@ -3,6 +3,7 @@ import type { PageData } from "@/types/page";
 import TourTemplate from "./TourTemplate";
 
 import SocietyTemplate from "./SocietyTemplate";
+import RestaurantTemplate from "./RestaurantTemplate";
 
 type Props = {
   data: PageData;
@@ -59,6 +60,9 @@ if (data.template === "society") {
   return <SocietyTemplate data={data} />;
 }
 
+if (data.template === "restaurant") {
+  return <RestaurantTemplate data={data} />;
+}
   if (!config) {
     return (
       <main className="p-10 text-center">
