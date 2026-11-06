@@ -1,5 +1,4 @@
 
-import { connection } from "next/server";
 import { headers } from "next/headers";
 
 import HomePage from "@/app/HomePage";
@@ -64,8 +63,6 @@ function ErrorPage({
 }
 
 export default async function Page() {
-  await connection();
-
   const requestHeaders = await headers();
 
   const rawHost =
@@ -73,7 +70,6 @@ export default async function Page() {
     requestHeaders.get("host") ??
     "";
 
-  // Preserve localhost ports; Django handles them.
   const host = normalizeHost(rawHost);
 
   if (!host) {

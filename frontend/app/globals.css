@@ -1,3 +1,7 @@
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 /* globals.css
    Basic styling for the Business OS homepage.
    Change the colours in :root to update the overall look. */
