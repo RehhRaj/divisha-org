@@ -22,11 +22,16 @@ if not SECRET_KEY:
 # 3. ALLOWED_HOSTS Setup
 ALLOWED_HOSTS = [
     host.strip()
+
     for host in os.getenv(
-        "DJANGO_ALLOWED_HOSTS", "://pythonanywhere.com,localhost,127.0.0.1"
+        "DJANGO_ALLOWED_HOSTS",
+        "gtbtax.pythonanywhere.com,localhost,127.0.0.1",
     ).split(",")
     if host.strip()
 ]
+
+
+
 
 # 4. Security Settings
 SESSION_COOKIE_SECURE = not DEBUG
