@@ -2,27 +2,33 @@
 
 import os
 from pathlib import Path
-
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 1. DEBUG Setup - Local pe agar variable na mile toh default True (1) maanega
+DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
 
-DEBUG = os.getenv("DJANGO_DEBUG") == "1"
+# 2. SECRET_KEY Setup
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
     if not DEBUG:
+        # PythonAnywhere par agar key nahi mili toh abhi bhi strictly stop karega (Safe Production)
         raise ImproperlyConfigured("Set DJANGO_SECRET_KEY when DJANGO_DEBUG is off.")
+    # Local Machine par bina pareshani ke chalne ke liye automatic fallback key
     SECRET_KEY = "django-insecure-divisha-local-development-only"
 
+# 3. ALLOWED_HOSTS Setup
 ALLOWED_HOSTS = [
     host.strip()
     for host in os.getenv(
-        "DJANGO_ALLOWED_HOSTS", "gtbtax.pythonanywhere.com,localhost,127.0.0.1"
+        "DJANGO_ALLOWED_HOSTS", "://pythonanywhere.com,localhost,127.0.0.1"
     ).split(",")
     if host.strip()
 ]
+
+# 4. Security Settings
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 
@@ -36,9 +42,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Required for REST API & JWT Auth
-    "rest_framework",
-    "rest_framework_simplejwt",
 ]
 
 MIDDLEWARE = [
