@@ -1,0 +1,9 @@
+python manage.py runserver 127.0.0.1:8000
+
+DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+
+
+
+
+Har baar command mein URL dene se bachne ke liye, frontend/.env.local mein ye line save karke Next.js restart kar sakte hain.
+DJANGO_API_URL=http://127.0.0.1:8000/api/page/

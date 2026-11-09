@@ -1,9 +1,9 @@
 
 import type { PageData } from "@/types/page";
 
-import TourTemplate from "./TourTemplate";
-import SocietyTemplate from "./SocietyTemplate";
-import RestaurantTemplate from "./RestaurantTemplate";
+import TourTemplate from "./tour/TourTemplate";
+import SocietyTemplate from "./society/SocietyTemplate";
+import RestaurantTemplate from "./restaurant/RestaurantTemplate";
 
 
 

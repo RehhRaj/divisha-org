@@ -35,6 +35,7 @@ const businessTypes = [
     tag: "EDUCATION",
     text: "Admissions, notices, facilities, and school information.",
     href: "https://edu.divisha.org",
+    showcase: "/showcase/edu",
   },
   {
     icon: "🏢",
@@ -42,6 +43,7 @@ const businessTypes = [
     tag: "COMMUNITY",
     text: "Community information, amenities, updates, and contacts.",
     href: "https://society.divisha.org",
+    showcase: "/showcase/society",
   },
   {
     icon: "✈",
@@ -49,6 +51,7 @@ const businessTypes = [
     tag: "TRAVEL",
     text: "Destinations, tour packages, itineraries, and enquiries.",
     href: "https://tour.divisha.org",
+    showcase: "/showcase/tour",
   },
   {
     icon: "🍽",
@@ -56,6 +59,7 @@ const businessTypes = [
     tag: "RESTAURANT",
     text: "Menus, dining experiences, restaurant details, and enquiries.",
     href: "https://restau.divisha.org",
+    showcase: "/showcase/restau",
   },
   {
     icon: "✂",
@@ -63,6 +67,7 @@ const businessTypes = [
     tag: "SALON",
     text: "Beauty services, styling, appointments, and salon information.",
     href: "https://salon.divisha.org",
+    showcase: "/showcase/salon",
   },
 ];
 
@@ -327,6 +332,7 @@ export default function HomePage() {
                 {business.text}
               </p>
 
+              <Link href={business.showcase}>Preview templates ↗</Link>
               <a href={business.href}>
                 View live demo ↗
               </a>
@@ -342,6 +348,15 @@ export default function HomePage() {
       {/* =====================================================
           HOW IT WORKS
       ===================================================== */}
+
+      <section className="solutions section-wrap" aria-label="Workflow demos">
+        <h2>Explore a workflow</h2>
+        <ul>
+          <li><Link href="/demos/society">Society maintenance</Link></li>
+          <li><Link href="/demos/school">School facilities</Link></li>
+          <li><Link href="/demos/travel">Travel enquiries</Link></li>
+        </ul>
+      </section>
 
       <section
         className="how-section"

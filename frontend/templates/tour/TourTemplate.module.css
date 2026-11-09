@@ -1,0 +1,595 @@
+.page {
+    --ink: #172c2b;
+    --teal: #241ab1;
+    --mint: #e43066;
+    --sand: #c4920a;
+    color: var(--ink);
+    background: #c59210;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+.page * {
+    box-sizing: border-box
+}
+
+.page a {
+    text-decoration: none;
+    color: inherit
+}
+
+.container {
+    max-width: 1190px;
+    margin: 0 auto;
+    padding-left: 28px;
+    padding-right: 28px
+}
+
+.header {
+    background: #fcfaf5;
+    border-bottom: 1px solid #e7e8df
+}
+
+.nav {
+    min-height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px
+}
+
+.brand {
+    font-size: 17px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    letter-spacing: -.4px
+}
+
+.brandIcon {
+    width: 39px;
+    height: 39px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #e4f0e9;
+    color: var(--teal);
+    font-size: 23px
+}
+
+.navLinks {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 13px;
+    font-weight: 700
+}
+
+.navLinks a:hover,
+.tripBody a:hover {
+    color: #258879
+}
+
+.navCta {
+    background: var(--ink);
+    color: white !important;
+    padding: 14px 20px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap
+}
+
+.navCta span {
+    margin-left: 12px
+}
+
+.hero {
+    overflow: hidden;
+    background: linear-gradient(115deg, #fbfaf4 0%, #f1f4ea 100%)
+}
+
+.heroGrid {
+    min-height: 610px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 52px;
+    padding-top: 55px;
+    padding-bottom: 55px
+}
+
+.heroCopy {
+    max-width: 560px
+}
+
+.eyebrow,
+.sectionKicker {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #3d8477
+}
+
+.hero h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(52px, 6.3vw, 86px);
+    line-height: 1.06;
+    letter-spacing: -3.8px;
+    font-weight: 500;
+    margin: 24px 0
+}
+
+.hero h1 em,
+.section h2 em,
+.benefits h2 em,
+.contactPanel h2 em {
+    color: #3b8a79;
+    font-weight: 400
+}
+
+.heroCopy>p {
+    max-width: 460px;
+    font-size: 16px;
+    line-height: 1.85;
+    color: #65716d
+}
+
+.heroActions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 31px
+}
+
+.primaryButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 23px;
+    border-radius: 100px;
+    background: #194f48;
+    color: white !important;
+    padding: 18px 24px;
+    font-size: 13px;
+    font-weight: 800
+}
+
+.primaryButton:hover,
+.navCta:hover {
+    background: #2e766b
+}
+
+.secondaryButton {
+    font-size: 13px;
+    font-weight: 800;
+    border-bottom: 1px solid #8eaba1;
+    padding-bottom: 7px
+}
+
+.heroFootnote {
+    font-size: 11px;
+    color: #78837d;
+    letter-spacing: .5px;
+    margin-top: 55px
+}
+
+.heroVisual {
+    position: relative;
+    isolation: isolate;
+    height: 510px;
+    border-radius: 260px 260px 24px 24px;
+    overflow: hidden;
+    background: linear-gradient(#a8d7d3 0%, #e2f0d9 62%, #b7d4b5 100%);
+    box-shadow: 0 30px 70px #1a4b3c25
+}
+
+.sun {
+    position: absolute;
+    width: 160px;
+    height: 160px;
+    top: 67px;
+    right: 75px;
+    background: #fff2bc;
+    border-radius: 50%;
+    box-shadow: 0 0 75px #fff3c5
+}
+
+.mountainBack {
+    position: absolute;
+    inset: 120px -60px 0;
+    background: #85a99f;
+    clip-path: polygon(0 65%, 25% 22%, 42% 48%, 65% 5%, 100% 65%, 100% 100%, 0 100%)
+}
+
+.mountainFront {
+    position: absolute;
+    inset: 185px -50px 0;
+    background: #376e64;
+    clip-path: polygon(0 60%, 27% 18%, 47% 62%, 69% 23%, 100% 72%, 100% 100%, 0 100%)
+}
+
+.lake {
+    position: absolute;
+    inset: 345px 0 0;
+    background: linear-gradient(#7cbcb5, #2b766e);
+    border-radius: 50% 50% 0 0 / 15% 15% 0 0
+}
+
+.visualLabel {
+    position: absolute;
+    left: 29px;
+    bottom: 28px;
+    background: #fffdf0ee;
+    border-radius: 14px;
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px
+}
+
+.visualLabel span {
+    font-size: 9px;
+    letter-spacing: 2px;
+    font-weight: 800;
+    color: #488f7f
+}
+
+.visualLabel strong {
+    font-family: Georgia, serif;
+    font-size: 24px;
+    font-weight: 500
+}
+
+.floatingStamp {
+    position: absolute;
+    right: 22px;
+    top: 28px;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: #fffdf0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 27px;
+    transform: rotate(12deg);
+    box-shadow: 0 8px 20px #0e433b22
+}
+
+.floatingStamp small {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px
+}
+
+.section {
+    padding: 105px 0 95px
+}
+
+.sectionTop {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 38px
+}
+
+.section h2,
+.benefits h2,
+.contactPanel h2 {
+    font-family: Georgia, serif;
+    font-size: clamp(37px, 4.5vw, 58px);
+    line-height: 1.15;
+    letter-spacing: -2px;
+    font-weight: 500;
+    margin: 14px 0 0
+}
+
+.sectionTop>p {
+    max-width: 320px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #697571
+}
+
+.tripGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px
+}
+
+.tripCard {
+    background: #fff;
+    border: 1px solid #e7eae2;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 24px #214b3210
+}
+
+.tripArtwork {
+    height: 225px;
+    position: relative;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(145deg, #accfc2, #3e8278)
+}
+
+.tripArtwork>span {
+    font-size: 88px;
+    filter: drop-shadow(0 10px 10px #174d4826)
+}
+
+.tripArtwork1 {
+    background: linear-gradient(145deg, #f3d9a8, #70b8b4)
+}
+
+.tripArtwork2 {
+    background: linear-gradient(145deg, #a8cda5, #467c62)
+}
+
+.duration {
+    position: absolute;
+    top: 17px;
+    right: 17px;
+    background: #fffef0e8;
+    border-radius: 100px;
+    padding: 9px 13px;
+    font-size: 11px;
+    font-weight: 800
+}
+
+.tripBody {
+    padding: 26px
+}
+
+.tripLocation {
+    color: #3d8477;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .6px
+}
+
+.tripBody h3 {
+    font-family: Georgia, serif;
+    font-size: 25px;
+    font-weight: 500;
+    margin: 12px 0
+}
+
+.tripBody p {
+    font-size: 13px;
+    color: #6a7772;
+    line-height: 1.8;
+    min-height: 47px
+}
+
+.tripBody a {
+    display: inline-flex;
+    gap: 18px;
+    align-items: center;
+    margin-top: 15px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #174d48
+}
+
+.disclaimer {
+    margin-top: 22px;
+    font-size: 11px;
+    color: #7c8983
+}
+
+.benefits {
+    background: #e8f0e8;
+    padding: 100px 0
+}
+
+.benefitGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px
+}
+
+.benefitGrid>div:first-child>p {
+    font-size: 15px;
+    line-height: 1.9;
+    color: #60726b;
+    max-width: 420px;
+    margin-top: 26px
+}
+
+.benefitItems>div {
+    display: flex;
+    gap: 27px;
+    padding: 20px 0;
+    border-bottom: 1px solid #bfd2c7
+}
+
+.benefitItems>div:first-child {
+    padding-top: 0
+}
+
+.benefitItems>div>span {
+    color: #408675;
+    font-size: 12px;
+    font-weight: 800;
+    padding-top: 6px
+}
+
+.benefitItems h3 {
+    font-family: Georgia, serif;
+    font-size: 23px;
+    font-weight: 500;
+    margin: 0 0 9px
+}
+
+.benefitItems p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #687a72;
+    margin: 0
+}
+
+.contactSection {
+    padding: 80px 0
+}
+
+.contactPanel {
+    background: #f3ead9;
+    border-radius: 24px;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 30px;
+    padding-top: 65px;
+    padding-bottom: 65px
+}
+
+.contactPanel p {
+    max-width: 490px;
+    line-height: 1.8;
+    font-size: 14px;
+    color: #6b736d
+}
+
+.footer {
+    border-top: 1px solid #e4e9df
+}
+
+.footerRow {
+    min-height: 92px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 12px;
+    color: #73807a
+}
+
+.footerRow>span:first-child {
+    font-weight: 800;
+    color: #244c45
+}
+
+.footerRow a {
+    text-decoration: underline
+}
+
+@media(max-width:900px) {
+    .navLinks {
+        display: none
+    }
+
+    .heroGrid {
+        gap: 28px
+    }
+
+    .heroVisual {
+        height: 420px
+    }
+
+    .tripGrid {
+        gap: 14px
+    }
+
+    .tripBody {
+        padding: 20px
+    }
+
+    .benefitGrid {
+        gap: 35px
+    }
+}
+
+@media(max-width:680px) {
+    .container {
+        padding-left: 20px;
+        padding-right: 20px
+    }
+
+    .nav {
+        min-height: 72px
+    }
+
+    .brand {
+        font-size: 14px;
+        max-width: 60%
+    }
+
+    .navCta {
+        font-size: 11px;
+        padding: 12px 15px
+    }
+
+    .heroGrid {
+        grid-template-columns: 1fr;
+        padding-top: 58px;
+        padding-bottom: 55px
+    }
+
+    .hero h1 {
+        font-size: clamp(49px, 12vw, 72px);
+        letter-spacing: -2px
+    }
+
+    .heroVisual {
+        height: 390px;
+        max-width: 460px;
+        width: 100%;
+        margin: auto
+    }
+
+    .heroFootnote {
+        margin-top: 30px
+    }
+
+    .section {
+        padding: 75px 0
+    }
+
+    .sectionTop {
+        display: block
+    }
+
+    .tripGrid {
+        grid-template-columns: 1fr;
+        gap: 22px
+    }
+
+    .tripArtwork {
+        height: 235px
+    }
+
+    .benefits {
+        padding: 75px 0
+    }
+
+    .benefitGrid {
+        grid-template-columns: 1fr
+    }
+
+    .contactSection {
+        padding: 45px 0
+    }
+
+    .contactPanel {
+        display: block;
+        padding-top: 45px;
+        padding-bottom: 45px
+    }
+
+    .contactPanel .primaryButton {
+        margin-top: 18px
+    }
+
+    .footerRow {
+        flex-direction: column;
+        justify-content: center;
+        padding-top: 22px;
+        padding-bottom: 22px;
+        text-align: center
+    }
+}
