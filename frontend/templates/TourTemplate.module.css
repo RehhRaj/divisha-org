@@ -1,10 +1,10 @@
 .page {
     --ink: #172c2b;
-    --teal: #174d48;
-    --mint: #d9ede4;
-    --sand: #f6f3eb;
+    --teal: #241ab1;
+    --mint: #e43066;
+    --sand: #c4920a;
     color: var(--ink);
-    background: #fcfaf5;
+    background: #c59210;
     font-family: Arial, Helvetica, sans-serif
 }
 

@@ -1,9 +1,11 @@
 
 import type { PageData } from "@/types/page";
-import TourTemplate from "./TourTemplate";
 
+import TourTemplate from "./TourTemplate";
 import SocietyTemplate from "./SocietyTemplate";
 import RestaurantTemplate from "./RestaurantTemplate";
+
+
 
 type Props = {
   data: PageData;
@@ -43,6 +45,8 @@ const templateStyles: Record<
     icon: "✂️",
   },
 };
+
+
 
 export default function TemplateRenderer({
   data,

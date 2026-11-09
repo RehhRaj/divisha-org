@@ -1,5 +1,7 @@
 import Link from "next/link";
+
 import styles from "./TourTemplate.module.css";
+
 
 export type TourPageData = {
   page_type: string;

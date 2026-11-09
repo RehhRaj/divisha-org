@@ -98,7 +98,12 @@ export default async function Page() {
     );
   }
 
+
+  console.log(data.page_type, " page type ");
+  console.log(data.business_type , "Business type");
+
   switch (data.page_type) {
+    
     case "platform":
       return <HomePage />;
 
@@ -113,7 +118,7 @@ export default async function Page() {
       return (
         <ErrorPage
           host={host}
-          message="Unknown page type."
+          message="Unknown page type  json response is not as per requirment."
         />
       );
   }

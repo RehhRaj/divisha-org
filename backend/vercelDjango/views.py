@@ -145,4 +145,4 @@ def page_data(request):
             key = (tenant, kind)
             if key in BUSINESS_SITES:
                 return render_business(key)
-    return page_error("Website Not Found")
+    return page_error("Website Not Found  from django backend. Please check the domain and try again.", 404)
