@@ -7,3 +7,9 @@ DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
 
 Har baar command mein URL dene se bachne ke liye, frontend/.env.local mein ye line save karke Next.js restart kar sakte hain.
 DJANGO_API_URL=http://127.0.0.1:8000/api/page/
+
+
+
+pythonanywhere : ki commands  file content check karne and empty file karne ke liye
+11:02 /var/log $ echo> gtbtax.pythonanywhere.com.error.log
+11:03 /var/log $ tail -n 50 gtbtax.pythonanywhere.com.error.log
