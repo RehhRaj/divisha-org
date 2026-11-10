@@ -19,6 +19,21 @@
 .header nav { display: flex; gap: 12px 24px; flex-wrap: wrap; }
 .header nav a { display: inline; }
 .header nav a:hover, .detailsLink:hover { text-decoration: underline; }
+.headerActions { display: flex; flex-wrap: wrap; gap: 8px; }
+.callNow, .directions {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+}
+.callNow { background: #ffc247; color: #241a0b; }
+.directions { background: #176244; color: #fff; }
+.callNow:hover, .directions:hover { text-decoration: underline; }
+.headerActions a:focus-visible { outline: 2px solid #202721; outline-offset: 3px; }
 .brand { display: flex; gap: 10px; align-items: center; font-size: 17px; font-weight: 800; }
 .brand span { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: white; }
 .variants { display: flex; flex-wrap: wrap; gap: 7px; align-items: center; margin-top: 17px; }

@@ -63,6 +63,13 @@ export function TemplateView({ page, basePath, item }: { page: SitePage; basePat
   } as CSSProperties;
   const displayItems = page.sections.show_items && page.items.length > 0;
   const displayContact = !!(page.contact.phone || page.contact.email || page.contact.address || page.contact.whatsapp);
+  const isRestaurant = page.template === "restaurant";
+  const phone = page.contact.phone?.replace(/[\s().-]/g, "");
+  const callHref = isRestaurant && phone && /^\+?[0-9]{7,15}$/.test(phone) ? `tel:${phone}` : undefined;
+  const destination = page.contact.address?.trim();
+  const directionsHref = isRestaurant && destination
+    ? `https://www.google.com/maps/dir/?${new URLSearchParams({ api: "1", destination })}`
+    : undefined;
   const classicFamily = page.template_variant === "classic" ? s[page.template] : undefined;
   const showSpotlight = page.template_variant === "classic" && page.template !== "tour" && displayItems;
   const itemsRoot = page.template === "tour" ? "packages" : "offerings";
@@ -76,6 +83,12 @@ export function TemplateView({ page, basePath, item }: { page: SitePage; basePat
           (href === "#why-us" && page.sections.show_why_us) || href === "#contact"
         ).map(({ label, href }) => <a key={href} href={item ? home + href : href}>{label}</a>)}
       </nav>
+      {(callHref || directionsHref) && (
+        <div className={s.headerActions} role="group" aria-label="Restaurant quick actions">
+          {callHref && <a className={s.callNow} href={callHref}>Call Now</a>}
+          {directionsHref && <a className={s.directions} href={directionsHref}>Get Directions</a>}
+        </div>
+      )}
     </header>
 
     {page.page_type === "demo" && <nav className={`${s.wrap} ${s.variants}`} aria-label="Preview template designs">

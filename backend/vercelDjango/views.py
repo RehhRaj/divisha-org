@@ -93,6 +93,10 @@ def business_page(kind, record, *, tenant=None, variant=None):
         catalog = TENANT_CATALOGS.get(f"{tenant}-{kind}")
         if catalog:
             selected_variant = catalog["template_variant"]
+            contact = catalog.get("contact", {})
+            for field in ("phone", "address"):
+                if field in contact:
+                    content["contact"][field] = contact[field]
             content["items"] = [
                 {"id": item["slug"], **item} for item in catalog["items"]
             ]

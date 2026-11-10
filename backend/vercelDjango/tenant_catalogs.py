@@ -6,14 +6,13 @@ TENANT_CATALOGS = {
         "items": [
             {
                 "slug": 'beetroot-carpaccio',
-                "title": 'Beetroot Carpaccio',
+                "title": "Teal Signature Beetroot Carpaccio",
                 "subtitle": 'Starter',
                 "description": 'Thin beetroot slices with citrus, goat cheese and toasted seeds.',
-                "price": 340,
+                "price": 8950,
                 "image_url": '/catalog/teal-restau-beetroot-carpaccio.svg',
                 "image_alt": 'Illustration for Beetroot Carpaccio',
-                "title": "Teal Signature Beetroot Carpaccio",
-                "price": 390,
+                
                 
             },
             {
@@ -56,6 +55,7 @@ TENANT_CATALOGS = {
     },
     "jeetu-restau": {
         "template_variant": "dhaba",
+        "contact": {"phone": "+918506992823", "address": "Chaayos Cafe at OLA Koramangala, Unit No-01, Ground floor, Wing C, Ola office, RMZ Prestige Star tech 140, Koramangala Industrial Layout, Koramangala, Bengaluru, Karnataka 560095"},
         "items": [
             {
                 "slug": 'amritsari-kulcha',
