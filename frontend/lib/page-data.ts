@@ -15,8 +15,17 @@ export async function fetchPageData<T>(query: Query): Promise<T | null> {
   for (const [key, value] of Object.entries(query)) {
     if (value !== undefined) url.searchParams.set(key, value);
   }
-  const response = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(6000) });
-  if (response.status === 404 || response.status === 400) return null;
+  
+  // const response = await fetch(url, { cache: "no-store", signal: AbortSignal.timeout(6000) });
+  
+const response = await fetch(url, {
+  signal: AbortSignal.timeout(6000),
+  ...(process.env.NODE_ENV === "production"
+    ? { next: { revalidate: 300 } }
+    : { cache: "no-store" }),
+});
+
   if (!response.ok) throw new Error(`Django page API returned ${response.status}`);
   return response.json();
+
 }
