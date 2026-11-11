@@ -1,0 +1,6 @@
+Production par teen cheezein measure karein: 1,000 page views par Django calls, API response size, aur page ka p95 TTFB yani slow taraf ke requests mein browser ko pehla byte milne ka time.
+Django calls, 
+API response size, aur page ka 
+p95 TTFB
+TTFB
+
