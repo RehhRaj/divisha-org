@@ -37,7 +37,7 @@ class TenantCatalogTests(SimpleTestCase):
         )
         teal = self.page("teal-restau.localhost").json()
         self.assertEqual(teal["template_variant"], "fine-dining")
-        self.assertEqual(teal["items"][0]["title"], "Beetroot Carpaccio")
+        self.assertEqual(teal["items"][0]["title"], "Teal Signature Beetroot Carpaccio")
 
     def test_existing_and_new_routes(self):
         self.assertEqual(self.page("divisha.org").json()["page_type"], "platform")
@@ -49,3 +49,20 @@ class TenantCatalogTests(SimpleTestCase):
         self.assertEqual(self.page("unknown-tour.localhost").status_code, 404)
         self.assertEqual(self.client.get("/api/health/").json(), {"status": "ok"})
         self.assertEqual(self.client.get("/admin/").status_code, 302)
+
+
+class PosDemoConfigTests(SimpleTestCase):
+    def test_local_demo_is_read_only_and_tenant_scoped(self):
+        endpoint = "/api/pos/demo-config/"
+        with self.settings(DEBUG=True):
+            jeetu = self.client.get(endpoint, {"host": "jeetu-restau.localhost:3000"})
+            pilot = self.client.get(endpoint, {"host": "pilot-restau.localhost:3000"})
+            self.assertEqual(jeetu.json()["menu"][0]["price_paise"], 2500)
+            self.assertEqual(pilot.json()["tenant"], "pilot-restau")
+            self.assertIn("no-store", jeetu.headers["Cache-Control"])
+            for host in ("teal-restau.localhost", "jeetu-tour.localhost", "unknown-restau.localhost", "jeetu-restau.divisha.org"):
+                with self.subTest(host=host):
+                    self.assertEqual(self.client.get(endpoint, {"host": host}).status_code, 404)
+            self.assertEqual(self.client.get(endpoint, {"host": "jeetu-restau.localhost"}, REMOTE_ADDR="192.0.2.1").status_code, 404)
+            self.assertEqual(self.client.post(endpoint + "?host=jeetu-restau.localhost").status_code, 405)
+        self.assertEqual(self.client.get(endpoint, {"host": "jeetu-restau.localhost"}).status_code, 404)

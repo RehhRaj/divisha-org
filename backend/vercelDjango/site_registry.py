@@ -10,6 +10,7 @@ RESERVED_TENANT_SLUGS = {"www", "api", "admin", "app", "dashboard", "login", "re
 TENANTS = {
     "jeetu": "Jeetu",
     "teal": "Teal",
+    "pilot": "Pilot Kitchen",
     "abc": "ABC",
     "apexacademy": "Apex International Academy",
     "glamhub": "Glam Hub",
@@ -17,8 +18,9 @@ TENANTS = {
 # List of records makes duplicate composite keys detectable before indexing.
 BUSINESS_SITE_RECORDS = [
     {"tenant": "jeetu", "business_type": "tour", "title": "Jeetu newwwwwwww Tour Business", "message": "Welcome to Jeetu Tour Website"},
-    {"tenant": "jeetu", "business_type": "restau", "title": "Jeetu Da Dhaba & Restaurant", "message": "Welcome to Jeetu Fine Dine Restaurant"},
+    {"tenant": "jeetu", "business_type": "restau", "features": {"website": True, "restaurant_pos": True}, "title": "Jeetu Da Dhaba & Restaurant", "message": "Welcome to Jeetu Fine Dine Restaurant"},
     {"tenant": "jeetu", "business_type": "salon", "title": "Jeetu Gents Salon", "message": "Welcome to Jeetu Grooming Station"},
+    {"tenant": "pilot", "business_type": "restau", "features": {"website": False, "restaurant_pos": True}, "title": "Pilot Kitchen", "message": "Restaurant POS demo"},
     {"tenant": "teal", "business_type": "restau", "title": "Teal Restaurant", "message": "Welcome to Teal Restaurant"},
     {"tenant": "abc", "business_type": "society", "title": "ABC Co-operative Society", "message": "Welcome to ABC Residential Society Portal"},
     {"tenant": "abc", "business_type": "tour", "title": "ABC Tour & Travels", "message": "Welcome to ABC Tour Website"},

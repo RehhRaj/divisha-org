@@ -115,6 +115,11 @@ export default async function Page({ params, searchParams }: RouteProps) {
     notFound();
   }
 
+  if (data.features?.website === false) {
+    if (slug.length || process.env.NODE_ENV !== "development") notFound();
+    return <main><h1>{data.title}</h1><a href="/pos">Open POS demo</a></main>;
+  }
+
   const basePath = showcase ? `/showcase/${encodeURIComponent(showcase)}/` : "/";
   const [collection, itemSlug] = subpath;
   if (collection) {

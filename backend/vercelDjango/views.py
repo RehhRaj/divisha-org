@@ -1,7 +1,11 @@
 """Divisha Business OS V1: platform, demos, tenant-business sites and custom domains."""
 import re
 from urllib.parse import urlsplit
+from django.conf import settings
 from django.http import JsonResponse
+from django.views.decorators.cache import never_cache
+
+from .pos_fixtures import POS_FIXTURES
 
 from django.views.decorators.http import require_safe
 
@@ -103,6 +107,7 @@ def business_page(kind, record, *, tenant=None, variant=None):
 
     return JsonResponse({
         "page_type": page_type,
+        "features": features(record),
         "business_type": kind,
         "tenant": tenant,
         "parent_tenant": None,
@@ -112,6 +117,48 @@ def business_page(kind, record, *, tenant=None, variant=None):
         "template_variant": selected_variant,
         "available_variants": TEMPLATE_VARIANTS[kind] if page_type == "demo" else (),
         **{field: content[field] for field in PUBLIC_CONTENT_FIELDS},
+    })
+
+
+def features(record):
+    return {"website": True, "restaurant_pos": False, **record.get("features", {})}
+
+
+def tenant_key_for_host(host):
+    if host in CUSTOM_DOMAIN_INDEX:
+        return CUSTOM_DOMAIN_INDEX[host]
+    suffix = "." + BASE_DOMAIN
+    if not host.endswith(suffix):
+        return None
+    slug = host.removesuffix(suffix)
+    for kind in sorted(BUSINESS_TYPES, key=len, reverse=True):
+        ending = "-" + kind
+        if slug.endswith(ending):
+            key = (slug[:-len(ending)], kind)
+            if key in BUSINESS_SITES:
+                return key
+    return None
+
+
+@never_cache
+@require_safe
+def pos_demo_config(request):
+    raw_host = request.GET.get("host", "")
+    if (
+        not settings.DEBUG
+        or request.META.get("REMOTE_ADDR") not in {"127.0.0.1", "::1"}
+        or not re.fullmatch(r"[a-z0-9-]+\.localhost(?::[0-9]+)?", raw_host)
+    ):
+        return page_error("POS demo unavailable")
+    host = normalize_host(raw_host)
+    key = tenant_key_for_host(host) if host else None
+    if key not in POS_FIXTURES or not features(BUSINESS_SITES[key])["restaurant_pos"]:
+        return page_error("POS demo unavailable")
+    tenant, kind = key
+    return JsonResponse({
+        "tenant": f"{tenant}-{kind}",
+        "title": BUSINESS_SITES[key]["title"],
+        **POS_FIXTURES[key],
     })
 
 
@@ -161,9 +208,9 @@ def page_data(request):
             "message": "Divisha Business OS Platform", "template": "platform",
         })
 
-    if host in CUSTOM_DOMAIN_INDEX:
-        return render_business(CUSTOM_DOMAIN_INDEX[host], variant)
-
+    key = tenant_key_for_host(host)
+    if key:
+        return render_business(key, variant)
     suffix = "." + BASE_DOMAIN
     if not host.endswith(suffix):
         return page_error("Unknown domain")
@@ -172,10 +219,4 @@ def page_data(request):
         return page_error("Invalid domain structure")
     if slug in BUSINESS_TYPES:
         return render_demo(slug, variant)
-    for kind in sorted(BUSINESS_TYPES, key=len, reverse=True):
-        ending = "-" + kind
-        if slug.endswith(ending):
-            key = (slug[:-len(ending)], kind)
-            if key in BUSINESS_SITES:
-                return render_business(key, variant)
     return page_error("Website not found")

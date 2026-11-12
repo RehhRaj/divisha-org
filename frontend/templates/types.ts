@@ -19,6 +19,7 @@ export type Offering = {
 
 export type SitePage = {
   page_type: "demo" | "tenant";
+  features?: { website: boolean; restaurant_pos: boolean };
   business_type: string;
   tenant: string | null;
   template: string;
