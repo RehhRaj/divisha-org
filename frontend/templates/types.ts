@@ -17,13 +17,25 @@ export type Offering = {
   cta?: CTA;
 };
 
+export type RestaurantOrdering = {
+  whatsapp_number: string | null;
+  mode: "takeaway" | "dine-in" | "invalid-table";
+  table: { id: string; label: string } | null;
+};
+
 export type SitePage = {
+  site_id?: string | null;
+  ordering?: RestaurantOrdering | null;
   page_type: "demo" | "tenant";
   features?: { website: boolean; restaurant_pos: boolean };
   business_type: string;
   tenant: string | null;
   template: string;
+
   template_variant: string;
+  template_config?: Family & { defaultVariant: string };
+
+
   available_variants: string[];
   title: string;
   message: string;

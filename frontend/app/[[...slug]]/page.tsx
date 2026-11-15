@@ -6,13 +6,13 @@ import HomePage from "@/app/HomePage";
 import DemoPage from "@/app/DemoPage";
 import TenantPage from "@/app/TenantPage";
 import { fetchPageData } from "@/lib/page-data";
-import { TemplateView } from "@/templates/TemplateView";
+import { SiteRenderer } from "@/templates/SiteRenderer";
 import type { SitePage } from "@/templates/types";
 import type { PageData } from "@/types/page";
 
 type RouteProps = {
   params: Promise<{ slug?: string[] }>;
-  searchParams: Promise<{ variant?: string | string[] }>;
+  searchParams: Promise<{ variant?: string | string[]; table?: string | string[] }>;
 };
 
 /**
@@ -91,8 +91,8 @@ if (page.business_type !== "restau") return null;
 }
 
 export default async function Page({ params, searchParams }: RouteProps) {
-  const [{ slug = [] }, { variant }] = await Promise.all([params, searchParams]);
-  if (Array.isArray(variant)) notFound();
+  const [{ slug = [] }, { variant, table }] = await Promise.all([params, searchParams]);
+  if (Array.isArray(variant) || Array.isArray(table)) notFound();
 
   const showcase = slug[0] === "showcase" ? slug[1] : undefined;
   if (slug[0] === "showcase" && !showcase) notFound();
@@ -101,7 +101,7 @@ export default async function Page({ params, searchParams }: RouteProps) {
     notFound();
   }
 
-  const data = await fetchPageData<PageData | SitePage>({ showcase, variant });
+  const data = await fetchPageData<PageData | SitePage>({ showcase, variant, table });
   if (!data) notFound();
   if (data.page_type === "platform") {
     if (slug.length || variant !== undefined) notFound();
@@ -126,14 +126,17 @@ export default async function Page({ params, searchParams }: RouteProps) {
     const expected = data.template === "tour" ? "packages" : "offerings";
     if (collection !== expected || !data.sections.show_items) notFound();
     if (!itemSlug) {
-      const query = data.page_type === "demo" && variant ? `?variant=${encodeURIComponent(variant)}` : "";
+      const params = new URLSearchParams();
+      if (data.page_type === "demo" && variant) params.set("variant", variant);
+      if (table !== undefined) params.set("table", table);
+      const query = params.size ? `?${params}` : "";
       const target = data.content.secondary_cta.link;
       const hash = /^#[a-z][a-z0-9-]*$/i.test(target) ? target : "";
       redirect(basePath + query + hash);
     }
     const item = data.items.find((offering) => offering.slug === itemSlug);
     if (!item) notFound();
-    return <TemplateView page={data} basePath={basePath} item={item} />;
+    return <SiteRenderer page={data} basePath={basePath} tableToken={table} item={item} />;
   }
   const requestHeaders = await headers();
   const host = (requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host") ?? "")
@@ -145,6 +148,6 @@ export default async function Page({ params, searchParams }: RouteProps) {
   return <>
     {structuredData && <script type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />}
-    <TemplateView page={data} basePath={basePath} />
+    <SiteRenderer page={data} basePath={basePath} tableToken={table} />
   </>;
 }

@@ -2,7 +2,6 @@
 
 TENANT_CATALOGS = {
     "teal-restau": {
-        "template_variant": "fine-dining",
         "items": [
             {
                 "slug": 'beetroot-carpaccio',
@@ -54,7 +53,6 @@ TENANT_CATALOGS = {
         ],
     },
     "jeetu-restau": {
-        "template_variant": "dhaba",
         "contact": {"phone": "+918506992823", "address": "Chaayos Cafe at OLA Koramangala, Unit No-01, Ground floor, Wing C, Ola office, RMZ Prestige Star tech 140, Koramangala Industrial Layout, Koramangala, Bengaluru, Karnataka 560095"},
         "items": [
             {
@@ -105,7 +103,6 @@ TENANT_CATALOGS = {
         ],
     },
     "abc-restau": {
-        "template_variant": "classic",
         "items": [
             {
                 "slug": 'lemon-coriander-soup',

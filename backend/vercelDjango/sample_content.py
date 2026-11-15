@@ -3,7 +3,7 @@ from copy import deepcopy
 
 _SAMPLE_PROFILES = {
     "tour": {
-        "colors": ("#174d48", "#d9ede4"),
+        "colors": ("#0bc552", "#d9ede4"),
         "tagline": "Explore Himalayan and coastal getaways",
         "about": "Browse sample itineraries for family and group holidays.",
         "section_id": "destinations",
@@ -87,7 +87,7 @@ _SAMPLE_PROFILES = {
         ],
     },
     "society": {
-        "colors": ("#28465d", "#dcebf1"),
+        "colors": ("#dcdf32", "#dcebf1"),
         "tagline": "Resident services in one place",
         "about": "See how a society homepage can present helpdesk and notice board information.",
         "section_id": "services",

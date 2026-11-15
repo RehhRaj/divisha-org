@@ -148,3 +148,7 @@
   }
   .catalog .card:has(.offeringImage) > :not(.offeringImage) { grid-column: 2; }
 }
+.feature[data-template="restaurant"] .art {
+  background: var(--surface);
+  color: var(--accent);
+}

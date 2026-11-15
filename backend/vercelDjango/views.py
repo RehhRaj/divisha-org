@@ -5,6 +5,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 
+from .ordering import ordering_config
 from .pos_fixtures import POS_FIXTURES
 
 from django.views.decorators.http import require_safe
@@ -12,8 +13,10 @@ from django.views.decorators.http import require_safe
 from .sample_content import sample_content
 from .site_registry import (
     BASE_DOMAIN, BUSINESS_SITE_RECORDS, BUSINESS_TYPES, CUSTOM_DOMAINS,
-    RESERVED_TENANT_SLUGS, TEMPLATE_VARIANTS, TENANTS,
+    RESERVED_TENANT_SLUGS, TEMPLATE_VARIANTS, TENANTS,    
 )
+
+from .template_config import RESTAURANT_TEMPLATE
 from .tenant_catalogs import TENANT_CATALOGS
 from .workflows import DEMOS
 
@@ -89,24 +92,56 @@ def page_error(message, status=404):
     return JsonResponse({"error": message}, status=status)
 
 
-def business_page(kind, record, *, tenant=None, variant=None):
+def business_page(kind, record, *, tenant=None, variant=None, table=None):
     page_type = "tenant" if tenant else "demo"
     content = sample_content(kind, record["title"])
-    selected_variant = variant or "classic"
+    template_config = {}
+
+    if kind == "restau":
+        default_variant = RESTAURANT_TEMPLATE["defaultVariant"]
+        selected_variant = (
+            record.get("template_variant", default_variant)
+            if tenant
+            else variant or default_variant
+        )
+        design = RESTAURANT_TEMPLATE["variants"][selected_variant]
+        brand_colors = record.get("brand_colors", {}) if tenant else {}
+
+        for field, brand_key, default_color in (
+            ("primary_color", "primary", design["color"]),
+            ("secondary_color", "surface", design["surface"]),
+        ):
+            override = brand_colors.get(brand_key)
+            content["theme"][field] = (
+                override
+                if isinstance(override, str)
+                and re.fullmatch(r"#[0-9a-fA-F]{6}", override)
+                else default_color
+            )
+
+        template_config = {"template_config": RESTAURANT_TEMPLATE}
+    else:
+        selected_variant = variant or "classic"
+
     if tenant:
         catalog = TENANT_CATALOGS.get(f"{tenant}-{kind}")
         if catalog:
-            selected_variant = catalog["template_variant"]
+            if kind != "restau":
+                selected_variant = catalog["template_variant"]
+
             contact = catalog.get("contact", {})
             for field in ("phone", "address"):
                 if field in contact:
                     content["contact"][field] = contact[field]
+
             content["items"] = [
                 {"id": item["slug"], **item} for item in catalog["items"]
             ]
 
     return JsonResponse({
         "page_type": page_type,
+        "site_id": f"{tenant}-{kind}" if tenant else None,
+        "ordering": ordering_config(record, table) if tenant and kind == "restau" else None,
         "features": features(record),
         "business_type": kind,
         "tenant": tenant,
@@ -116,9 +151,9 @@ def business_page(kind, record, *, tenant=None, variant=None):
         "template": record.get("template", BUSINESS_TYPES[kind]["template"]),
         "template_variant": selected_variant,
         "available_variants": TEMPLATE_VARIANTS[kind] if page_type == "demo" else (),
+        **template_config,
         **{field: content[field] for field in PUBLIC_CONTENT_FIELDS},
     })
-
 
 def features(record):
     return {"website": True, "restaurant_pos": False, **record.get("features", {})}
@@ -168,11 +203,11 @@ def render_demo(kind, variant):
     return business_page(kind, BUSINESS_TYPES[kind], variant=variant)
 
 
-def render_business(key, variant):
+def render_business(key, variant, table=None):
     if variant is not None:
         return page_error("Template previews are only available on demos")
     tenant, kind = key
-    return business_page(kind, BUSINESS_SITES[key], tenant=tenant)
+    return business_page(kind, BUSINESS_SITES[key], tenant=tenant, table=table)
 
 
 @require_safe
@@ -210,7 +245,7 @@ def page_data(request):
 
     key = tenant_key_for_host(host)
     if key:
-        return render_business(key, variant)
+        return render_business(key, variant, request.GET.get("table"))
     suffix = "." + BASE_DOMAIN
     if not host.endswith(suffix):
         return page_error("Unknown domain")

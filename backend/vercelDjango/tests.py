@@ -66,3 +66,31 @@ class PosDemoConfigTests(SimpleTestCase):
             self.assertEqual(self.client.get(endpoint, {"host": "jeetu-restau.localhost"}, REMOTE_ADDR="192.0.2.1").status_code, 404)
             self.assertEqual(self.client.post(endpoint + "?host=jeetu-restau.localhost").status_code, 405)
         self.assertEqual(self.client.get(endpoint, {"host": "jeetu-restau.localhost"}).status_code, 404)
+
+
+class RestaurantCheckoutTests(SimpleTestCase):
+    def test_order_context_is_scoped_to_site_and_table(self):
+        from unittest.mock import patch
+
+        # with patch.dict("os.environ", {"JEETU_ORDER_WHATSAPP": "919000000000"}):
+        with patch.dict("os.environ", {"JEETU_ORDER_WHATSAPP": "919810014587"}):
+            checkout = self.client.get("/api/page/", {
+                "host": "jeetu-restau.localhost",
+                "table": "demo-table-07",
+            }).json()
+            self.assertEqual(checkout["site_id"], "jeetu-restau")
+            self.assertEqual(checkout["ordering"], {
+                "whatsapp_number": "919000000000",
+                "mode": "dine-in",
+                "table": {"id": "07", "label": "Table 07"},
+            })
+            invalid = self.client.get("/api/page/", {
+                "host": "jeetu-restau.localhost", "table": "unknown",
+            }).json()
+            self.assertEqual(invalid["ordering"]["mode"], "invalid-table")
+            takeaway = self.client.get("/api/page/", {"host": "jeetu-restau.localhost"}).json()
+            self.assertEqual(takeaway["ordering"]["mode"], "takeaway")
+            teal = self.client.get("/api/page/", {
+                "host": "teal-restau.localhost", "table": "demo-table-07",
+            }).json()
+            self.assertIsNone(teal["ordering"])

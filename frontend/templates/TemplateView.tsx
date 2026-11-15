@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { CTA, Offering, SitePage } from "./types";
@@ -50,17 +50,49 @@ function OfferingImage({ item, detail = false }: { item: Offering; detail?: bool
   );
 }
 
-export function TemplateView({ page, basePath, item }: { page: SitePage; basePath: string; item?: Offering }) {
-  const family = families.get(page.template);
+export type TemplateViewProps = {
+  page: SitePage;
+  basePath: string;
+  item?: Offering;
+  tableToken?: string;
+};
+
+export function TemplateView({
+  page, basePath, item, tableToken, itemAction, orderPanel,
+}: TemplateViewProps & {
+  itemAction?: (offering: Offering) => ReactNode;
+  orderPanel?: ReactNode;
+}) {
+
+
+  const family = page.template_config ?? families.get(page.template);
+  const defaultVariant = page.template_config?.defaultVariant ?? "classic";
+
+
   const variant = family && Object.hasOwn(family.variants, page.template_variant) ? family.variants[page.template_variant] : undefined;
   if (!family || !variant) notFound();
 
-  const query = page.page_type === "demo" && page.template_variant !== "classic" ? `?variant=${encodeURIComponent(page.template_variant)}` : "";
+
+
+  const params = new URLSearchParams();
+  if (page.page_type === "demo" && page.template_variant !== defaultVariant) {
+    params.set("variant", page.template_variant);
+  }
+  if (tableToken !== undefined) params.set("table", tableToken);
+  const query = params.size ? `?${params}` : "";
   const home = basePath + query;
+
   const theme = {
-    "--accent": variant.color ?? page.theme.primary_color,
-    "--surface": variant.surface ?? page.theme.secondary_color,
+    "--accent": page.template_config
+      ? page.theme.primary_color
+      : variant.color ?? page.theme.primary_color,
+    "--surface": page.template_config
+      ? page.theme.secondary_color
+      : variant.surface ?? page.theme.secondary_color,
   } as CSSProperties;
+
+
+
   const displayItems = page.sections.show_items && page.items.length > 0;
   const displayContact = !!(page.contact.phone || page.contact.email || page.contact.address || page.contact.whatsapp);
   const isRestaurant = page.template === "restaurant";
@@ -74,7 +106,7 @@ export function TemplateView({ page, basePath, item }: { page: SitePage; basePat
   const showSpotlight = page.template_variant === "classic" && page.template !== "tour" && displayItems;
   const itemsRoot = page.template === "tour" ? "packages" : "offerings";
 
-  return <div className={[s.site, s[variant.layout], classicFamily].filter(Boolean).join(" ")} style={theme}>
+  return <div className={[s.site, s[variant.layout], classicFamily].filter(Boolean).join(" ")} style={theme} data-template={page.template}>
     <header className={`${s.wrap} ${s.header}`}>
       <Link className={s.brand} href={home}><span aria-hidden="true">{family.mark}</span>{page.title}</Link>
       <nav aria-label="Main navigation">
@@ -95,7 +127,9 @@ export function TemplateView({ page, basePath, item }: { page: SitePage; basePat
       <span>Preview design</span>
       {page.available_variants.map(key => Object.hasOwn(family.variants, key) &&
         <Link key={key} aria-current={key === page.template_variant ? "page" : undefined}
-          href={key === "classic" ? basePath : `${basePath}?variant=${encodeURIComponent(key)}`}>
+          
+                  href={key === defaultVariant ? basePath : `${basePath}?variant=${encodeURIComponent(key)}`}>
+
           {family.variants[key].name}
         </Link>)}
     </nav>}
@@ -109,6 +143,7 @@ export function TemplateView({ page, basePath, item }: { page: SitePage; basePat
         <p>{item.description}</p>
         {item.duration_label && <p><strong>Duration</strong> {item.duration_label}</p>}
         <Price item={item} currency={page.currency} />
+        {itemAction?.(item)}
         {!!item.inclusions?.length && <><h2>What’s included</h2><ul>{item.inclusions.map(value => <li key={value}>{value}</li>)}</ul></>}
         <p className={s.note}>{page.content.items_disclaimer}</p>
         <Cta cta={item.cta ?? { ...page.content.primary_cta, link: "#contact" }} />
@@ -150,6 +185,7 @@ export function TemplateView({ page, basePath, item }: { page: SitePage; basePat
               <h3>{offering.title}</h3>
               <p>{offering.description}</p>
               <Price item={offering} currency={page.currency} />
+              {itemAction?.(offering)}
               <Link className={s.detailsLink} href={`${basePath}${itemsRoot}/${encodeURIComponent(offering.slug)}/${query}`}>View details <span aria-hidden="true">↗</span></Link>
             </article>)}
           </div>
@@ -166,6 +202,7 @@ export function TemplateView({ page, basePath, item }: { page: SitePage; basePat
           {page.faqs.map(({ question, answer }) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}
         </section>}
       </>}
+      {orderPanel}
       <section id="contact" className={s.contact}>
         <p className={s.kicker}>Next step</p>
         <h2>{family.contactTitle}</h2>

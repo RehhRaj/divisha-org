@@ -20,7 +20,7 @@ export async function fetchPageData<T>(query: Query): Promise<T | null> {
   
 const response = await fetch(url, {
   signal: AbortSignal.timeout(6000),
-  ...(process.env.NODE_ENV === "production"
+  ...(process.env.NODE_ENV === "production" && query.table === undefined
     ? { next: { revalidate: 300 } }
     : { cache: "no-store" }),
 });

@@ -1,3 +1,5 @@
+from .template_config import RESTAURANT_TEMPLATE
+
 BASE_DOMAIN = "divisha.org"
 BUSINESS_TYPES = {
     "tour": {"title": "Tour Business Demo", "message": "Welcome to Tour Business Demo", "template": "tour"},
@@ -18,10 +20,37 @@ TENANTS = {
 # List of records makes duplicate composite keys detectable before indexing.
 BUSINESS_SITE_RECORDS = [
     {"tenant": "jeetu", "business_type": "tour", "title": "Jeetu newwwwwwww Tour Business", "message": "Welcome to Jeetu Tour Website"},
-    {"tenant": "jeetu", "business_type": "restau", "features": {"website": True, "restaurant_pos": True}, "title": "Jeetu Da Dhaba & Restaurant", "message": "Welcome to Jeetu Fine Dine Restaurant"},
+    
+    
+        {
+        "tenant": "jeetu",
+        "business_type": "restau",
+        "title": "Jeetu Da Dhaba & Restaurant",
+        "message": "Welcome to Jeetu Fine Dine Restaurant",
+        "features": {"website": True, "restaurant_pos": True},
+        "template_variant": "dhaba",
+        "brand_colors": {"primary": "#0d8f34"},
+        "ordering": {
+            "whatsapp_env": "JEETU_ORDER_WHATSAPP",
+            "whatsapp_number": "919810014587",
+            "tables": {
+                "demo-table-07": {"id": "07", "label": "Table 07"},
+            },
+        },
+    },
+    
+    
     {"tenant": "jeetu", "business_type": "salon", "title": "Jeetu Gents Salon", "message": "Welcome to Jeetu Grooming Station"},
     {"tenant": "pilot", "business_type": "restau", "features": {"website": False, "restaurant_pos": True}, "title": "Pilot Kitchen", "message": "Restaurant POS demo"},
-    {"tenant": "teal", "business_type": "restau", "title": "Teal Restaurant", "message": "Welcome to Teal Restaurant"},
+    
+        {
+        "tenant": "teal",
+        "business_type": "restau",
+        "title": "Teal Restaurant",
+        "message": "Welcome to Teal Restaurant",
+        "template_variant": "fine-dining",
+    },
+    
     {"tenant": "abc", "business_type": "society", "title": "ABC Co-operative Society", "message": "Welcome to ABC Residential Society Portal"},
     {"tenant": "abc", "business_type": "tour", "title": "ABC Tour & Travels", "message": "Welcome to ABC Tour Website"},
     {"tenant": "abc", "business_type": "restau", "title": "ABC Multi-Cuisine Restaurant", "message": "Welcome to ABC Restaurant Website"},
@@ -34,8 +63,10 @@ CUSTOM_DOMAINS = {}
 
 TEMPLATE_VARIANTS = {
     "tour": ("classic", "adventure", "luxury"),
-    "restau": ("classic", "dhaba", "fine-dining"),
+    "restau": tuple(RESTAURANT_TEMPLATE["variants"]),
     "society": ("classic", "resident-portal", "premium-community"),
     "edu": ("classic", "admissions", "campus"),
     "salon": ("classic", "grooming", "luxury"),
 }
+
+
