@@ -73,7 +73,7 @@ class RestaurantCheckoutTests(SimpleTestCase):
         from unittest.mock import patch
 
         # with patch.dict("os.environ", {"JEETU_ORDER_WHATSAPP": "919000000000"}):
-        with patch.dict("os.environ", {"JEETU_ORDER_WHATSAPP": "919810014587"}):
+        with patch.dict("os.environ", {"JEETU_ORDER_WHATSAPP": "919911112823"}):
             checkout = self.client.get("/api/page/", {
                 "host": "jeetu-restau.localhost",
                 "table": "demo-table-07",

@@ -32,7 +32,7 @@ BUSINESS_SITE_RECORDS = [
         "brand_colors": {"primary": "#0d8f34"},
         "ordering": {
             "whatsapp_env": "JEETU_ORDER_WHATSAPP",
-            "whatsapp_number": "919810014587",
+            "whatsapp_number": "919911112823",
             "tables": {
                 "demo-table-07": {"id": "07", "label": "Table 07"},
             },
