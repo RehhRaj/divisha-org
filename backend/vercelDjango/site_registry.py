@@ -33,9 +33,23 @@ BUSINESS_SITE_RECORDS = [
         "ordering": {
             "whatsapp_env": "JEETU_ORDER_WHATSAPP",
             "whatsapp_number": "919911112823",
+
+
             "tables": {
-                "demo-table-07": {"id": "07", "label": "Table 07"},
-            },
+    "01-u1klwd70u4": {"id": "01", "label": "Table 01"},
+    "02-2r16cq0dpx": {"id": "02", "label": "Table 02"},
+    "03-x9dwezi5my": {"id": "03", "label": "Table 03"},
+    "04-vhx7eyhvw7": {"id": "04", "label": "Table 04"},
+    "05-mwdmu8ddbm": {"id": "05", "label": "Table 05"},
+    "06-cd22jebpea": {"id": "06", "label": "Table 06"},
+    "07-uj80rl6mac": {"id": "07", "label": "Table 07"},
+    "08-biiu4yjryk": {"id": "08", "label": "Table 08"},
+    "09-g7ll9fktg4": {"id": "09", "label": "Table 09"},
+    "10-zdt2bonok9": {"id": "10", "label": "Table 10"},
+
+    # Purana Table 07 test link bhi chalta rahega.
+    "demo-table-07": {"id": "07", "label": "Table 07"},
+},
         },
     },
     
