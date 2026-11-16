@@ -10,6 +10,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 1. DEBUG Setup - Local pe agar variable na mile toh default True (1) maanega
 DEBUG = os.getenv("DJANGO_DEBUG", "1") == "1"
 
+ADMIN_URL = (os.getenv("DJANGO_ADMIN_URL", "").strip().strip("/") or "admin") + "/"
+
+POS_DEMO_ENABLED = os.getenv("DJANGO_POS_DEMO", "0") == "1"
+
 # 2. SECRET_KEY Setup
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
