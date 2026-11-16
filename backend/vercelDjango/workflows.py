@@ -37,4 +37,3 @@ DEMOS = {
     },
 }
 
-TENANTS = {"himalaya": "society", "teal": "society", "jeetu": "society", **{key: key for key in DEMOS}}

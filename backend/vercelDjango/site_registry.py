@@ -19,7 +19,7 @@ TENANTS = {
 }
 # List of records makes duplicate composite keys detectable before indexing.
 BUSINESS_SITE_RECORDS = [
-    {"tenant": "jeetu", "business_type": "tour", "title": "Jeetu newwwwwwww Tour Business", "message": "Welcome to Jeetu Tour Website"},
+    {"tenant": "jeetu", "business_type": "tour", "title": "Jeetu Tour Business", "message": "Welcome to Jeetu Tour Website"},
     
     
         {
@@ -31,7 +31,6 @@ BUSINESS_SITE_RECORDS = [
         "template_variant": "dhaba",
         "brand_colors": {"primary": "#0d8f34"},
         "ordering": {
-            "whatsapp_env": "JEETU_ORDER_WHATSAPP",
             "whatsapp_number": "919911112823",
 
 

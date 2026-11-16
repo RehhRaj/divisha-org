@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views.decorators.cache import never_cache
 
 from .ordering import ordering_config
+from .platform_landings import PLATFORM_LANDINGS
 from .pos_fixtures import POS_FIXTURES
 
 from django.views.decorators.http import require_safe
@@ -179,11 +180,17 @@ def tenant_key_for_host(host):
 @require_safe
 def pos_demo_config(request):
     raw_host = request.GET.get("host", "")
-    if (
-        not settings.DEBUG
-        or request.META.get("REMOTE_ADDR") not in {"127.0.0.1", "::1"}
-        or not re.fullmatch(r"[a-z0-9-]+\.localhost(?::[0-9]+)?", raw_host)
-    ):
+    local_ok = (
+        settings.DEBUG
+        and request.META.get("REMOTE_ADDR") in {"127.0.0.1", "::1"}
+        and re.fullmatch(r"[a-z0-9-]+\.localhost(?::[0-9]+)?", raw_host)
+    )
+    # Hosted demo: only when DJANGO_POS_DEMO=1 and only on *.divisha.org hosts.
+    hosted_ok = (
+        getattr(settings, "POS_DEMO_ENABLED", False)
+        and re.fullmatch(r"[a-z0-9-]+\." + re.escape(BASE_DOMAIN), raw_host)
+    )
+    if not (local_ok or hosted_ok):
         return page_error("POS demo unavailable")
     host = normalize_host(raw_host)
     key = tenant_key_for_host(host) if host else None
@@ -253,5 +260,12 @@ def page_data(request):
     if not slug or "." in slug:
         return page_error("Invalid domain structure")
     if slug in BUSINESS_TYPES:
+        if slug in PLATFORM_LANDINGS and variant is None and request.GET.get("preview") != "1":
+            return JsonResponse({
+                "page_type": "business_landing",
+                "business_type": slug,
+                "template": "business_landing",
+                **PLATFORM_LANDINGS[slug],
+            })
         return render_demo(slug, variant)
     return page_error("Website not found")

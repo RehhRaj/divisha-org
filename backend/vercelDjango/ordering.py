@@ -1,5 +1,4 @@
 """Public restaurant checkout configuration resolved for a single site."""
-# import os
 import re
 
 
@@ -8,9 +7,9 @@ def ordering_config(record, table_token):
     if not config:
         return None
 
-    # phone = os.getenv(config["whatsapp_env"], "").strip()
-
-    phone = config.get("whatsapp_number", "").strip()
+    # Django record is the single source of truth for each tenant's number.
+    # Environment variables are deliberately NOT consulted.
+    phone = (config.get("whatsapp_number") or "").strip()
     if not re.fullmatch(r"[1-9][0-9]{7,14}", phone):
         phone = None
 

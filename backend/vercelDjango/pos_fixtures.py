@@ -12,7 +12,7 @@ POS_FIXTURES = {
         "menu": [
             {"id": "coffee-01", "name": "Coffee", "price_paise": 5000, "available": True},
             {"id": "toast-01", "name": "Toast", "price_paise": 7500, "available": True},
-            {"id": "soupe-01", "name": "pine apple Toast", "price_paise": 7500, "available": True},
+            {"id": "toast-02", "name": "Pineapple Toast", "price_paise": 7500, "available": True},
         ],
         "tables": ["Counter table"],
     },

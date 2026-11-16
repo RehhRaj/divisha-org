@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
+import BusinessLanding, { type BusinessLandingData } from "@/templates/platform/BusinessLanding";
 import HomePage from "@/app/HomePage";
 import DemoPage from "@/app/DemoPage";
 import TenantPage from "@/app/TenantPage";
@@ -9,6 +10,10 @@ import { fetchPageData } from "@/lib/page-data";
 import { SiteRenderer } from "@/templates/SiteRenderer";
 import type { SitePage } from "@/templates/types";
 import type { PageData } from "@/types/page";
+
+function collectionRequested(path: string[]) {
+  return path[0] === "packages" || path[0] === "offerings";
+}
 
 type RouteProps = {
   params: Promise<{ slug?: string[] }>;
@@ -37,7 +42,8 @@ export async function generateMetadata({ params, searchParams }: RouteProps): Pr
   }
 
   const showcase = slug[0] === "showcase" ? slug[1] : undefined;
-  const subpath = showcase ? slug.slice(2) : slug;
+  const preview = !showcase && slug[0] === "preview";
+  const subpath = showcase ? slug.slice(2) : preview ? slug.slice(1) : slug;
   const collection = subpath[0];
   const itemSlug = subpath[1];
   // Don't fetch a normal page for unrelated routes (e.g. /demos/*).
@@ -46,7 +52,7 @@ export async function generateMetadata({ params, searchParams }: RouteProps): Pr
   }
 
   try {
-    const data = await fetchPageData<PageData | SitePage>({ showcase, variant });
+    const data = await fetchPageData<PageData | SitePage | BusinessLandingData>({ showcase, preview: preview || collectionRequested(subpath) ? "1" : undefined, variant });
     if (!data) return { title: fallback, robots: noIndex };
     let title = data.title || fallback;
     let description = data.message || "Divisha business website preview.";
@@ -96,13 +102,19 @@ export default async function Page({ params, searchParams }: RouteProps) {
 
   const showcase = slug[0] === "showcase" ? slug[1] : undefined;
   if (slug[0] === "showcase" && !showcase) notFound();
-  const subpath = showcase ? slug.slice(2) : slug;
+  const preview = !showcase && slug[0] === "preview";
+  const subpath = showcase ? slug.slice(2) : preview ? slug.slice(1) : slug;
   if (subpath.length > 2 || (subpath[0] && !["packages", "offerings"].includes(subpath[0]))) {
     notFound();
   }
 
-  const data = await fetchPageData<PageData | SitePage>({ showcase, variant, table });
+  const data = await fetchPageData<PageData | SitePage | BusinessLandingData>({ showcase, preview: preview || collectionRequested(subpath) ? "1" : undefined, variant, table });
   if (!data) notFound();
+  if (data.page_type === "business_landing") {
+    if (slug.length) notFound();
+    return <BusinessLanding data={data} />;
+  }
+  if (preview && data.page_type !== "demo") notFound();
   if (data.page_type === "platform") {
     if (slug.length || variant !== undefined) notFound();
     return <HomePage />;
@@ -116,11 +128,12 @@ export default async function Page({ params, searchParams }: RouteProps) {
   }
 
   if (data.features?.website === false) {
-    if (slug.length || process.env.NODE_ENV !== "development") notFound();
+    const posOpen = process.env.NODE_ENV === "development" || process.env.POS_DEMO_ENABLED === "1";
+    if (slug.length || !posOpen) notFound();
     return <main><h1>{data.title}</h1><a href="/pos">Open POS demo</a></main>;
   }
 
-  const basePath = showcase ? `/showcase/${encodeURIComponent(showcase)}/` : "/";
+  const basePath = showcase ? `/showcase/${encodeURIComponent(showcase)}/` : preview ? "/preview/" : "/";
   const [collection, itemSlug] = subpath;
   if (collection) {
     const expected = data.template === "tour" ? "packages" : "offerings";

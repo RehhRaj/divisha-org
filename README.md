@@ -1,77 +1,71 @@
-# Divisha.org
+# Divisha Business OS
 
-Divisha resolves a hostname to a platform page, business demo or tenant site in
-Django. Next.js renders the returned content. Restaurant presentation and public
-ordering are composed by `RestaurantSite.tsx`. Other business types use
-`TemplateView.tsx`. Staff POS remains a local demo at `/pos`.
+Multi-tenant website platform: **Next.js frontend** (`frontend/`) + **Django JSON API** (`backend/`).
+The frontend reads the request hostname, asks Django for `/api/page/?host=...`, and renders the
+matching platform page, demo, or business website.
 
-## Local setup
+> Status: prototype. All tenant data is still hardcoded in Python files (no database models yet).
+> See `CHANGES.md` for what was fixed and `Known limits` below for what is not built.
 
-Use Python 3.12+ and Node.js 22+. In one terminal:
+## Hostnames
 
-```sh
+| Host | Shows |
+| --- | --- |
+| `divisha.org` | Platform home |
+| `restau.divisha.org` etc. | Business-type landing / demo |
+| `jeetu-restau.divisha.org` | Tenant site (`<tenant>-<type>`) |
+| `*.localhost:3000` | Same as above, for local development |
+
+## Run locally
+
+Backend (Python 3.12+):
+
+```bash
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -r requirements.txt
-python manage.py migrate
-export JEETU_ORDER_WHATSAPP=YOUR_COUNTRY_CODE_AND_NUMBER
-
-export JEETU_ORDER_WHATSAPP="919810014587"
-python manage.py runserver 127.0.0.1:8000
-
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env            # then export the variables (see below)
+export DJANGO_DEBUG=1           # REQUIRED for local: default is OFF (safe for production)
+python manage.py test
+python manage.py runserver 8000
 ```
 
-Set `JEETU_ORDER_WHATSAPP` to a WhatsApp number you control, with country code
-and digits only. Restart Django after changing the environment. Without a
-configured number, the restaurant website displays its menu with checkout hidden.
+Frontend (Node 20+):
 
-In another terminal:
-
-```sh
+```bash
 cd frontend
-npm ci
-DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+npm install
+cp .env.example .env.local
+npm run dev                     # open http://jeetu-restau.localhost:3000
 ```
 
-| URL | What to check |
-|---|---|
-| http://localhost:3000/ | Platform homepage |
-| http://restau.localhost:3000/?variant=fine-dining | Fine Dining palette and surface |
-| http://jeetu-restau.localhost:3000/ | Customer takeaway cart and WhatsApp draft |
-| http://jeetu-restau.localhost:3000/?table=demo-table-07 | Table 07 ordering |
-| http://jeetu-restau.localhost:3000/?table=wrong | Invalid table message and no checkout |
-| http://teal-restau.localhost:3000/ | Fine Dining website |
-| http://jeetu-restau.localhost:3000/pos | Local staff POS |
-| http://jeetu-tour.localhost:3000/ | Tour tenant |
-| http://apexacademy-edu.localhost:3000/ | Education tenant |
-| http://abc-society.localhost:3000/ | Society tenant |
+## Environment variables
 
-A QR code may encode the complete HTTPS tenant URL with its table token for
-phone testing against a deployed site. The included token is sample data.
-Replace sample table tokens with unique random values for each table before
-printing them. The token chooses the table for the WhatsApp draft. It does not
-prove the customer is physically at that table. Staff confirms orders and
-payments directly. Opening WhatsApp leaves the local cart intact.
+Backend (`backend/.env.example`): `DJANGO_DEBUG`, `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS`,
+`DJANGO_CSRF_TRUSTED_ORIGINS`, `DJANGO_SSL_REDIRECT`, `DJANGO_HSTS_SECONDS`, `DJANGO_ADMIN_URL`,
+`DJANGO_POS_DEMO`.
 
-## Configuration and deployment
+WhatsApp order numbers are **not** environment variables: each tenant's `ordering.whatsapp_number`
+in the Django record (`site_registry.py`, later the database) is the only source.
 
-- `site_registry.py` owns tenant identity, host mapping, assigned variant,
-  brand colours and public ordering settings.
-- `template_config.py` owns Restaurant variant defaults. Tenant overrides are
-  resolved in Django. Next.js owns CSS.
-- `tenant_catalogs.py` owns sample catalog content. POS uses separate fixtures.
-- `ordering.py` resolves the public checkout destination and table context
-  for the selected site. Public checkout drafts have no backend order record.
-- Set `DJANGO_DEBUG=0`, `DJANGO_SECRET_KEY` and `DJANGO_ALLOWED_HOSTS` on the Django
-  host. Use `vercelDjango.wsgi:application`. Set `DJANGO_API_URL` on Next.js to
-  the full Django page endpoint. Deploy Django first.
-- Use `python manage.py test vercelDjango.tests` from backend and
-  `npm run build` from frontend.
+Frontend (`frontend/.env.example`): `DJANGO_API_URL`, `POS_DEMO_ENABLED`.
 
-The current milestone uses fixture-backed tenants and public feature settings.
-For self-service onboarding, move tenants, sites, verified domains and feature
-entitlements to a database. Appointment booking, external authenticated APIs
-and partner white-label controls are future modules.
+## Production checklist
 
+1. `DJANGO_DEBUG=0` (default) and a long random `DJANGO_SECRET_KEY`.
+2. Set `DJANGO_ALLOWED_HOSTS` and `DJANGO_CSRF_TRUSTED_ORIGINS` for your real domains.
+3. Check HTTPS works, then set `DJANGO_SSL_REDIRECT=1` and `DJANGO_HSTS_SECONDS=31536000`.
+4. Change `DJANGO_ADMIN_URL` from `admin/`.
+5. Keep `DJANGO_POS_DEMO` and `POS_DEMO_ENABLED` off unless you are showing the POS demo.
 
+## POS demo
+
+`/pos` is a **demo**: bills live in the browser's localStorage, nothing is saved on a server and no
+real payment happens. It runs on `*.localhost` in development. For a hosted demo set
+`DJANGO_POS_DEMO=1` (Django) and `POS_DEMO_ENABLED=1` (Next.js); it then works only on
+`*.divisha.org` tenants that have `restaurant_pos` enabled.
+
+## Known limits (not built yet)
+
+Database models, tenant login/dashboard, enquiry/booking/complaint forms, saved orders, real POS
+backend, billing, custom-domain onboarding, dedicated Education/Salon templates, frontend tests.

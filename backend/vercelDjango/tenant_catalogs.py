@@ -8,7 +8,7 @@ TENANT_CATALOGS = {
                 "title": "Teal Signature Beetroot Carpaccio",
                 "subtitle": 'Starter',
                 "description": 'Thin beetroot slices with citrus, goat cheese and toasted seeds.',
-                "price": 8950,
+                "price": 450,
                 "image_url": '/catalog/teal-restau-beetroot-carpaccio.svg',
                 "image_alt": 'Illustration for Beetroot Carpaccio',
                 
