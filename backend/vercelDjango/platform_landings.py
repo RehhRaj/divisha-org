@@ -62,8 +62,7 @@ PLATFORM_LANDINGS = {
         "details_step": "Add your menu, photos and contact details.",
         "whatsapp_number": None,
     },
-    
-    
+
     "tour": {
         "title": "Divisha Tour",
         "demo_url": "https://abc-tour.divisha.org/",
@@ -76,13 +75,10 @@ PLATFORM_LANDINGS = {
         
         "preview": {
             "src": "https://images.unsplash.com/photo-1654815801625-459866418f60?fit=crop&w=1100&h=735&q=82&fm=webp",
-            "alt": "Reference photo of an empty classroom with desks and a chalkboard",
-            "caption": "Classroom reference photo · Unsplash",
-            "label": "Apex International Academy",
+            "alt": "Reference photo for tour packages",
+            "caption": "Travel reference photo · Unsplash",
+            "label": "ABC Tour & Travels",
         },
-        
-
-
 
         "currency": "INR",
         "plans": [
@@ -106,14 +102,12 @@ PLATFORM_LANDINGS = {
         "message": "Notices, resident services and a simple path for maintenance requests.",
         "eyebrow": "Managed websites for societies",
 
-
         "preview": {
             "src": "https://images.unsplash.com/photo-1654815801625-459866418f60?fit=crop&w=1100&h=735&q=82&fm=webp",
-            "alt": "Reference photo of an empty classroom with desks and a chalkboard",
-            "caption": "Classroom reference photo · Unsplash",
-            "label": "Apex International Academy",
+            "alt": "Reference photo for a housing society",
+            "caption": "Society reference photo · Unsplash",
+            "label": "ABC Co-operative Society",
         },
-        
 
         "currency": "INR",
         "plans": [
