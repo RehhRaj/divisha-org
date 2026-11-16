@@ -16,6 +16,7 @@ PLATFORM_LANDINGS = {
             "caption": "Classroom reference photo · Unsplash",
             "label": "Apex International Academy",
         },
+        
         "currency": "INR",
         "plans": [
             {"id": "free", "name": "Free", "price": 0, "period": ""},
@@ -59,6 +60,73 @@ PLATFORM_LANDINGS = {
             {"label": "WhatsApp takeaway and QR table ordering", "plans": ["ordering"]},
         ],
         "details_step": "Add your menu, photos and contact details.",
+        "whatsapp_number": None,
+    },
+    
+    
+    "tour": {
+        "title": "Divisha Tour",
+        "demo_url": "https://abc-tour.divisha.org/",
+        "headline": "Show your tour packages online, before you sign up.",
+        "message": (
+            "Publish destinations, packages and itineraries, "
+            "and let travellers enquire on WhatsApp."
+        ),
+        "eyebrow": "Managed websites for tour operators",
+        
+        "preview": {
+            "src": "https://images.unsplash.com/photo-1654815801625-459866418f60?fit=crop&w=1100&h=735&q=82&fm=webp",
+            "alt": "Reference photo of an empty classroom with desks and a chalkboard",
+            "caption": "Classroom reference photo · Unsplash",
+            "label": "Apex International Academy",
+        },
+        
+
+
+
+        "currency": "INR",
+        "plans": [
+            {"id": "free", "name": "Free", "price": 0, "period": ""},
+            {"id": "starter", "name": "Starter", "price": 499, "period": "/ month"},
+            {"id": "pro", "name": "Pro", "price": 999, "period": "/ month"},
+        ],
+        "features": [
+            {"label": "Tour website and package pages", "plans": ["free", "starter", "pro"]},
+            {"label": "Custom domain", "plans": ["starter", "pro"]},
+            {"label": "WhatsApp enquiry button", "plans": ["starter", "pro"]},
+            {"label": "Online enquiry form", "plans": ["pro"], "planned": True},
+        ],
+        "details_step": "Add your packages, photos and contact details.",
+        "whatsapp_number": None,
+    },
+    "society": {
+        "title": "Divisha Society",
+        "demo_url": "https://abc-society.divisha.org/",
+        "headline": "A clearer way to run your housing society.",
+        "message": "Notices, resident services and a simple path for maintenance requests.",
+        "eyebrow": "Managed websites for societies",
+
+
+        "preview": {
+            "src": "https://images.unsplash.com/photo-1654815801625-459866418f60?fit=crop&w=1100&h=735&q=82&fm=webp",
+            "alt": "Reference photo of an empty classroom with desks and a chalkboard",
+            "caption": "Classroom reference photo · Unsplash",
+            "label": "Apex International Academy",
+        },
+        
+
+        "currency": "INR",
+        "plans": [
+            {"id": "free", "name": "Free", "price": 0, "period": ""},
+            {"id": "standard", "name": "Standard", "price": 599, "period": "/ month"},
+            {"id": "pro", "name": "Pro", "price": 1499, "period": "/ month"},
+        ],
+        "features": [
+            {"label": "Society website and resident services", "plans": ["free", "standard", "pro"]},
+            {"label": "Custom domain, notices and events", "plans": ["standard", "pro"]},
+            {"label": "Complaint tracking and resident login", "plans": ["pro"], "planned": True},
+        ],
+        "details_step": "Add your society details, notices and contacts.",
         "whatsapp_number": None,
     },
 }

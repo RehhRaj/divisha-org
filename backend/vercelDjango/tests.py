@@ -41,7 +41,8 @@ class TenantCatalogTests(SimpleTestCase):
 
     def test_existing_and_new_routes(self):
         self.assertEqual(self.page("divisha.org").json()["page_type"], "platform")
-        self.assertEqual(self.page("tour.divisha.org").json()["page_type"], "demo")
+        # tour.divisha.org now shows the pricing landing; the old demo lives at ?preview=1
+        self.assertEqual(self.page("tour.divisha.org").json()["page_type"], "business_landing")
         self.assertEqual(self.page("abc-society.divisha.org").json()["page_type"], "tenant")
         self.assertEqual(self.page("localhost", showcase="restau", variant="dhaba").json()["template_variant"], "dhaba")
         self.assertIn("steps", self.page("localhost", demo="society").json())
@@ -49,6 +50,32 @@ class TenantCatalogTests(SimpleTestCase):
         self.assertEqual(self.page("unknown-tour.localhost").status_code, 404)
         self.assertEqual(self.client.get("/api/health/").json(), {"status": "ok"})
         self.assertEqual(self.client.get("/admin/").status_code, 302)
+
+    def test_tour_and_society_show_pricing_landing(self):
+        for kind in ("tour", "society"):
+            for host in (f"{kind}.divisha.org", f"{kind}.localhost:3000"):
+                with self.subTest(host=host):
+                    data = self.page(host).json()
+                    self.assertEqual(data["page_type"], "business_landing")
+                    self.assertEqual(data["business_type"], kind)
+                    self.assertEqual(data["template"], "business_landing")
+                    self.assertTrue(data["plans"])
+                    self.assertTrue(data["features"])
+                    plan_ids = {plan["id"] for plan in data["plans"]}
+                    for feature in data["features"]:
+                        self.assertTrue(set(feature["plans"]) <= plan_ids, feature["label"])
+                    # The demo link must point to a real tenant site of the same type.
+                    self.assertRegex(data["demo_url"], rf"^https://[a-z0-9]+-{kind}\.divisha\.org/$")
+
+    def test_preview_still_shows_old_demo_for_tour_and_society(self):
+        for kind in ("tour", "society"):
+            with self.subTest(kind=kind):
+                demo = self.page(f"{kind}.divisha.org", preview="1").json()
+                self.assertEqual(demo["page_type"], "demo")
+                self.assertEqual(demo["business_type"], kind)
+                self.assertTrue(demo["available_variants"])
+                variant = demo["available_variants"][-1]
+                self.assertEqual(self.page(f"{kind}.divisha.org", variant=variant).json()["template_variant"], variant)
 
 
 class PosDemoConfigTests(SimpleTestCase):
