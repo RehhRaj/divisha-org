@@ -1,0 +1,14 @@
+:root { color-scheme: light; font-family: system-ui, sans-serif; }
+body { margin: 0; }
+main {
+  min-height: 100svh;
+  box-sizing: border-box;
+  display: grid;
+  align-content: center;
+  padding: clamp(2rem, 9vw, 9rem);
+  background: #f8eee2;
+  color: #51291d;
+}
+main.education { background: #eaf4ef; color: #123a32; }
+h1 { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1.03; margin: .3em 0; }
+p { font-size: 1.15rem; max-width: 40rem; line-height: 1.5; }

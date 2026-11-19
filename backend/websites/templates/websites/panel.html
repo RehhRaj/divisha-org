@@ -1,0 +1,22 @@
+{% extends "websites/base.html" %}
+{% block content %}
+<h1>{{ tenant.name }}</h1>
+<p>{% if site.published_at %}Last published {{ site.published_at }}{% else %}Unpublished{% endif %}</p>
+{% if can_edit %}
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button name="action" value="save">Save draft</button>
+</form>
+{% else %}
+<h2>{{ site.draft_title }}</h2>
+<p>{{ site.draft_description }}</p>
+{% endif %}
+{% if can_publish %}
+<form method="post">
+  {% csrf_token %}
+  <p>Publish the last saved draft to the public website.</p>
+  <button name="action" value="publish">Publish saved draft</button>
+</form>
+{% endif %}
+{% endblock %}

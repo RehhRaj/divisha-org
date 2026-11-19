@@ -1,0 +1,20 @@
+ 2002  python manage.py runserver 127.0.0.1:8000
+ 2003  clear
+ 2004  sudo -u postgres psql
+ 2005  export DIVISHA_LOCAL=1 PGUSER=divisha PGDATABASE=divisha
+ 2006  read -rsp 'Abhi set kiya hua PostgreSQL password: ' PGPASSWORD
+ 2007  printf '\n'
+ 2008  export PGPASSWORD
+ 2009  python manage.py migrate
+ 2010  sudo -u postgres psql -p 5432 -d postgres -c '\password divisha'
+ 2011  sudo -u postgres psql -p 5432 -d postgres -c 'CREATE DATABASE divisha OWNER divisha;'
+ 2012  export DIVISHA_LOCAL=1 PGUSER=divisha PGDATABASE=divisha
+ 2013  export PGHOST=127.0.0.1 PGPORT=5432
+ 2014  read -rsp 'Abhi reset kiya hua PostgreSQL password: ' PGPASSWORD
+ 2015  printf '\n'
+ 2016  export PGPASSWORD
+ 2017  psql -w -c 'SELECT current_user, current_database();' && python manage.py migrate
+ 2018  python manage.py test && python manage.py seed_stage
+ 2019  python manage.py createsuperuser --username platform_admin
+ 2020  python manage.py runserver 127.0.0.1:8000
+ 2021  history 20 > last_20_commands.txt

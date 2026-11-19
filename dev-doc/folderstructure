@@ -1,0 +1,64 @@
+divisha-org/
+├── backend/
+│   ├── manage.py
+│   ├── requirements.txt
+│   ├── config/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   ├── asgi.py
+│   │   └── wsgi.py
+│   ├── kernel/
+│   │   ├── context.py
+│   │   ├── authorization.py
+│   │   ├── models.py
+│   │   └── tests/
+│   ├── tenancy/
+│   │   ├── models.py
+│   │   ├── services.py
+│   │   ├── admin.py
+│   │   ├── migrations/
+│   │   └── tests/
+│   └── websites/
+│       ├── models.py
+│       ├── registry.py
+│       ├── services.py
+│       ├── admin.py
+│       ├── api/
+│       │   ├── serializers.py
+│       │   ├── views.py
+│       │   └── urls.py
+│       ├── migrations/
+│       └── tests/
+├── frontend/
+│   ├── package.json
+│   ├── next.config.ts
+│   ├── app/
+│   │   ├── layout.tsx
+│   │   └── [[...slug]]/
+│   │       └── page.tsx
+│   ├── lib/
+│   │   └── page-api.ts
+│   ├── templates/
+│   │   ├── registry.ts
+│   │   └── classic/
+│   │       └── ClassicTemplate.tsx
+│   └── public/
+├── docs/
+│   ├── architecture.md
+│   ├── roadmap.md
+│   ├── contracts/
+│   │   └── page-api.md
+│   └── adr/
+├── .gitignore
+└── README.md
+
+
+Kis folder mein kya jayega
+Folder	Responsibility
+backend/config/	Django settings, database connection, main URL routing aur deployment entry points.
+backend/kernel/	Request ka immutable tenant context aur capability checks. models.py mein tenant roles aur user-role assignments jaise authorization records.
+backend/tenancy/	Tenant, BusinessType aur Domain models. services.py hostname se active tenant resolve karega.
+backend/websites/	Tenant ki website settings, content aur publish logic. Django Admin editing aur REST API dono shared services ke through validation aur access rules use karenge.
+frontend/app/	Incoming hostname aur path se page request karega. Ek route multiple tenants ki websites serve karega.
+frontend/templates/	React layouts aur template key se component ka mapping. classic/ pehla sample layout hai.
+docs/	Aapke 22 principles, development phases, API contract aur approved architecture decisions.

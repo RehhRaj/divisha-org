@@ -1,0 +1,11 @@
+{% extends "websites/base.html" %}
+{% block content %}
+<h1>Your websites</h1>
+<ul>
+{% for tenant in tenants %}
+<li><a href="{% url 'tenant-panel' tenant.slug %}">{{ tenant.name }}</a></li>
+{% empty %}
+<li>No websites are assigned to your account.</li>
+{% endfor %}
+</ul>
+{% endblock %}
