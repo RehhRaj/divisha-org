@@ -47,10 +47,19 @@ DATABASES = {"default": {
     "HOST": os.environ.get("PGHOST", "127.0.0.1"),
     "PORT": os.environ.get("PGPORT", "5432"),
 }}
-if DEBUG and os.environ.get("DIVISHA_SQLITE") == "1":
+# if DEBUG and os.environ.get("DIVISHA_SQLITE") == "1":
+#     DATABASES["default"] = {
+#         "ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3",
+#     }
+
+if os.environ.get("DIVISHA_SQLITE") == "1":
     DATABASES["default"] = {
-        "ENGINE": "django.db.backends.sqlite3", "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": Path(os.environ.get("DIVISHA_SQLITE_PATH", BASE_DIR / "db.sqlite3")),
     }
+
+
+
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
