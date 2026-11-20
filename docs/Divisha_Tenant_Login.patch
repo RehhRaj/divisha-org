@@ -1,0 +1,12 @@
+--- a/frontend/app/[[...slug]]/page.tsx
++++ b/frontend/app/[[...slug]]/page.tsx
+@@ -38,6 +38,9 @@
+     <main className={templates[page.template]}>
+       <h1>{page.title}</h1>
+       <p>{page.description}</p>
++      <nav aria-label="Tenant access">
++        <a href={new URL("/panel/login/", origin).href}>Tenant Login</a>
++      </nav>
+     </main>
+   );
+ }

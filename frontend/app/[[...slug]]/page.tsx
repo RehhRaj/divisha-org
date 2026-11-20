@@ -38,6 +38,9 @@ export default async function Page({ params }: {
     <main className={templates[page.template]}>
       <h1>{page.title}</h1>
       <p>{page.description}</p>
+      <nav aria-label="Tenant access">
+        <a href={new URL("/panel/login/", origin).href}>Tenant Login</a>
+      </nav>
     </main>
   );
 }
