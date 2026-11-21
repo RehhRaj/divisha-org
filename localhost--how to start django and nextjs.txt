@@ -1,0 +1,14 @@
+export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+
+read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+printf '\n'
+export PGPASSWORD
+
+python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+
+
+
+
+DJANGO_API_ORIGIN=http://127.0.0.1:8000 DIVISHA_PORTAL_URL=http://localhost:3000/manage npm run dev
