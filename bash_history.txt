@@ -1,0 +1,500 @@
+ 1502  cd backend/
+ 1503  python manage.py runserver 127.0.0.1:8000
+ 1504  clear
+ 1505  python manage.py runserver 127.0.0.1:8000
+ 1506  deactivate 
+ 1507  cd frontend/
+ 1508  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1509  clear
+ 1510  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1511  clear
+ 1512  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1513  npm run build
+ 1514  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1515  cd frontend/
+ 1516  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1517  dea
+ 1518  deactivate
+ 1519  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1520  cd backend/
+ 1521  source .venv/bin/activate
+ 1522  clear
+ 1523  python manage.py runserver 127.0.0.1:8000
+ 1524  source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1525  git status
+ 1526  git add .
+ 1527  git commit -m "whatsapp no added and restaturent order from website from mobile phone"
+ 1528  git push origin main
+ 1529  git add .
+ 1530  git commit -m "whatsapp no added and restaturent order from website from mobile phone"
+ 1531  git push origin main
+ 1532  git add .
+ 1533  git push origin main
+ 1534  git commit -m "whatsapp no added and restaturent order from website from mobile phone"
+ 1535  git push origin main
+ 1536  ls
+ 1537  cd backend
+ 1538  python -m venv .venv
+ 1539  source .venv/bin/activate
+ 1540  python -m pip install -r requirements.txt
+ 1541  python manage.py migrate
+ 1542  python3 -m venv .venv
+ 1543  source .venv/bin/activate
+ 1544  source "/home/papa/Documents/2026 claude/Divisha_org/backend/.venv/bin/activate"
+ 1545  python3 -m venv .venv
+ 1546  source .venv/bin/activate
+ 1547  clear
+ 1548  python
+ 1549  which python
+ 1550  python -m pip install -r requirements.txt
+ 1551  python manage.py runserver 127.0.0.1:8000
+ 1552  clear
+ 1553  export JEETU_ORDER_WHATSAPP="+919911112823"
+ 1554  python manage.py runserver 127.0.0.1:8000
+ 1555  export JEETU_ORDER_WHATSAPP="91XXXXXXXXXX"
+ 1556  python manage.py runserver 127.0.0.1:8000
+ 1557  clear
+ 1558  export JEETU_ORDER_WHATSAPP="919810014587"
+ 1559  python manage.py runserver 127.0.0.1:8000
+ 1560  deactivate
+ 1561  cd frontend/
+ 1562  npm ci
+ 1563  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1564  cd 
+ 1565  cd frontend/
+ 1566  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1567  cd backend/
+ 1568  python manage.py runserver 127.0.0.1:8000
+ 1569  cd frontend/
+ 1570  npm install
+ 1571  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1572  git status
+ 1573  git add .
+ 1574  git status
+ 1575  cd backend/
+ 1576  python3  -m venv .venv && source .venv/bin/activate
+ 1577  source "/home/papa/Documents/2026 claude/Divisha_org/backend/.venv/bin/activate"
+ 1578  python3 -m venv .venv 
+ 1579  clear
+ 1580  source .venv/bin/activate
+ 1581  pip install -r requirements.txt
+ 1582  python manage.py test
+ 1583  python manage.py runserver 8000
+ 1584  python manage.py test
+ 1585  python manage.py runserver 127.0.0.1:8000
+ 1586  cp .env.example .env 
+ 1587  export DJANGO_DEBUG=1 
+ 1588  python manage.py runserver 127.0.0.1:8000
+ 1589  cd ..
+ 1590  git status
+ 1591  git commit -m "whatsapp no added and restaturent order from website from mobile phone"
+ 1592  git push origin main
+ 1593  deativate
+ 1594  deactivate
+ 1595  clear
+ 1596  cd frontend/
+ 1597  DJANGO_API_URL=http://127.0.0.1:8000/api/page/ npm run dev
+ 1598  cd backend/
+ 1599  python manage.py runserver 127.0.0.1:8000
+ 1600  ls
+ 1601  git apply --check Divisha_SaaS_Core.patch,
+ 1602  git apply --check Divisha_SaaS_Core.patch
+ 1603  git apply  Divisha_SaaS_Core.patch
+ 1604  clear
+ 1605  git status --short
+ 1606  git diff -- frontend/templates/restaurant/RestaurantSite.tsx
+ 1607  rg -n 'POS_DEMO_ENABLED' frontend/.env.example
+ 1608  git add backend/vercelDjango/views.py backend/vercelDjango/tenancy.py   'frontend/app/[[...slug]]/page.tsx' frontend/app/pos/page.tsx   frontend/lib/pos-config.ts
+ 1609  git diff --cached --stat
+ 1610  git restore --worktree -- frontend/templates/restaurant/RestaurantSite.tsx
+ 1611  git --no-pager diff -- frontend/templates/restaurant/RestaurantSite.tsx
+ 1612  cd frontend
+ 1613  npm run build
+ 1614  cd ..
+ 1615  clear
+ 1616  ls
+ 1617  git status
+ 1618  git add .
+ 1619  git  commit -m "starting from scratch restart on 18 nove 2026 " 
+ 1620  git push origin main
+ 1621  cd frontend/
+ 1622  npm ci
+ 1623  pip django --version
+ 1624  pip list
+ 1625  clear
+ 1626  cd fro
+ 1627  cd frontend/
+ 1628  npm ci
+ 1629  cd backend/
+ 1630  python3 -m venv .venv
+ 1631  source .venv/bin/activate
+ 1632  which python
+ 1633  pip list
+ 1634  pip install -r requirements.txt
+ 1635  python manage.py test
+ 1636  python manage.py runserver 127.0.0.1:8000
+ 1637  export DIVISHA_LOCAL=1
+ 1638  python manage.py migrate
+ 1639  ls
+ 1640  clear
+ 1641  python manage.py test
+ 1642  npx create-next-app@latest frontend
+ 1643  cd frontend/
+ 1644  npm run dev
+ 1645  git pull https://github.com/RehhRaj/divisha-org.git
+ 1646  git clone https://github.com/RehhRaj/divisha-org.git
+ 1647  ls
+ 1648  cd divisha-org/
+ 1649  ls
+ 1650  git status
+ 1651  git log
+ 1652  ls
+ 1653  cd divisha-org/
+ 1654  cd backend/
+ 1655  python3 -m venv .venv
+ 1656  source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1657  clear
+ 1658  ls
+ 1659  python3 -m venv .venv
+ 1660  source .venv/bin/activate
+ 1661  which python
+ 1662  python
+ 1663  pip install -r requirements.txt
+ 1664  python manage.py check
+ 1665  export DIVISHA_LOCAL=1
+ 1666  python manage.py check
+ 1667  python manage.py runserver
+ 1668  python manage.py migrate
+ 1669  python manage.py seed_stage
+ 1670  python manage.py createsuperuser --username platform_admin
+ 1671  cd backend/
+ 1672  python manage.py changepassword teal_restau_admin
+ 1673  ls
+ 1674  cd .
+ 1675  cd ..
+ 1676  ls
+ 1677  f source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1678  r
+ 1679  cd frontend/
+ 1680  npm ci
+ 1681  DJANGO_API_ORIGIN=http://127.0.0.1:8000 npm run dev
+ 1682  clear
+ 1683  python manage.py changepassword jeetu_restau_admin
+ 1684  DJANGO_API_ORIGIN=http://127.0.0.1:8000 npm run dev
+ 1685  git status
+ 1686  git add .
+ 1687  git add -A
+ 1688  git diff --cached --name-only
+ 1689  git commit -m "Complete Stage 1 with Django Ninja and PostgreSQL"
+ 1690  git add  .
+ 1691  git commit -m "Complete Stage 1 with Django Ninja and PostgreSQL"
+ 1692  git push orign main
+ 1693  git push origin main
+ 1694  git diff --cached --name-only
+ 1695  git add -A
+ 1696  git diff --cached --name-only
+ 1697  git commit -m "Complete Stage 1 with Django Ninja and PostgreSQL"
+ 1698  git push origin main
+ 1699  git status
+ 1700  git add -A
+ 1701  git add .
+ 1702  git commit -m "Complete Stage 1 with Django Ninja and PostgreSQL"
+ 1703  git push origin main
+ 1704  cd /home/gtbtax/divisha-stage1-ninja
+ 1705  git status --short
+ 1706  git fetch origin && git merge --ff-only origin/main && git log -1 --oneline && grep -A 5 'if os.environ.get("DIVISHA_SQLITE")' backend/config/settings.py
+ 1707  ls
+ 1708  git apply --check ~/home/papa/Documents/2026 claude/divisha-org/docs/Divisha_Tenant_Login.patch && git apply ~/home/papa/Documents/2026 claude/divisha-org/docs/Divisha_Tenant_Login.patch
+ 1709  git apply --check ~/Documents/2026 claude/divisha-org/docs/Divisha_Tenant_Login.patch && git apply ~/Documents/2026 claude/divisha-org/docs/Divisha_Tenant_Login.patch
+ 1710  clear
+ 1711  git apply --check ~/Documents/2026 claude/divisha-org/docs/Divisha_Tenant_Login.patch && git apply ~/Documents/2026 claude/divisha-org/docs/Divisha_Tenant_Login.patch
+ 1712  git apply --check ~/Documents/2026\ claude/divisha-org/docs/Divisha_Tenant_Login.patch  &&   git apply ~/Documents/2026\ claude/divisha-org/docs/Divisha_Tenant_Login.patch
+ 1713  git status
+ 1714  git add .
+ 1715  git commit -m "Admin Login vercel and pythonanywher comunication testing"
+ 1716  git push origin main
+ 1717  git apply --check ~/Downloads/Divisha_Branded_Tenant_Portal.patch && git apply ~/Downloads/Divisha_Branded_Tenant_Portal.patch
+ 1718  git status
+ 1719  git add .
+ 1720  git apply --check ~/Downloads/Divisha_Branded_Tenant_Portal.patch && git apply ~/Downloads/Divisha_Branded_Tenant_Portal.patch
+ 1721  git push origin main
+ 1722  cd backend/
+ 1723  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1724  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1725  clear
+ 1726  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1727  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1728  clear
+ 1729  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1730  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1731  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1732  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1733  printf '\n'
+ 1734  export PGPASSWORD
+ 1735  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1736  clear
+ 1737  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1738  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1739  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1740  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1741  printf '\n'
+ 1742  export PGPASSWORD
+ 1743  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1744  cd backend/
+ 1745  sudo -u postgres psql -p 5432 -d postgres -c '\password divisha'
+ 1746  read -rsp 'Naya local PostgreSQL password: ' PGPASSWORD
+ 1747  printf '\n'
+ 1748  export PGPASSWORD
+ 1749  psql -w -c 'SELECT current_user, current_database();' && python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1750  read -rsp 'Naya local PostgreSQL password: ' PGPASSWORD
+ 1751  printf '\n'
+ 1752  export PGPASSWORD
+ 1753  psql -w -c 'SELECT current_user, current_database();' && python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1754  clear
+ 1755  read -rsp 'Naya local PostgreSQL password: ' PGPASSWORD
+ 1756  printf '\n'
+ 1757  export PGPASSWORD
+ 1758  psql -w -c 'SELECT current_user, current_database();' && python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1759  sudo -u postgres psql -p 5432 -d postgres -c '\password divisha'
+ 1760  read -rsp 'Naya local PostgreSQL password: ' PGPASSWORD
+ 1761  printf '\n'
+ 1762  export PGPASSWORD
+ 1763  psql -w -c 'SELECT current_user, current_database();' && python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1764  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1765  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1766  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1767  psql -w -h 127.0.0.1 -p 5432 -U divisha -d divisha   -c 'SELECT current_user, current_database();' && python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1768  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1769  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1770  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1771  psql -w -h 127.0.0.1 -p 5432 -U divisha -d divisha   -c 'SELECT current_user, current_database();' && python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1772  cd ~/Documents/"2026 claude"/divisha-org/frontend
+ 1773  DJANGO_API_ORIGIN=http://127.0.0.1:8000 DIVISHA_PORTAL_URL=http://localhost:3000/manage npm run dev
+ 1774  n source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1775  npm run dev
+ 1776  cd frontend/
+ 1777  npm run dev
+ 1778  history > my_commands.txt
+ 1779  cd backend/
+ 1780  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1781  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1782  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1783  psql -w -h 127.0.0.1 -p 5432 -U divisha -d divisha   -c 'SELECT current_user, current_database();' && python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1784  python manage.py changepassword jeetu_restau_admin
+ 1785  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1786  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1787  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1788  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1789  printf '\n'
+ 1790  export PGPASSWORD
+ 1791  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1792  python manage.py shell -c 'from django.contrib.auth import get_user_model; print(list(get_user_model().objects.filter(username="jeetu_restau_admin").values("username", "is_active")))'
+ 1793  python manage.py changepassword jeetu_restau_admin && python manage.py runserver 127.0.0.1:8000
+ 1794  cd backend/
+ 1795  source .venv/bin/activate
+ 1796  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1797  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1798  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1799  export PGPASSWORD
+ 1800  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1801  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1802  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1803  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1804  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1805  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1806  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1807  printf '\n'
+ 1808  export PGPASSWORD
+ 1809  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1810  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1811  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1812  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1813  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1814  printf '\n'
+ 1815  export PGPASSWORD
+ 1816  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1817  cd backend/
+ 1818  python manage.py changepassword teal_restau_admin 
+ 1819  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1820  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1821  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1822  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1823  printf '\n'
+ 1824  export PGPASSWORD
+ 1825  python manage.py changepassword teal_restau_admin 
+ 1826  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1827  cd frontend/
+ 1828  DJANGO_API_ORIGIN=http://127.0.0.1:8000 DIVISHA_PORTAL_URL=http://localhost:3000/manage npm run dev
+ 1829  u source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1830  s
+ 1831  git status
+ 1832  git add .
+ 1833  git status
+ 1834  git commit --only -m "Allow SQLite with Django debug disabled" -- backend/config/settings.py
+ 1835  git push origin main
+ 1836  git add .
+ 1837  git commit  -m "Allow SQLite with Django debug disabled" 
+ 1838  git push origin main
+ 1839  ls
+ 1840  ls -a
+ 1841  git status --short
+ 1842  git fetch origin
+ 1843  git log --oneline origin/main..HEAD
+ 1844  GIT_SEQUENCE_EDITOR=nano git rebase -i origin/main
+ 1845  git status --short
+ 1846  GIT_SEQUENCE_EDITOR=nano git rebase -i origin/main
+ 1847  git add .
+ 1848  git commit  -m "Allow SQLite with Django debug disabled nov 2026" 
+ 1849  git push origin main
+ 1850  git status
+ 1851  git add .
+ 1852  git status
+ 1853  git commit  -m "Allow SQLite with Django debug disabled nov 2026"
+ 1854  git status
+ 1855  git push origin main
+ 1856  git config
+ 1857  git config gtbtax@gmail.com
+ 1858  git config --get user.name
+ 1859  git config --get user.email
+ 1860  git config --local user.name "RehhRaj"
+ 1861  git config --local user.email "gtbtax@gmail.com"
+ 1862  git config gtbtax@gmail.com
+ 1863  git config --local user.email "gtbtax@gmail.com"
+ 1864  git push origin main
+ 1865  git status --short
+ 1866  git fetch origin
+ 1867  git log --oneline origin/main..HEAD
+ 1868  git push origin main
+ 1869  clear
+ 1870  git status --short
+ 1871  git fetch origin
+ 1872  git log --oneline origin/main..HEAD
+ 1873  git status --short
+ 1874  git fetch origin
+ 1875  git log --oneline origin/main..HEAD
+ 1876  git status --short
+ 1877  ls
+ 1878  git status
+ 1879  ls
+ 1880  ls -a
+ 1881  cd frontend/
+ 1882  DJANGO_API_ORIGIN=http://127.0.0.1:8000 DIVISHA_PORTAL_URL=http://localhost:3000/manage npm run dev
+ 1883  cd backend/
+ 1884  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1885  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1886  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1887  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1888  printf '\n'
+ 1889  export PGPASSWORD
+ 1890  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1891  source .venv/bin/activate
+ 1892  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1893  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1894  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1895  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1896  printf '\n'
+ 1897  export PGPASSWORD
+ 1898  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1899  source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1900  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1901  clear
+ 1902  python manage.py createsuperuser --username platform_admin
+ 1903  python manage.py createsuperuser --username jeetu_restau__admin
+ 1904  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1905  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1906  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1907  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1908  printf '\n'
+ 1909  export PGPASSWORD
+ 1910  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1911  python manage.py changepassword platform_admin
+ 1912  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1913  git config gtbtax@gmail.com
+ 1914  git status
+ 1915  git add .
+ 1916  git commit -m "21 nov 2026 messed up"
+ 1917  git push origin main
+ 1918  git commit -m "21 nov 2026 messed up"
+ 1919  git status 
+ 1920  git  status
+ 1921  git push origin main
+ 1922  git commit -m "test"
+ 1923  git push origin main
+ 1924  git status
+ 1925  git add .
+ 1926  git push origin main
+ 1927  ls
+ 1928  cd backend
+ 1929  python3 -m venv .venv
+ 1930  source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1931  cd backend/
+ 1932  python3 -m venv .venv
+ 1933  source .venv/bin/activate
+ 1934  clear
+ 1935  pip install -r requirements.txt
+ 1936  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1937  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1938  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1939  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1940  printf '\n'
+ 1941  export PGPASSWORD
+ 1942  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1943  cd fro
+ 1944  cd ..
+ 1945  cd frontend/
+ 1946  DJANGO_API_ORIGIN=http://127.0.0.1:8000 DIVISHA_PORTAL_URL=http://localhost:3000/manage npm run dev
+ 1947  npm ci
+ 1948  DJANGO_API_ORIGIN=http://127.0.0.1:8000 npm run dev
+ 1949  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1950  export PGPASSWORD
+ 1951  printf '\n'
+ 1952  docker compose up -d postgres
+ 1953  git clone https://github.com/RehhRaj/divisha-org.git
+ 1954  ls
+ 1955  clear
+ 1956  git clone https://github.com/RehhRaj/divisha-org.git
+ 1957  cd fro
+ 1958  cd ..
+ 1959  cd frontend/
+ 1960  npm ci
+ 1961  DJANGO_API_ORIGIN=http://127.0.0.1:8000 npm run dev
+ 1962  cd backend/
+ 1963  python3 -m venv .venv
+ 1964  source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1965  python3 -m venv .venv
+ 1966  source "/home/papa/Documents/2026 claude/divisha-org/backend/.venv/bin/activate"
+ 1967  clear
+ 1968  pip install -r requirements.txt
+ 1969  export DIVISHA_LOCAL=1
+ 1970  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1971  python manage.py runserver 127.0.0.1:8000
+ 1972  export DIVISHA_LOCAL=1
+ 1973  python manage.py migrate
+ 1974  python manage.py seed_stage
+ 1975  export DIVISHA_LOCAL=1 DIVISHA_SQLITE=0
+ 1976  export DJANGO_CSRF_TRUSTED_ORIGINS=http://localhost:3000
+ 1977  export PGUSER=divisha PGDATABASE=divisha PGHOST=127.0.0.1 PGPORT=5432
+ 1978  read -rsp 'Local PostgreSQL password: ' PGPASSWORD
+ 1979  printf '\n'
+ 1980  export PGPASSWORD
+ 1981  python manage.py check && python manage.py test && python manage.py runserver 127.0.0.1:8000
+ 1982  clear
+ 1983  export DIVISHA_LOCAL=1
+ 1984  export DIVISHA_SQLITE=1
+ 1985  python manage.py migrate
+ 1986  python manage.py seed_stage
+ 1987  python manage.py check
+ 1988  python manage.py test
+ 1989  python manage.py changepassword jeetu_restau_admin
+ 1990  python manage.py createsuperuser --username platform_admin
+ 1991  python manage.py runserver 127.0.0.1:8000
+ 1992  cd ..
+ 1993  git status
+ 1994  git add .
+ 1995  git commit -m "nov 21 "
+ 1996  git push origin main
+ 1997  python manage.py runserver 127.0.0.1:8000
+ 1998  cd backend/
+ 1999  python manage.py runserver 127.0.0.1:8000
+ 2000  history>500 history
+ 2001  history 500 > bash_history.txt
