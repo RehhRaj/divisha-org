@@ -498,3 +498,17 @@
  1999  python manage.py runserver 127.0.0.1:8000
  2000  history>500 history
  2001  history 500 > bash_history.txt
+******************************************************
+~/Documents/2026 claude/divisha-org/backendpython manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); print('\n'.join([f'{u.id} | {u.username} | {u.email} | staff={u.is_staff} | super={u.is_superuser}' for u in User.objects.all()]))")"
+20 objects imported automatically (use -v 2 for details).
+
+1 | platform_support |  | staff=True | super=False
+4 | apexacademy_edu_admin |  | staff=False | super=False
+5 | horizon_edu_admin |  | staff=False | super=False
+2 | jeetu_restau_admin |  | staff=False | super=False
+3 | teal_restau_admin |  | staff=False | super=False
+6 | platform_admin | divishaorg@gmail.com | staff=True | super=True
+
+python manage.py changepassword jeetu_restau_admin
+python manage.py changepassword teal_restau_admin
+python manage.py changepassword apexacademy_edu_admin

@@ -1,3 +1,4 @@
+# /home/papa/Documents/2026 claude/divisha-org/backend/config/wsgi.py
 import os
 
 from django.core.wsgi import get_wsgi_application

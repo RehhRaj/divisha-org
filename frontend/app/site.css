@@ -1,3 +1,4 @@
+
 :root { color-scheme: light; font-family: system-ui, sans-serif; }
 body { margin: 0; }
 main {
@@ -12,3 +13,7 @@ main {
 main.education { background: #eaf4ef; color: #123a32; }
 h1 { font-size: clamp(2.5rem, 8vw, 6rem); line-height: 1.03; margin: .3em 0; }
 p { font-size: 1.15rem; max-width: 40rem; line-height: 1.5; }
+main.landing { background: #f6faf9; color: #173d35; }
+.landing .pricing { white-space: pre-line; }
+.landing nav { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1rem; }
+.landing nav a { color: inherit; border: 1px solid; border-radius: .5rem; padding: .75rem 1rem; }

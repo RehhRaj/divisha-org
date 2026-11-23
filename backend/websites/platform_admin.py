@@ -1,12 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
+from django.db.models import F
+from django.utils import timezone
 
 from kernel.models import AuditEvent, Capability, Membership, Role
 from kernel.policy import can_access_platform, can_manage_platform
 from tenancy.models import BusinessType, Domain, Tenant
 
-from .models import Website
+from .models import LandingPage, Website
 
 
 class PlatformAdmin(admin.AdminSite):
@@ -67,3 +69,22 @@ platform_admin.register([BusinessType, Tenant, Domain, Role, Membership], Platfo
 platform_admin.register(Capability, CapabilityAdmin)
 platform_admin.register(Website, WebsiteAdmin)
 platform_admin.register(AuditEvent, AuditAdmin)
+
+
+class LandingPageAdmin(PlatformModelAdmin):
+    fields = ("hostname", "business_type", "draft_title", "draft_description", "draft_pricing")
+    list_display = ("hostname", "business_type", "published_at")
+    actions = ("publish_saved_drafts",)
+
+    @admin.action(permissions=["change"], description="Publish selected landing page drafts")
+    def publish_saved_drafts(self, request, queryset):
+        count = queryset.update(
+            published_title=F("draft_title"),
+            published_description=F("draft_description"),
+            published_pricing=F("draft_pricing"),
+            published_at=timezone.now(),
+        )
+        self.message_user(request, f"Published {count} landing page(s).")
+
+
+platform_admin.register(LandingPage, LandingPageAdmin)
