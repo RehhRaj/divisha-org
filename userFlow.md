@@ -1,5 +1,5 @@
 # Next.js Catch-All Route (`app/[[...slug]]/page.tsx`) - Request & Render Flow
-
+#   ctrl+shift+v    flow chart view
 ```mermaid
 flowchart TD
     Start(["User opens URL in Browser"]) --> CheckSlug{"Does URL have sub-paths?<br/>e.g. /about or /menu"}

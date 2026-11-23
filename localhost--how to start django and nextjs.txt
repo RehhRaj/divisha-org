@@ -10,5 +10,28 @@ python manage.py check && python manage.py test && python manage.py runserver 12
 
 
 
+password hai Ab@9911112823
+
 
 DJANGO_API_ORIGIN=http://127.0.0.1:8000 DIVISHA_PORTAL_URL=http://localhost:3000/manage npm run dev
+
+
+
+
+
+
+cd ~/divisha-org
+git status -sb
+git sparse-checkout list
+
+
+git pull --ff-only origin main
+
+
+
+cd ~/divisha-org/backend
+python manage.py migrate &&
+python manage.py seed_landings
+
+
+
