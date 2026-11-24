@@ -1,0 +1,66 @@
+.site {
+  --paper: #f8eee2;
+  --ink: #51291d;
+  --accent: #834127;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.site[data-palette="saffron"] { --paper: #fff3d5; --ink: #502d0d; --accent: #8a430e; }
+.site[data-palette="wine"] { --paper: #fff1f2; --ink: #511c36; --accent: #813050; }
+.site[data-palette="coffee"] { --paper: #f3e9dc; --ink: #39281e; --accent: #714629; }
+.site[data-palette="midnight"] { --paper: #ebeaf3; --ink: #23203b; --accent: #312b50; }
+.site[data-palette="forest"] { --paper: #eaf4ef; --ink: #123a32; --accent: #24554b; }
+.site[data-palette="navy"] { --paper: #edf2fb; --ink: #162b51; --accent: #234279; }
+.site[data-palette="plum"] { --paper: #f9effa; --ink: #4f2752; --accent: #68406a; }
+.site[data-palette="teal"] { --paper: #e3f6f5; --ink: #134644; --accent: #216461; }
+.site[data-palette="blue"] { --paper: #e9f4ff; --ink: #133e60; --accent: #215780; }
+.site[data-palette="rust"] { --paper: #ffeade; --ink: #4b2817; --accent: #8d4227; }
+.site[data-palette="sand"] { --paper: #fbf1df; --ink: #453819; --accent: #765523; }
+.site[data-palette="ocean"] { --paper: #e1f5f8; --ink: #134659; --accent: #24647c; }
+.site[data-palette="violet"] { --paper: #f2ecff; --ink: #392658; --accent: #5b3f82; }
+
+.details a {
+  display: inline-block;
+  color: inherit;
+  padding: .65rem 1rem;
+  border: 1px solid currentColor;
+  border-radius: .4rem;
+  text-underline-offset: .2em;
+}
+
+.classic .content { max-width: 72rem; }
+.split .content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.25rem, 5vw, 5rem);
+}
+.split .content header {
+  padding: clamp(1.2rem, 4vw, 4rem);
+  background: var(--accent);
+  color: white;
+}
+.editorial .content { max-width: 50rem; margin-inline: auto; }
+.editorial .content h1 { font-family: Georgia, serif; }
+.editorial .details { margin-top: 2rem; border-top: 2px solid var(--accent); }
+.card .content {
+  width: min(100%, 42rem);
+  box-sizing: border-box;
+  margin-inline: auto;
+  padding: clamp(1.25rem, 5vw, 4rem);
+  background: white;
+  border: 1px solid var(--accent);
+  border-radius: 1.5rem;
+}
+.banner.site { align-content: start; padding-top: clamp(2rem, 6vw, 5rem); }
+.banner .content header {
+  background: var(--accent);
+  color: white;
+  padding: clamp(1.2rem, 4vw, 4rem);
+}
+.banner .details { padding-top: 1rem; }
+
+@media (max-width: 680px) {
+  .split .content { grid-template-columns: minmax(0, 1fr); }
+}

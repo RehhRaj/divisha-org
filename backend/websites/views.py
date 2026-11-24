@@ -9,13 +9,18 @@ from kernel.policy import (
 from tenancy.models import Tenant
 
 from .models import Website
+from .registry import template_choices
 from .services import read_site, update_site
 
 
 class DraftForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["template"].choices = template_choices(self.instance.tenant.business_type.slug)
+
     class Meta:
         model = Website
-        fields = ["draft_title", "draft_description"]
+        fields = ["draft_title", "draft_description", "template"]
 
 
 @login_required
@@ -37,8 +42,13 @@ def panel(request, slug):
         if request.POST.get("action") == "publish":
             update_site(context, PUBLISH_SITE)
             return redirect("tenant-panel", slug=slug)
-        form = DraftForm(request.POST, instance=site)
+        fields = request.POST.copy()
+        if "template" not in fields:
+            fields["template"] = site.template
+        form = DraftForm(fields, instance=site)
         if form.is_valid():
+            if "template" not in request.POST:
+                form.cleaned_data.pop("template")
             update_site(context, EDIT_SITE, form.cleaned_data)
             return redirect("tenant-panel", slug=slug)
     return render(request, "websites/panel.html", {

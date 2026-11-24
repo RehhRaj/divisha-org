@@ -22,7 +22,8 @@ def update_site(context, action, fields=None):
     if action == EDIT_SITE:
         site.draft_title = fields["draft_title"]
         site.draft_description = fields["draft_description"]
-        changes = ["draft_title", "draft_description"]
+        site.template = fields.get("template", site.template)
+        changes = ["draft_title", "draft_description", "template"]
     elif action == PUBLISH_SITE:
         site.published_template = site.template
         site.published_title = site.draft_title

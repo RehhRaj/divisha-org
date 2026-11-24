@@ -1,7 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.core.validators import validate_domain_name
 from django.db import models
 
-from .registry import TEMPLATE_CHOICES
+from .registry import TEMPLATE_CHOICES, template_choices
 
 
 class Website(models.Model):
@@ -14,6 +15,12 @@ class Website(models.Model):
     published_description = models.TextField(blank=True, editable=False)
     published_at = models.DateTimeField(null=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        if self.tenant_id and self.template:
+            choices = dict(template_choices(self.tenant.business_type.slug))
+            if self.template not in choices:
+                raise ValidationError({"template": "Choose a template for this business type."})
 
     def __str__(self):
         return str(self.tenant)

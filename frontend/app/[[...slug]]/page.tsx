@@ -2,16 +2,7 @@ import { randomUUID } from "node:crypto";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 
-const templates: Record<string, string> = {
-  "restaurant-classic": "restaurant",
-  "education-classic": "education",
-};
-
-interface PublishedPage {
-  title: string;
-  description: string;
-  template: string;
-}
+import { TenantSite, type PublishedTenantSite } from "../../templates/TenantSite";
 
 interface PublishedLanding {
   page_type: "platform_landing" | "business_landing";
@@ -49,7 +40,7 @@ export default async function Page({
   if (response.status === 404) notFound();
   if (!response.ok) throw new Error("The website could not be loaded.");
 
-  const page: PublishedPage | PublishedLanding = await response.json();
+  const page: PublishedTenantSite | PublishedLanding = await response.json();
 
   if ("page_type" in page) {
     return (
@@ -77,17 +68,5 @@ export default async function Page({
     );
   }
 
-  if (!Object.hasOwn(templates, page.template)) {
-    throw new Error("Unsupported website template.");
-  }
-
-  return (
-    <main className={templates[page.template]}>
-      <h1>{page.title}</h1>
-      <p>{page.description}</p>
-      <nav aria-label="Tenant access">
-        <a href={new URL("/panel/login/", origin).href}>Tenant Login</a>
-      </nav>
-    </main>
-  );
+  return <TenantSite page={page} loginUrl={new URL("/panel/login/", origin).href} />;
 }

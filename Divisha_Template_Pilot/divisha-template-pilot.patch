@@ -1,0 +1,521 @@
+diff --git a/backend/websites/api.py b/backend/websites/api.py
+index 02ee6bd..a20ad38 100644
+--- a/backend/websites/api.py
++++ b/backend/websites/api.py
+@@ -6,6 +6,12 @@ from django.conf import settings
+ from ninja import NinjaAPI, Schema
+ 
+ from .models import LandingPage, Website
++from .registry import TEMPLATES
++
++
++class TemplatePresentation(Schema):
++    layout: str
++    palette: str
+ 
+ 
+ class PublishedPage(Schema):
+@@ -13,6 +19,7 @@ class PublishedPage(Schema):
+     description: str
+     template: str
+     business_type: str
++    presentation: TemplatePresentation | None = None
+ 
+ 
+ class LandingLink(Schema):
+@@ -58,11 +65,17 @@ def published_page(request, host: str = ""):
+         if landing is None:
+             return HTTPStatus.NOT_FOUND, missing
+         return landing
++    business_type = site.tenant.business_type.slug
++    variant = next(
++        (item for item in TEMPLATES.get(business_type, ()) if item.key == site.published_template),
++        None,
++    )
+     return PublishedPage(
+         title=site.published_title,
+         description=site.published_description,
+         template=site.published_template,
+-        business_type=site.tenant.business_type.slug,
++        business_type=business_type,
++        presentation=TemplatePresentation(layout=variant.layout, palette=variant.palette) if variant else None,
+     )
+ 
+ 
+diff --git a/backend/websites/management/commands/seed_template_pilot.py b/backend/websites/management/commands/seed_template_pilot.py
+new file mode 100644
+index 0000000..f1ada8c
+--- /dev/null
++++ b/backend/websites/management/commands/seed_template_pilot.py
+@@ -0,0 +1,90 @@
++from django.contrib.auth import get_user_model
++from django.core.management.base import BaseCommand, CommandError
++from django.db import transaction
++from django.utils import timezone
++
++from kernel.models import Capability, Membership, Role
++from kernel.policy import CAPABILITIES
++from tenancy.models import BusinessType, Domain, Tenant
++from websites.models import LandingPage, Website
++from websites.registry import template_choices
++
++
++PILOT = (
++    ("restau", "Restaurant", (
++        ("pilot-tandoor-restau", "Tandoor House", "restaurant-classic", "North Indian favourites and tandoor specials."),
++        ("pilot-highway-restau", "Highway Dhaba", "restaurant-dhaba", "Punjabi meals and chai for the road."),
++        ("pilot-copper-restau", "Copper Bistro", "restaurant-bistro", "Seasonal small plates and evening dining."),
++    )),
++    ("edu", "Education", (
++        ("pilot-maple-edu", "Maple Academy", "education-classic", "Primary learning and school programmes."),
++        ("pilot-river-edu", "River School", "education-admissions", "Admissions information and campus visits."),
++        ("pilot-oak-edu", "Oak Learning Centre", "education-campus", "Campus activities and learning spaces."),
++    )),
++    ("tour", "Tour & Travel", (
++        ("pilot-summit-tour", "Summit Trails", "tour-explorer", "Guided mountain holidays and short treks."),
++        ("pilot-wild-tour", "Wild Routes", "tour-adventure", "Outdoor escapes and active group trips."),
++        ("pilot-fort-tour", "Fort Journeys", "tour-heritage", "Heritage tours and guided city walks."),
++    )),
++)
++
++
++class Command(BaseCommand):
++    help = "Create nine demo websites and their tenant accounts with local domains."
++
++    @transaction.atomic
++    def handle(self, *args, **options):
++        users = get_user_model().objects
++        capabilities = [Capability.objects.get_or_create(code=code)[0] for code in CAPABILITIES]
++        now = timezone.now()
++
++        for slug, name, sites in PILOT:
++            business_type, _ = BusinessType.objects.get_or_create(slug=slug, defaults={"name": name})
++            description = f"Explore demo websites for {name.lower()} businesses."
++            existing_landing = LandingPage.objects.filter(business_type=business_type).first()
++            if existing_landing is None:
++                landing = LandingPage(
++                    hostname=f"{slug}.divisha.org",
++                    business_type=business_type,
++                    draft_title=f"Websites for {name}",
++                    draft_description=description,
++                    published_title=f"Websites for {name}",
++                    published_description=description,
++                    published_at=now,
++                )
++                landing.full_clean()
++                landing.save()
++
++            for tenant_slug, title, template, description in sites:
++                if template not in dict(template_choices(slug)):
++                    raise CommandError(f"Invalid template for {tenant_slug}: {template}")
++                tenant, _ = Tenant.objects.get_or_create(
++                    slug=tenant_slug, defaults={"business_type": business_type, "name": title},
++                )
++                if tenant.business_type_id != business_type.pk:
++                    raise CommandError(f"Pilot tenant slug already belongs to another type: {tenant_slug}")
++                hostname = f"{tenant_slug}.localhost"
++                domain, _ = Domain.objects.get_or_create(hostname=hostname, defaults={"tenant": tenant})
++                if domain.tenant_id != tenant.pk:
++                    raise CommandError(f"Domain already assigned: {hostname}")
++                Website.objects.get_or_create(
++                    tenant=tenant,
++                    defaults={
++                        "template": template, "published_template": template,
++                        "draft_title": title, "published_title": title,
++                        "draft_description": description, "published_description": description,
++                        "published_at": now,
++                    },
++                )
++                username = tenant_slug.replace("-", "_") + "_admin"
++                role, role_created = Role.objects.get_or_create(tenant=tenant, name="pilot_owner")
++                if role_created:
++                    role.capabilities.set(capabilities)
++                user, user_created = users.get_or_create(username=username)
++                if user_created:
++                    user.set_unusable_password()
++                    user.save(update_fields=["password"])
++                    Membership.objects.create(user=user, role=role)
++                elif not Membership.objects.filter(user=user, role=role).exists():
++                    raise CommandError(f"Pilot username already exists without the pilot membership: {username}")
++                self.stdout.write(f"http://{hostname}:3000/ | {username}")
+diff --git a/backend/websites/migrations/0003_expand_template_choices.py b/backend/websites/migrations/0003_expand_template_choices.py
+new file mode 100644
+index 0000000..b6a95c5
+--- /dev/null
++++ b/backend/websites/migrations/0003_expand_template_choices.py
+@@ -0,0 +1,20 @@
++from django.db import migrations, models
++
++
++class Migration(migrations.Migration):
++    dependencies = [("websites", "0002_landingpage")]
++
++    operations = [
++        migrations.AlterField(
++            model_name="website",
++            name="template",
++            field=models.CharField(max_length=50, choices=[('restaurant-classic', 'Restaurant Classic'), ('restaurant-dhaba', 'Dhaba'), ('restaurant-bistro', 'Bistro'), ('restaurant-cafe', 'Café'), ('restaurant-night', 'Night Dining'), ('education-classic', 'Education Classic'), ('education-admissions', 'Admissions'), ('education-campus', 'Campus'), ('education-learning', 'Learning Studio'), ('education-open-day', 'Open Day'), ('tour-explorer', 'Explorer'), ('tour-adventure', 'Adventure'), ('tour-heritage', 'Heritage'), ('tour-escape', 'Escape'), ('tour-holidays', 'Holidays')]),
++        ),
++        migrations.AlterField(
++            model_name="website",
++            name="published_template",
++            field=models.CharField(
++                max_length=50, choices=[('restaurant-classic', 'Restaurant Classic'), ('restaurant-dhaba', 'Dhaba'), ('restaurant-bistro', 'Bistro'), ('restaurant-cafe', 'Café'), ('restaurant-night', 'Night Dining'), ('education-classic', 'Education Classic'), ('education-admissions', 'Admissions'), ('education-campus', 'Campus'), ('education-learning', 'Learning Studio'), ('education-open-day', 'Open Day'), ('tour-explorer', 'Explorer'), ('tour-adventure', 'Adventure'), ('tour-heritage', 'Heritage'), ('tour-escape', 'Escape'), ('tour-holidays', 'Holidays')], blank=True, editable=False,
++            ),
++        ),
++    ]
+diff --git a/backend/websites/models.py b/backend/websites/models.py
+index 858518d..83a97e0 100644
+--- a/backend/websites/models.py
++++ b/backend/websites/models.py
+@@ -1,7 +1,8 @@
++from django.core.exceptions import ValidationError
+ from django.core.validators import validate_domain_name
+ from django.db import models
+ 
+-from .registry import TEMPLATE_CHOICES
++from .registry import TEMPLATE_CHOICES, template_choices
+ 
+ 
+ class Website(models.Model):
+@@ -15,6 +16,12 @@ class Website(models.Model):
+     published_at = models.DateTimeField(null=True, editable=False)
+     updated_at = models.DateTimeField(auto_now=True)
+ 
++    def clean(self):
++        if self.tenant_id and self.template:
++            choices = dict(template_choices(self.tenant.business_type.slug))
++            if self.template not in choices:
++                raise ValidationError({"template": "Choose a template for this business type."})
++
+     def __str__(self):
+         return str(self.tenant)
+ 
+diff --git a/backend/websites/registry.py b/backend/websites/registry.py
+index e49c0fe..39b7fba 100644
+--- a/backend/websites/registry.py
++++ b/backend/websites/registry.py
+@@ -1,4 +1,43 @@
+-TEMPLATE_CHOICES = (
+-    ("restaurant-classic", "Restaurant Classic"),
+-    ("education-classic", "Education Classic"),
++from dataclasses import dataclass
++
++
++@dataclass(frozen=True)
++class Template:
++    key: str
++    label: str
++    layout: str
++    palette: str
++
++
++TEMPLATES = {
++    "restau": (
++        Template("restaurant-classic", "Restaurant Classic", "classic", "terracotta"),
++        Template("restaurant-dhaba", "Dhaba", "split", "saffron"),
++        Template("restaurant-bistro", "Bistro", "editorial", "wine"),
++        Template("restaurant-cafe", "Café", "card", "coffee"),
++        Template("restaurant-night", "Night Dining", "banner", "midnight"),
++    ),
++    "edu": (
++        Template("education-classic", "Education Classic", "classic", "forest"),
++        Template("education-admissions", "Admissions", "split", "navy"),
++        Template("education-campus", "Campus", "editorial", "plum"),
++        Template("education-learning", "Learning Studio", "card", "teal"),
++        Template("education-open-day", "Open Day", "banner", "blue"),
++    ),
++    "tour": (
++        Template("tour-explorer", "Explorer", "classic", "forest"),
++        Template("tour-adventure", "Adventure", "split", "rust"),
++        Template("tour-heritage", "Heritage", "editorial", "sand"),
++        Template("tour-escape", "Escape", "card", "ocean"),
++        Template("tour-holidays", "Holidays", "banner", "violet"),
++    ),
++}
++
++
++def template_choices(business_type):
++    return tuple((item.key, item.label) for item in TEMPLATES.get(business_type, ()))
++
++
++TEMPLATE_CHOICES = tuple(
++    choice for business_type in TEMPLATES for choice in template_choices(business_type)
+ )
+diff --git a/backend/websites/services.py b/backend/websites/services.py
+index ba3ab4d..dea89c7 100644
+--- a/backend/websites/services.py
++++ b/backend/websites/services.py
+@@ -22,7 +22,8 @@ def update_site(context, action, fields=None):
+     if action == EDIT_SITE:
+         site.draft_title = fields["draft_title"]
+         site.draft_description = fields["draft_description"]
+-        changes = ["draft_title", "draft_description"]
++        site.template = fields.get("template", site.template)
++        changes = ["draft_title", "draft_description", "template"]
+     elif action == PUBLISH_SITE:
+         site.published_template = site.template
+         site.published_title = site.draft_title
+diff --git a/backend/websites/tests.py b/backend/websites/tests.py
+index 1cb2296..56e206c 100644
+--- a/backend/websites/tests.py
++++ b/backend/websites/tests.py
+@@ -99,3 +99,48 @@ class StageTests(TestCase):
+         self.assertEqual(self.client.post(f"{base}{tenant.pk}/change/", {}).status_code, 403)
+         self.assertEqual(self.client.get(f"{base}add/").status_code, 403)
+         self.assertEqual(self.client.get("/platform-admin/auth/user/").status_code, 403)
++
++
++class TemplatePilotTests(TestCase):
++    @classmethod
++    def setUpTestData(cls):
++        call_command("seed_landings", verbosity=0)
++        call_command("seed_template_pilot", verbosity=0)
++
++    def test_seed_is_repeatable_and_offers_five_choices_per_type(self):
++        from .management.commands.seed_template_pilot import PILOT
++        from .registry import template_choices
++
++        call_command("seed_template_pilot", verbosity=0)
++        self.assertEqual(Tenant.objects.count(), 9)
++        self.assertEqual(get_user_model().objects.count(), 9)
++        for business_type, _, sites in PILOT:
++            self.assertEqual(len(template_choices(business_type)), 5)
++            landing = self.client.get("/api/page/", {"host": f"{business_type}.localhost:3000"})
++            self.assertEqual(landing.json()["page_type"], "business_landing")
++            keys = set()
++            for slug, _, key, _ in sites:
++                page = self.client.get("/api/page/", {"host": f"{slug}.localhost:3000"})
++                self.assertEqual(page.status_code, 200)
++                self.assertEqual(page.json()["template"], key)
++                self.assertIn("layout", page.json()["presentation"])
++                keys.add(key)
++            self.assertEqual(len(keys), 3)
++
++    def test_template_selection_is_scoped_and_requires_publish(self):
++        slug = "pilot-tandoor-restau"
++        user = get_user_model().objects.get(username="pilot_tandoor_restau_admin")
++        self.client.force_login(user)
++        panel = f"/panel/t/{slug}/"
++        hostname = {"host": f"{slug}.localhost:3000"}
++        draft = {"action": "save", "draft_title": "Tandoor House", "draft_description": "New menu"}
++        wrong_type = self.client.post(panel, {**draft, "template": "tour-adventure"})
++        self.assertContains(wrong_type, "Select a valid choice")
++        self.assertEqual(self.client.get("/api/page/", hostname).json()["template"], "restaurant-classic")
++        self.assertEqual(
++            self.client.post(panel, {**draft, "template": "restaurant-night"}).status_code, 302,
++        )
++        self.assertEqual(self.client.get("/api/page/", hostname).json()["template"], "restaurant-classic")
++        self.assertEqual(self.client.post(panel, {"action": "publish"}).status_code, 302)
++        self.assertEqual(self.client.get("/api/page/", hostname).json()["template"], "restaurant-night")
++        self.assertEqual(self.client.get("/panel/t/pilot-wild-tour/").status_code, 404)
+diff --git a/backend/websites/views.py b/backend/websites/views.py
+index 6aca2da..ea8b768 100644
+--- a/backend/websites/views.py
++++ b/backend/websites/views.py
+@@ -9,13 +9,18 @@ from kernel.policy import (
+ from tenancy.models import Tenant
+ 
+ from .models import Website
++from .registry import template_choices
+ from .services import read_site, update_site
+ 
+ 
+ class DraftForm(forms.ModelForm):
++    def __init__(self, *args, **kwargs):
++        super().__init__(*args, **kwargs)
++        self.fields["template"].choices = template_choices(self.instance.tenant.business_type.slug)
++
+     class Meta:
+         model = Website
+-        fields = ["draft_title", "draft_description"]
++        fields = ["draft_title", "draft_description", "template"]
+ 
+ 
+ @login_required
+@@ -37,8 +42,13 @@ def panel(request, slug):
+         if request.POST.get("action") == "publish":
+             update_site(context, PUBLISH_SITE)
+             return redirect("tenant-panel", slug=slug)
+-        form = DraftForm(request.POST, instance=site)
++        fields = request.POST.copy()
++        if "template" not in fields:
++            fields["template"] = site.template
++        form = DraftForm(fields, instance=site)
+         if form.is_valid():
++            if "template" not in request.POST:
++                form.cleaned_data.pop("template")
+             update_site(context, EDIT_SITE, form.cleaned_data)
+             return redirect("tenant-panel", slug=slug)
+     return render(request, "websites/panel.html", {
+diff --git a/frontend/app/[[...slug]]/page.tsx b/frontend/app/[[...slug]]/page.tsx
+index 38ca970..88198dc 100644
+--- a/frontend/app/[[...slug]]/page.tsx
++++ b/frontend/app/[[...slug]]/page.tsx
+@@ -2,16 +2,7 @@ import { randomUUID } from "node:crypto";
+ import { headers } from "next/headers";
+ import { notFound } from "next/navigation";
+ 
+-const templates: Record<string, string> = {
+-  "restaurant-classic": "restaurant",
+-  "education-classic": "education",
+-};
+-
+-interface PublishedPage {
+-  title: string;
+-  description: string;
+-  template: string;
+-}
++import { TenantSite, type PublishedTenantSite } from "../../templates/TenantSite";
+ 
+ interface PublishedLanding {
+   page_type: "platform_landing" | "business_landing";
+@@ -49,7 +40,7 @@ export default async function Page({
+   if (response.status === 404) notFound();
+   if (!response.ok) throw new Error("The website could not be loaded.");
+ 
+-  const page: PublishedPage | PublishedLanding = await response.json();
++  const page: PublishedTenantSite | PublishedLanding = await response.json();
+ 
+   if ("page_type" in page) {
+     return (
+@@ -77,17 +68,5 @@ export default async function Page({
+     );
+   }
+ 
+-  if (!Object.hasOwn(templates, page.template)) {
+-    throw new Error("Unsupported website template.");
+-  }
+-
+-  return (
+-    <main className={templates[page.template]}>
+-      <h1>{page.title}</h1>
+-      <p>{page.description}</p>
+-      <nav aria-label="Tenant access">
+-        <a href={new URL("/panel/login/", origin).href}>Tenant Login</a>
+-      </nav>
+-    </main>
+-  );
++  return <TenantSite page={page} loginUrl={new URL("/panel/login/", origin).href} />;
+ }
+diff --git a/frontend/templates/TenantSite.module.css b/frontend/templates/TenantSite.module.css
+new file mode 100644
+index 0000000..e90fcbd
+--- /dev/null
++++ b/frontend/templates/TenantSite.module.css
+@@ -0,0 +1,66 @@
++.site {
++  --paper: #f8eee2;
++  --ink: #51291d;
++  --accent: #834127;
++  background: var(--paper);
++  color: var(--ink);
++}
++
++.site[data-palette="saffron"] { --paper: #fff3d5; --ink: #502d0d; --accent: #8a430e; }
++.site[data-palette="wine"] { --paper: #fff1f2; --ink: #511c36; --accent: #813050; }
++.site[data-palette="coffee"] { --paper: #f3e9dc; --ink: #39281e; --accent: #714629; }
++.site[data-palette="midnight"] { --paper: #ebeaf3; --ink: #23203b; --accent: #312b50; }
++.site[data-palette="forest"] { --paper: #eaf4ef; --ink: #123a32; --accent: #24554b; }
++.site[data-palette="navy"] { --paper: #edf2fb; --ink: #162b51; --accent: #234279; }
++.site[data-palette="plum"] { --paper: #f9effa; --ink: #4f2752; --accent: #68406a; }
++.site[data-palette="teal"] { --paper: #e3f6f5; --ink: #134644; --accent: #216461; }
++.site[data-palette="blue"] { --paper: #e9f4ff; --ink: #133e60; --accent: #215780; }
++.site[data-palette="rust"] { --paper: #ffeade; --ink: #4b2817; --accent: #8d4227; }
++.site[data-palette="sand"] { --paper: #fbf1df; --ink: #453819; --accent: #765523; }
++.site[data-palette="ocean"] { --paper: #e1f5f8; --ink: #134659; --accent: #24647c; }
++.site[data-palette="violet"] { --paper: #f2ecff; --ink: #392658; --accent: #5b3f82; }
++
++.details a {
++  display: inline-block;
++  color: inherit;
++  padding: .65rem 1rem;
++  border: 1px solid currentColor;
++  border-radius: .4rem;
++  text-underline-offset: .2em;
++}
++
++.classic .content { max-width: 72rem; }
++.split .content {
++  display: grid;
++  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
++  align-items: center;
++  gap: clamp(1.25rem, 5vw, 5rem);
++}
++.split .content header {
++  padding: clamp(1.2rem, 4vw, 4rem);
++  background: var(--accent);
++  color: white;
++}
++.editorial .content { max-width: 50rem; margin-inline: auto; }
++.editorial .content h1 { font-family: Georgia, serif; }
++.editorial .details { margin-top: 2rem; border-top: 2px solid var(--accent); }
++.card .content {
++  width: min(100%, 42rem);
++  box-sizing: border-box;
++  margin-inline: auto;
++  padding: clamp(1.25rem, 5vw, 4rem);
++  background: white;
++  border: 1px solid var(--accent);
++  border-radius: 1.5rem;
++}
++.banner.site { align-content: start; padding-top: clamp(2rem, 6vw, 5rem); }
++.banner .content header {
++  background: var(--accent);
++  color: white;
++  padding: clamp(1.2rem, 4vw, 4rem);
++}
++.banner .details { padding-top: 1rem; }
++
++@media (max-width: 680px) {
++  .split .content { grid-template-columns: minmax(0, 1fr); }
++}
+diff --git a/frontend/templates/TenantSite.tsx b/frontend/templates/TenantSite.tsx
+new file mode 100644
+index 0000000..cb7a1fb
+--- /dev/null
++++ b/frontend/templates/TenantSite.tsx
+@@ -0,0 +1,43 @@
++import styles from "./TenantSite.module.css";
++
++export interface PublishedTenantSite {
++  title: string;
++  description: string;
++  template: string;
++  presentation?: { layout: string; palette: string } | null;
++}
++
++const layouts = {
++  classic: styles.classic,
++  split: styles.split,
++  editorial: styles.editorial,
++  card: styles.card,
++  banner: styles.banner,
++};
++
++export function TenantSite({
++  page,
++  loginUrl,
++}: {
++  page: PublishedTenantSite;
++  loginUrl: string;
++}) {
++  const layout = page.presentation?.layout ?? "classic";
++  const palette = page.presentation?.palette ??
++    (page.template === "education-classic" ? "forest" : "terracotta");
++  const layoutClass = Object.hasOwn(layouts, layout)
++    ? layouts[layout as keyof typeof layouts]
++    : layouts.classic;
++
++  return (
++    <main className={`${styles.site} ${layoutClass}`} data-palette={palette}>
++      <article className={styles.content}>
++        <header><h1>{page.title}</h1></header>
++        <div className={styles.details}>
++          <p>{page.description}</p>
++          <nav aria-label="Tenant access"><a href={loginUrl}>Tenant Login</a></nav>
++        </div>
++      </article>
++    </main>
++  );
++}

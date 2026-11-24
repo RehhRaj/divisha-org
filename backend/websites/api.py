@@ -6,6 +6,12 @@ from django.conf import settings
 from ninja import NinjaAPI, Schema
 
 from .models import LandingPage, Website
+from .registry import TEMPLATES
+
+
+class TemplatePresentation(Schema):
+    layout: str
+    palette: str
 
 
 class PublishedPage(Schema):
@@ -13,6 +19,7 @@ class PublishedPage(Schema):
     description: str
     template: str
     business_type: str
+    presentation: TemplatePresentation | None = None
 
 
 class LandingLink(Schema):
@@ -58,11 +65,17 @@ def published_page(request, host: str = ""):
         if landing is None:
             return HTTPStatus.NOT_FOUND, missing
         return landing
+    business_type = site.tenant.business_type.slug
+    variant = next(
+        (item for item in TEMPLATES.get(business_type, ()) if item.key == site.published_template),
+        None,
+    )
     return PublishedPage(
         title=site.published_title,
         description=site.published_description,
         template=site.published_template,
-        business_type=site.tenant.business_type.slug,
+        business_type=business_type,
+        presentation=TemplatePresentation(layout=variant.layout, palette=variant.palette) if variant else None,
     )
 
 

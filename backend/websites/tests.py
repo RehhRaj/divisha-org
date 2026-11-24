@@ -99,3 +99,48 @@ class StageTests(TestCase):
         self.assertEqual(self.client.post(f"{base}{tenant.pk}/change/", {}).status_code, 403)
         self.assertEqual(self.client.get(f"{base}add/").status_code, 403)
         self.assertEqual(self.client.get("/platform-admin/auth/user/").status_code, 403)
+
+
+class TemplatePilotTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        call_command("seed_landings", verbosity=0)
+        call_command("seed_template_pilot", verbosity=0)
+
+    def test_seed_is_repeatable_and_offers_five_choices_per_type(self):
+        from .management.commands.seed_template_pilot import PILOT
+        from .registry import template_choices
+
+        call_command("seed_template_pilot", verbosity=0)
+        self.assertEqual(Tenant.objects.count(), 9)
+        self.assertEqual(get_user_model().objects.count(), 9)
+        for business_type, _, sites in PILOT:
+            self.assertEqual(len(template_choices(business_type)), 5)
+            landing = self.client.get("/api/page/", {"host": f"{business_type}.localhost:3000"})
+            self.assertEqual(landing.json()["page_type"], "business_landing")
+            keys = set()
+            for slug, _, key, _ in sites:
+                page = self.client.get("/api/page/", {"host": f"{slug}.localhost:3000"})
+                self.assertEqual(page.status_code, 200)
+                self.assertEqual(page.json()["template"], key)
+                self.assertIn("layout", page.json()["presentation"])
+                keys.add(key)
+            self.assertEqual(len(keys), 3)
+
+    def test_template_selection_is_scoped_and_requires_publish(self):
+        slug = "pilot-tandoor-restau"
+        user = get_user_model().objects.get(username="pilot_tandoor_restau_admin")
+        self.client.force_login(user)
+        panel = f"/panel/t/{slug}/"
+        hostname = {"host": f"{slug}.localhost:3000"}
+        draft = {"action": "save", "draft_title": "Tandoor House", "draft_description": "New menu"}
+        wrong_type = self.client.post(panel, {**draft, "template": "tour-adventure"})
+        self.assertContains(wrong_type, "Select a valid choice")
+        self.assertEqual(self.client.get("/api/page/", hostname).json()["template"], "restaurant-classic")
+        self.assertEqual(
+            self.client.post(panel, {**draft, "template": "restaurant-night"}).status_code, 302,
+        )
+        self.assertEqual(self.client.get("/api/page/", hostname).json()["template"], "restaurant-classic")
+        self.assertEqual(self.client.post(panel, {"action": "publish"}).status_code, 302)
+        self.assertEqual(self.client.get("/api/page/", hostname).json()["template"], "restaurant-night")
+        self.assertEqual(self.client.get("/panel/t/pilot-wild-tour/").status_code, 404)
