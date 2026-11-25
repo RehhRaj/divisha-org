@@ -76,6 +76,32 @@ class StageTests(TestCase):
                          response.headers["X-Request-ID"])
         self.assertEqual(self.page("jeetu-restau").json()["title"], "New title")
 
+    def test_offerings_and_contact_keep_the_previous_snapshot_until_publish(self):
+        self.sign_in("jeetu_restau_admin")
+        panel = "/panel/t/jeetu-restau/"
+        draft = {
+            "action": "save",
+            "draft_title": "Jeetu Da Dhaba",
+            "draft_description": "Local restaurant",
+            "draft_offerings": "Paneer Tikka | ₹240",
+            "draft_hours": "Mon–Sat, 12–9 pm",
+            "draft_contact": "Contact the restaurant for reservations",
+        }
+        self.assertEqual(self.client.post(panel, draft).status_code, 302)
+        self.assertEqual(self.page("jeetu-restau").json()["offerings"], [])
+        self.assertEqual(self.client.post(panel, {"action": "publish"}).status_code, 302)
+        page = self.page("jeetu-restau").json()
+        self.assertEqual(page["offerings"], [{"name": "Paneer Tikka", "detail": "₹240"}])
+        self.assertEqual(page["hours"], draft["draft_hours"])
+        self.assertEqual(page["contact"], draft["draft_contact"])
+        self.assertEqual(self.page("teal-restau").json()["offerings"], [])
+
+        draft["draft_offerings"] = "Paneer Tikka | ₹260"
+        self.assertEqual(self.client.post(panel, draft).status_code, 302)
+        self.assertEqual(self.page("jeetu-restau").json()["offerings"], page["offerings"])
+        self.assertEqual(self.client.post(panel, {"action": "publish"}).status_code, 302)
+        self.assertEqual(self.page("jeetu-restau").json()["offerings"][0]["detail"], "₹260")
+
     def test_panel_requires_login_and_csrf(self):
         url = "/panel/t/jeetu-restau/"
         self.assertRedirects(self.client.get(url), f"/panel/login/?next={url}")
@@ -144,3 +170,32 @@ class TemplatePilotTests(TestCase):
         self.assertEqual(self.client.post(panel, {"action": "publish"}).status_code, 302)
         self.assertEqual(self.client.get("/api/page/", hostname).json()["template"], "restaurant-night")
         self.assertEqual(self.client.get("/panel/t/pilot-wild-tour/").status_code, 404)
+
+    def test_programmes_and_timcy_packages_publish_independently(self):
+        from tenancy.models import Domain
+
+        timcy = Tenant.objects.get(slug="pilot-wild-tour")
+        Domain.objects.create(tenant=timcy, hostname="timcy-tour.divisha.org")
+        for slug, host, entry, variant in (
+            ("pilot-river-edu", "pilot-river-edu.localhost", "Admissions | Opens 1 August", "education-admissions"),
+            ("pilot-wild-tour", "timcy-tour.divisha.org", "Weekend trek | 2 days", "tour-adventure"),
+        ):
+            with self.subTest(slug=slug):
+                self.client.force_login(get_user_model().objects.get(username=slug.replace("-", "_") + "_admin"))
+                panel = f"/panel/t/{slug}/"
+                query = {"host": host}
+                self.assertEqual(self.client.post(panel, {
+                    "action": "save",
+                    "draft_title": "Updated site",
+                    "draft_description": "Updated description",
+                    "draft_offerings": entry,
+                }).status_code, 302)
+                self.assertEqual(self.client.get("/api/page/", query).json()["offerings"], [])
+                self.assertEqual(self.client.post(panel, {"action": "publish"}).status_code, 302)
+                name, detail = entry.split(" | ")
+                page = self.client.get("/api/page/", query).json()
+                self.assertEqual(page["offerings"], [{"name": name, "detail": detail}])
+                self.assertEqual(page["template"], variant)
+
+        landing = self.client.get("/api/page/", {"host": "tour.divisha.org"}).json()
+        self.assertEqual(landing["page_type"], "business_landing")

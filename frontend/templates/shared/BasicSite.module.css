@@ -64,3 +64,28 @@
 @media (max-width: 680px) {
   .split .content { grid-template-columns: minmax(0, 1fr); }
 }
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem 1.25rem;
+  padding-block: 1rem;
+}
+
+.links a {
+  color: inherit;
+  text-underline-offset: .2em;
+}
+
+.section {
+  max-width: 72rem;
+  margin-block: 1.25rem;
+  border-top: 1px solid var(--accent);
+  overflow-wrap: anywhere;
+}
+
+.section p { white-space: pre-line; }
+
+.site { overflow-wrap: anywhere; }
+.section a { color: inherit; }
+.section li + li { margin-top: .5rem; }

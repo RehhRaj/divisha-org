@@ -10,6 +10,12 @@ class Website(models.Model):
     template = models.CharField(max_length=50, choices=TEMPLATE_CHOICES)
     draft_title = models.CharField(max_length=150)
     draft_description = models.TextField(max_length=3000)
+    draft_offerings = models.TextField(blank=True, max_length=6000)
+    published_offerings = models.TextField(blank=True, editable=False)
+    draft_hours = models.TextField(blank=True, max_length=500)
+    published_hours = models.TextField(blank=True, editable=False)
+    draft_contact = models.TextField(blank=True, max_length=500)
+    published_contact = models.TextField(blank=True, editable=False)
     published_template = models.CharField(max_length=50, choices=TEMPLATE_CHOICES, blank=True, editable=False)
     published_title = models.CharField(max_length=150, blank=True, editable=False)
     published_description = models.TextField(blank=True, editable=False)
@@ -17,6 +23,12 @@ class Website(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
+        if any(
+            not name.strip() or (separator and not detail.strip())
+            for line in self.draft_offerings.splitlines() if line.strip()
+            for name, separator, detail in [line.partition("|")]
+        ):
+            raise ValidationError({"draft_offerings": "Enter a name and, after |, a price or detail."})
         if self.tenant_id and self.template:
             choices = dict(template_choices(self.tenant.business_type.slug))
             if self.template not in choices:

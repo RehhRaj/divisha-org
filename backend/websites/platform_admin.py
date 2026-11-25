@@ -29,7 +29,7 @@ class PlatformModelAdmin(admin.ModelAdmin):
 
 
 class WebsiteAdmin(PlatformModelAdmin):
-    fields = ("tenant", "template", "draft_title", "draft_description")
+    fields = ("tenant", "template", "draft_title", "draft_description", "draft_offerings", "draft_hours", "draft_contact")
     list_display = ("tenant", "template", "published_at")
 
 

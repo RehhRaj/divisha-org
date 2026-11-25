@@ -18,9 +18,21 @@ class DraftForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields["template"].choices = template_choices(self.instance.tenant.business_type.slug)
 
+        labels = {"restau": "Menu items", "edu": "Programmes", "tour": "Tour packages"}
+        self.fields["draft_offerings"].label = labels.get(
+            self.instance.tenant.business_type.slug, "Offerings",
+        )
+        self.fields["draft_offerings"].help_text = (
+            "Enter one item per line. Add a price or detail after | "
+            "(for example: Paneer Tikka | ₹240)."
+        )
+        self.fields["draft_hours"].label = "Opening hours"
+        self.fields["draft_contact"].label = "Address and contact details"
+        self.fields["draft_contact"].help_text = "Put each phone number or email address on its own line to make it clickable."
+
     class Meta:
         model = Website
-        fields = ["draft_title", "draft_description", "template"]
+        fields = ["draft_title", "draft_description", "template", "draft_offerings", "draft_hours", "draft_contact"]
 
 
 @login_required
@@ -45,10 +57,14 @@ def panel(request, slug):
         fields = request.POST.copy()
         if "template" not in fields:
             fields["template"] = site.template
+        for field in ("draft_offerings", "draft_hours", "draft_contact"):
+            if field not in fields:
+                fields[field] = getattr(site, field)
         form = DraftForm(fields, instance=site)
         if form.is_valid():
-            if "template" not in request.POST:
-                form.cleaned_data.pop("template")
+            for field in ("template", "draft_offerings", "draft_hours", "draft_contact"):
+                if field not in request.POST:
+                    form.cleaned_data.pop(field)
             update_site(context, EDIT_SITE, form.cleaned_data)
             return redirect("tenant-panel", slug=slug)
     return render(request, "websites/panel.html", {
