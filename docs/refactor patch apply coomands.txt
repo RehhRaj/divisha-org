@@ -1,0 +1,9 @@
+Patch ko Downloads mein save karke apne Divisha repo mein us branch se run karein jo attached ZIP se match karti hai.
+git status --short
+git apply --check ~/Downloads/divisha-boilerplate-v1-refactor.patch &&
+git switch -c feature/boilerplate-v1 &&
+git am ~/Downloads/divisha-boilerplate-v1-refactor.patch
+
+Uske baad apni usual PostgreSQL settings ke saath backend mein python manage.py migrate aur python manage.py test chalayein. frontend mein npm ci aur npm run build chalayein.
+
+Merge aur deployment pending hain. ZIP mein Git remote nahi tha, isliye actual repo aur hosting projects mein changes apply nahi hue. Laptop par verification ke baad release order rakhein: PythonAnywhere ki existing SQLite DB ka backup, merge, backend migration aur reload, phir Vercel deployment. Is release ke liye live Timcy ko dobara seed ya publish karne ki zarurat nahi hai. Deployment ke baad uska live page smoke-test karein.

@@ -1,5 +1,6 @@
 import styles from "./TenantSite.module.css";
 
+// eh TypeScript ko batata hai ki page object mein kaun-kaun sa data aayega:
 export interface PublishedTenantSite {
   title: string;
   description: string;
@@ -7,6 +8,9 @@ export interface PublishedTenantSite {
   presentation?: { layout: string; palette: string } | null;
 }
 
+// Yeh ek dictionary/object hai jo backend se aane wale 
+// layout ke naam (jaise "split" ya "card") 
+// ko CSS file ki actual class (styles.split, styles.card) se jorta hai.
 const layouts = {
   classic: styles.classic,
   split: styles.split,
@@ -15,6 +19,8 @@ const layouts = {
   banner: styles.banner,
 };
 
+
+// Yeh component do props leta hai: page (site ka data) aur loginUrl (login page ka link)
 export function TenantSite({
   page,
   loginUrl,
@@ -22,9 +28,18 @@ export function TenantSite({
   page: PublishedTenantSite;
   loginUrl: string;
 }) {
+
+  // Default Layout:
   const layout = page.presentation?.layout ?? "classic";
+
+
+  
   const palette = page.presentation?.palette ??
     (page.template === "education-classic" ? "forest" : "terracotta");
+
+
+    // Safe Class Selection:  Object.hasOwn(layouts, layout) check karta hai ki jo layout naam aaya hai woh hamari layouts list mein maujood hai ya nahi. Agar koi galat naam aa jaye, toh site tootne ki bajay safely layouts.classic lag jata hai.
+    
   const layoutClass = Object.hasOwn(layouts, layout)
     ? layouts[layout as keyof typeof layouts]
     : layouts.classic;
