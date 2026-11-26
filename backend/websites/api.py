@@ -14,12 +14,20 @@ class TemplatePresentation(Schema):
     palette: str
 
 
+class Offering(Schema):
+    name: str
+    detail: str
+
+
 class PublishedPage(Schema):
     title: str
     description: str
     template: str
     business_type: str
     presentation: TemplatePresentation | None = None
+    offerings: list[Offering]
+    hours: str
+    contact: str
 
 
 class LandingLink(Schema):
@@ -75,6 +83,13 @@ def published_page(request, host: str = ""):
         description=site.published_description,
         template=site.published_template,
         business_type=business_type,
+        offerings=[
+            Offering(name=name.strip(), detail=detail.strip())
+            for line in site.published_offerings.splitlines() if line.strip()
+            for name, _, detail in [line.partition("|")]
+        ],
+        hours=site.published_hours,
+        contact=site.published_contact,
         presentation=TemplatePresentation(layout=variant.layout, palette=variant.palette) if variant else None,
     )
 

@@ -24,12 +24,22 @@ def update_site(context, action, fields=None):
         site.draft_description = fields["draft_description"]
         site.template = fields.get("template", site.template)
         changes = ["draft_title", "draft_description", "template"]
+        for field in ("draft_offerings", "draft_hours", "draft_contact"):
+            if field in fields:
+                setattr(site, field, fields[field])
+                changes.append(field)
     elif action == PUBLISH_SITE:
         site.published_template = site.template
         site.published_title = site.draft_title
         site.published_description = site.draft_description
         site.published_at = timezone.now()
-        changes = ["published_template", "published_title", "published_description", "published_at"]
+        site.published_offerings = site.draft_offerings
+        site.published_hours = site.draft_hours
+        site.published_contact = site.draft_contact
+        changes = [
+            "published_template", "published_title", "published_description", "published_at",
+            "published_offerings", "published_hours", "published_contact",
+        ]
     else:
         raise ValueError("Unsupported website action.")
     site.full_clean()
