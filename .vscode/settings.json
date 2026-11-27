@@ -1,3 +1,8 @@
 {
-    "folder-color.pathColors": []
+    "folder-color.pathColors": [
+        {
+            "folderPath": "divisha-org/backend/websites/",
+            "color": "foldercolorizer.color_00afd7"
+        }
+    ]
 }

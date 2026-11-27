@@ -16,16 +16,33 @@ from .services import read_site, update_site
 class DraftForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["template"].choices = template_choices(self.instance.tenant.business_type.slug)
 
-        labels = {"restau": "Menu items", "edu": "Programmes", "tour": "Tour packages"}
-        self.fields["draft_offerings"].label = labels.get(
-            self.instance.tenant.business_type.slug, "Offerings",
+        business_type = self.instance.tenant.business_type.slug
+        self.fields["template"].choices = template_choices(business_type)
+
+        offering_labels = {
+            "restau": "Menu items",
+            "edu": "Programmes",
+            "tour": "Tour packages",
+        }
+        offering_help = {
+            "restau": "Enter one menu item per line. Example: Paneer Tikka | ₹240.",
+            "edu": "Enter one programme per line. Example: Class 6 admissions | Open from 1 August.",
+            "tour": "Enter one package per line. Example: Manali Weekend | 3 days, 2 nights.",
+        }
+
+        offerings_field = self.fields["draft_offerings"]
+        offerings_field.label = offering_labels.get(business_type, "Offerings")
+        offerings_field.help_text = offering_help.get(
+            business_type,
+            "Enter one offering per line. Add an optional detail after |.",
         )
-        self.fields["draft_offerings"].help_text = (
-            "Enter one item per line. Add a price or detail after | "
-            "(for example: Paneer Tikka | ₹240)."
-        )
+
+
+
+
+
+
         self.fields["draft_hours"].label = "Opening hours"
         self.fields["draft_contact"].label = "Address and contact details"
         self.fields["draft_contact"].help_text = "Put each phone number or email address on its own line to make it clickable."

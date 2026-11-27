@@ -1,0 +1,96 @@
+Alag PDF file is turn mein bana nahi saka. [Divisha Template Variants Guide](https://chatgpt.com/library?file_id=libfile_b820b3ab58108191ae83f0ca2b20e0e8) ke **pages 5–6** mein `restaurant-dhaba` ka example code ke saath hai. Sirf ye procedure print karna ho to PDF ke print dialog mein **Pages 5–6** select kijiye.
+
+## `restaurant-dhaba` ka layout change
+
+Is example mein desktop par title aur description **side by side** honge. Mobile par dono **ek ke neeche ek** dikhenge. Change sabhi published `restaurant-dhaba` sites par lagega.
+
+### 1. Branch aur published variant verify kijiye
+
+Repo root se `git status --short --branch` chalaiye. Apni `feature/tenant-template-expansion` branch par kaam kijiye. Phir Django server running ho to target tenant ki key check kijiye:
+
+```bash
+curl -fsS 'http://127.0.0.1:8000/api/page/?host=pilot-highway-restau.localhost:3000' \
+  | python3 -m json.tool
+```
+
+`pilot-highway-restau` example host hai. Apne local tenant ka hostname use kijiye. JSON mein `"template": "restaurant-dhaba"` chahiye. Agar doosri key aaye, to kisi local pilot tenant ke Website record par **Dhaba** select karke owner se **Save draft → Publish** kijiye.
+
+### 2. React file mein template key expose kijiye
+
+File `frontend/templates/shared/BasicSite.tsx` mein existing `<main>` opening tag ko isse replace kijiye. Uske andar ka JSX waise hi rakhiye.
+
+```tsx
+<main
+  className={`${styles.site} ${layoutClass}`}
+  data-palette={palette}
+  data-template={page.template}
+>
+```
+
+### 3. CSS module mein Dhaba ka layout add kijiye
+
+File `frontend/templates/shared/BasicSite.module.css` ke end mein ye rules add kijiye:
+
+```css
+.site[data-template="restaurant-dhaba"] .content {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  grid-template-areas: "heading details";
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.site[data-template="restaurant-dhaba"] .content > header {
+  grid-area: heading;
+  overflow-wrap: anywhere;
+}
+
+.site[data-template="restaurant-dhaba"] .details {
+  grid-area: details;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 640px) {
+  .site[data-template="restaurant-dhaba"] .content {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "heading"
+      "details";
+  }
+}
+```
+
+`data-template` selector ki wajah se ye rules exact Dhaba key par lagenge. Shared `.split` ya `.card` class ko edit karne se unhe use karne wale doosre variants bhi badal sakte hain.
+
+### 4. Browser mein verify kijiye
+
+Django port `8000` par running ho. Doosre terminal mein repo root se:
+
+```bash
+cd frontend
+export DJANGO_API_ORIGIN=http://127.0.0.1:8000
+npm run dev
+```
+
+- Dhaba tenant ko desktop aur `640px` ya usse chhoti viewport par dekhiye. Long title, menu, contact aur Tenant Login link bhi check kijiye.
+- Ek **doosri template key** wala restaurant tenant kholkar compare kijiye.
+- Layout na badle to API mein published key aur browser Inspector mein `<main data-template="restaurant-dhaba">` check kijiye.
+
+### 5. Build pass hone par commit kijiye
+
+Dev server ko `Ctrl+C` se band kijiye. `frontend` folder mein `npm run build` chalaiye. Build pass hone par repo root se:
+
+```bash
+git diff --check &&
+git add -- frontend/templates/shared/BasicSite.tsx \
+  frontend/templates/shared/BasicSite.module.css &&
+git diff --cached
+```
+
+Staged diff review karne ke baad:
+
+```bash
+git commit -m "Give Dhaba variant a responsive two-column hero"
+```
+
+**Deploy ke baad** Vercel par Dhaba tenant aur comparison tenant dono check kijiye. Is frontend-only change ke liye Django migration ya existing Dhaba sites ko dobara publish karne ki zarurat nahi hai.

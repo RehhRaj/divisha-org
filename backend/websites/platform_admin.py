@@ -29,8 +29,34 @@ class PlatformModelAdmin(admin.ModelAdmin):
 
 
 class WebsiteAdmin(PlatformModelAdmin):
-    fields = ("tenant", "template", "draft_title", "draft_description", "draft_offerings", "draft_hours", "draft_contact")
+    fields = (
+        "tenant",
+        "template",
+        "draft_title",
+        "draft_description",
+        "draft_offerings",
+        "draft_hours",
+        "draft_contact",
+    )
     list_display = ("tenant", "template", "published_at")
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+
+        if "draft_title" in form.base_fields:
+            field = form.base_fields["draft_title"]
+            field.label = "Homepage heading (draft)"
+            field.help_text = "Appears as the main heading after publishing."
+
+        if "draft_description" in form.base_fields:
+            field = form.base_fields["draft_description"]
+            field.label = "Homepage introduction (draft)"
+            field.help_text = "Appears below the heading after publishing."
+
+        if "template" in form.base_fields:
+            form.base_fields["template"].label = "Website design"
+
+        return form  
 
 
 class AuditAdmin(admin.ModelAdmin):
