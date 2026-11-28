@@ -19,12 +19,18 @@ def update_site(context, action, fields=None):
     site = get_object_or_404(
         Website.objects.select_for_update(), tenant_id=context.tenant_id,
     )
+
+
     if action == EDIT_SITE:
         site.draft_title = fields["draft_title"]
         site.draft_description = fields["draft_description"]
         site.template = fields.get("template", site.template)
         changes = ["draft_title", "draft_description", "template"]
-        for field in ("draft_offerings", "draft_hours", "draft_contact"):
+
+
+        # for field in ("draft_offerings", "draft_hours", "draft_contact"):
+
+        for field in ("draft_offerings", "draft_hours", "draft_contact",  "draft_favicon_url"):
             if field in fields:
                 setattr(site, field, fields[field])
                 changes.append(field)
@@ -36,9 +42,11 @@ def update_site(context, action, fields=None):
         site.published_offerings = site.draft_offerings
         site.published_hours = site.draft_hours
         site.published_contact = site.draft_contact
+        site.published_favicon_url = site.draft_favicon_url
         changes = [
             "published_template", "published_title", "published_description", "published_at",
             "published_offerings", "published_hours", "published_contact",
+            "published_favicon_url",
         ]
     else:
         raise ValueError("Unsupported website action.")

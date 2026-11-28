@@ -38,18 +38,14 @@ class DraftForm(forms.ModelForm):
             "Enter one offering per line. Add an optional detail after |.",
         )
 
-
-
-
-
-
+        self.fields["draft_favicon_url"].label = "Favicon URL"
         self.fields["draft_hours"].label = "Opening hours"
         self.fields["draft_contact"].label = "Address and contact details"
         self.fields["draft_contact"].help_text = "Put each phone number or email address on its own line to make it clickable."
 
     class Meta:
         model = Website
-        fields = ["draft_title", "draft_description", "template", "draft_offerings", "draft_hours", "draft_contact"]
+        fields = ["draft_title", "draft_description", "template", "draft_offerings", "draft_hours", "draft_contact",  "draft_favicon_url",]
 
 
 @login_required
@@ -69,20 +65,34 @@ def panel(request, slug):
     form = DraftForm(instance=site)
     if request.method == "POST":
         if request.POST.get("action") == "publish":
+
+
             update_site(context, PUBLISH_SITE)
             return redirect("tenant-panel", slug=slug)
         fields = request.POST.copy()
+
         if "template" not in fields:
             fields["template"] = site.template
-        for field in ("draft_offerings", "draft_hours", "draft_contact"):
+
+        optional_fields = (
+            "draft_offerings",
+            "draft_hours",
+            "draft_contact",
+            "draft_favicon_url",
+        )
+        for field in optional_fields:
             if field not in fields:
                 fields[field] = getattr(site, field)
+
         form = DraftForm(fields, instance=site)
         if form.is_valid():
-            for field in ("template", "draft_offerings", "draft_hours", "draft_contact"):
+            for field in ("template", *optional_fields):
                 if field not in request.POST:
                     form.cleaned_data.pop(field)
             update_site(context, EDIT_SITE, form.cleaned_data)
+
+
+
             return redirect("tenant-panel", slug=slug)
     return render(request, "websites/panel.html", {
         "tenant": tenant, "form": form, "site": site,

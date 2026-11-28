@@ -8,6 +8,9 @@ import { notFound } from "next/navigation";
 import { TenantSite } from "../../templates/TenantSite";
 import type { PublishedTenantSite } from "../../templates/types";
 
+
+const DIVISHA_FAVICON = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23075e51'/%3E%3Cpath fill='white' d='M9 7h6a9 9 0 0 1 0 18H9zm4 4v10h2a5 5 0 0 0 0-10z'/%3E%3C/svg%3E";
+
 interface PublishedLanding {
   page_type: "platform_landing" | "business_landing";
   title: string;
@@ -44,13 +47,26 @@ const loadPage = cache(async () => {
 });
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  
   if ((await params).slug?.length) notFound();
   const { page, hostname } = await loadPage();
   const canonical = hostname && /^(?:[a-z0-9-]+\.)+[a-z0-9-]+$/.test(hostname) &&
     !hostname.endsWith(".localhost") && !/^[\d.]+$/.test(hostname)
     ? `https://${canonicalHostname(page, hostname)}/`
     : undefined;
-  return { title: page.title, description: page.description, alternates: { canonical } };
+
+  const faviconUrl =
+    !("page_type" in page) && "favicon_url" in page &&
+    typeof page.favicon_url === "string"
+    ? page.favicon_url
+    : null;
+
+  return {
+  title: page.title,
+  description: page.description,
+  alternates: { canonical },
+  icons: { icon: faviconUrl || DIVISHA_FAVICON },
+};
 }
 
 function canonicalHostname(page: PublishedTenantSite | PublishedLanding, hostname: string) {

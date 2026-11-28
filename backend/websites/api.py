@@ -28,6 +28,7 @@ class PublishedPage(Schema):
     offerings: list[Offering]
     hours: str
     contact: str
+    favicon_url: str | None = None
 
 
 class LandingLink(Schema):
@@ -90,6 +91,7 @@ def published_page(request, host: str = ""):
         ],
         hours=site.published_hours,
         contact=site.published_contact,
+        favicon_url=site.published_favicon_url or None,
         presentation=TemplatePresentation(layout=variant.layout, palette=variant.palette) if variant else None,
     )
 

@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import validate_domain_name
+# from django.core.validators import validate_domain_name
+from django.core.validators import URLValidator, validate_domain_name
 from django.db import models
 
 from .registry import TEMPLATE_CHOICES, template_choices
@@ -16,6 +17,14 @@ class Website(models.Model):
     published_hours = models.TextField(blank=True, editable=False)
     draft_contact = models.TextField(blank=True, max_length=500)
     published_contact = models.TextField(blank=True, editable=False)
+    draft_favicon_url = models.URLField(
+        max_length=500,
+        blank=True,
+        validators=[URLValidator(schemes=["https"])],
+        help_text="Enter the HTTPS URL of your favicon. Leave blank to use the Divisha icon.",
+        )
+    published_favicon_url = models.URLField(max_length=500, blank=True, editable=False)
+   
     published_template = models.CharField(max_length=50, choices=TEMPLATE_CHOICES, blank=True, editable=False)
     published_title = models.CharField(max_length=150, blank=True, editable=False)
     published_description = models.TextField(blank=True, editable=False)
